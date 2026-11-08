@@ -111,3 +111,19 @@ body[data-accent] {
 
 /* RSM's eyebrow (Note, Digestion) in the sans, as the labels on the site's own pages. */
 .manuscriptwrapper .manuscript-eyebrow { font-family: var(--fm-sans); }
+
+/* Notes from the author to the reader inside a page (:class: structured-note, :class: colophon
+   in the page's source): a gray box, its text in italics, led by a small uppercase label
+   (:class: meta-label). These are our own classes, from the page's source. */
+.manuscriptwrapper .colophon { margin-block: var(--chunk) var(--chunk); }
+.manuscriptwrapper :is(.structured-note, .colophon) .hr-content-zone {
+  background: var(--gray-75); border-radius: var(--radius-md); padding: var(--chunk-third) var(--chunk-half);
+}
+.manuscriptwrapper :is(.structured-note, .colophon) .hr-content-zone > p:first-child { padding-top: 0; }
+.manuscriptwrapper :is(.structured-note, .colophon) .hr-content-zone p {
+  margin: 0; font-family: var(--font-body); font-size: 0.95rem; line-height: 1.5; font-style: italic; color: var(--gray-800);
+}
+.manuscriptwrapper .meta-label {
+  font-family: var(--fm-sans); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78em;
+  font-weight: var(--weight-semi); font-style: normal; color: var(--primary-700); margin-right: 0.55em; white-space: nowrap;
+}
