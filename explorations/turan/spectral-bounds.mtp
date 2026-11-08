@@ -88,6 +88,7 @@
   (button #'forbid-{k}'
     (animation (move w (to (+ k 2)) (duration 0.6) (ease cubic-in-out)))
     (label $'K{(sub (+ k 3))}')
+    (selected (= (round w) (+ k 2)))
     doc@'Forbids this clique.'))
 (slider vertices (move n (from 4) (to 20)) (step 17) (label 'Vertices') doc@'Sets n, the number of vertices.')
 (readout forbid-label 'Forbid' doc@'Names the row of clique buttons.')
