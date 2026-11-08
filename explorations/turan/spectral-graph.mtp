@@ -187,6 +187,7 @@
       (move sel (to -1) (duration 0))
       refresh)
     (label (or? preset-names[k] ''))
+    (selected (all edges (fn e (= (or? e.on false) (in-preset k (or? e.a 0) (or? e.b 0))))))
     doc@'Draws this graph.'))
 (button fewer (animation (move r (to (- r 1)) (duration 0)) refresh) (active (> r 2)) (label '−'))
 (button more (animation (move r (to (+ r 1)) (duration 0)) refresh) (active (< r 5)) (label '+'))
