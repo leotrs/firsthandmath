@@ -6,8 +6,8 @@ body {
 }
 main { flex: 1; width: 100%; max-width: 40rem; margin: 0 auto; padding: 0 32px 4rem; }
 
-h1 { font: 400 clamp(2.2rem, 5vw, 3.3rem)/1.08 var(--fm-serif); letter-spacing: -.015em; margin: 3rem 0 .6em; text-wrap: balance; }
-h2 { font: 500 1.5rem/1.2 var(--fm-serif); margin: 1.8em 0 .4em; }
+h1 { font: 600 clamp(2.2rem, 5vw, 3.3rem)/1.08 var(--fm-sans); letter-spacing: -.015em; margin: 3rem 0 .6em; text-wrap: balance; }
+h2 { font: 600 1.5rem/1.2 var(--fm-sans); letter-spacing: -.01em; margin: 1.8em 0 .4em; }
 p { margin: 0 0 1em; }
 main a:is(:link, :visited) {
   color: inherit; text-decoration: underline; text-decoration-color: var(--fm-terracotta);
@@ -20,10 +20,19 @@ main a:hover { text-decoration-thickness: 2px; }
   width: 100%; max-width: 76rem; margin: 0 auto; padding: 22px 32px;
   border-top: 1px solid var(--fm-rule);
   font: 400 14px var(--fm-sans); color: var(--fm-quiet);
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px 32px;
 }
+.fm-footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.fm-footer a:is(:link, :visited) { color: inherit; text-decoration: underline; text-decoration-color: var(--fm-rule); text-underline-offset: .18em; }
+.fm-footer a:hover { color: var(--fm-ink); text-decoration-color: var(--fm-terracotta); }
 
 /* Home: the newest exploration as the hero */
 main.fm-home { max-width: 76rem; }
+/* The masthead above it: the tagline, then a line on what the site holds. */
+.fm-masthead { padding: 48px 0; margin-bottom: 32px; border-bottom: 1px solid var(--fm-rule); }
+.fm-masthead > * { max-width: 46rem; }
+.fm-tagline { margin: 0; font: 600 clamp(2rem, 4vw, 3rem)/1.15 var(--fm-sans); letter-spacing: -.01em; color: var(--fm-ink); text-wrap: balance; }
+.fm-masthead-note { margin: 20px 0 0; font: 400 1.3rem/1.5 var(--fm-serif); color: var(--fm-soft); }
 .fm-hero {
   display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center;
   padding: 40px 0; border-bottom: 1px solid var(--fm-rule);
@@ -34,7 +43,6 @@ main.fm-home { max-width: 76rem; }
 .fm-hero p:not(.fm-meta) { font-size: 1.2rem; }
 .fm-hero-figure { display: block; border: 1px solid var(--fm-rule); border-radius: 12px; padding: 16px; }
 .fm-hero-figure img { display: block; width: 100%; height: auto; }
-.fm-intro { max-width: 40rem; margin: 32px 0 0; color: var(--fm-quiet); }
 
 /* Home: the other explorations, as cards */
 .fm-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 40px; margin: 48px 0 0; }
@@ -42,7 +50,7 @@ main.fm-home { max-width: 76rem; }
 main .fm-card:is(:link, :visited) { text-decoration: none; }
 .fm-card-figure { display: block; border: 1px solid var(--fm-rule); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
 .fm-card-figure img { display: block; width: 100%; height: 12rem; object-fit: contain; }
-.fm-card h2 { font: 400 1.5rem/1.2 var(--fm-serif); margin: 4px 0 2px; }
+.fm-card h2 { font: 600 1.5rem/1.2 var(--fm-sans); margin: 4px 0 2px; }
 .fm-card p:not(.fm-meta) { font-size: 1.05rem; color: var(--fm-ink); margin: 0; }
 .fm-card:hover h2 { text-decoration: underline; text-decoration-color: var(--fm-terracotta); text-decoration-thickness: 2px; text-underline-offset: .12em; }
 .fm-card:hover .fm-card-figure { border-color: var(--fm-soft); }
@@ -50,6 +58,11 @@ main .fm-card:is(:link, :visited) { text-decoration: none; }
 @media (max-width: 600px) {
   main { padding: 0 18px 3rem; }
   .fm-hero { grid-template-columns: 1fr; gap: 24px; padding: 24px 0; }
+  .fm-masthead { padding: 32px 0; margin-bottom: 16px; }
+  .fm-masthead-note { font-size: 1.15rem; }
   .fm-footer { padding: 18px; }
   body { font-size: 1.1rem; }
 }
+
+/* The word the site is named for, where the About page says why. */
+.fm-key { color: var(--fm-terracotta); }
