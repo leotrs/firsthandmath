@@ -17,8 +17,8 @@ Fix a circle of radius 1 with center $O$. Inversion in this circle sends a point
   :nonum:
 }
 :caption: Inversion in the circle of radius 1 with center $O$. The point $q$ lies on the ray from
-$O$ through $p$, at distance $1/|p|$, so $|p|\,|q| = 1$. With the circles shown, each terracotta
-circle appears with its image in teal.
+$O$ through $p$, at distance $1/|p|$, so $|p|\,|q| = 1$. Each circle shown appears with its image in
+the same color, the image dashed.
 ::
 
 Drag $p$, and $q$ follows it. Drag $q$, and $p$ follows. Bring either one to the circle and the two meet.
@@ -27,7 +27,7 @@ The readout under the figure says $|p|\,|q| = 1$ wherever $p$ goes. That is only
 
 :aside: {:label: sphere} In complex numbers, with $O$ at $0$, inversion is $z \mapsto 1/\bar z$. Followed by the reflection $z \mapsto \bar z$ it becomes $z \mapsto 1/z$. ::
 
-Now turn on *circles and their images*, and drag either terracotta circle to move it. One circle always passes through $O$, and its image is the teal line. Points of that circle near $O$ are sent far away, so its image must run off to infinity, and the circles that do that are lines. The other circle misses $O$, and its image is again a circle, smaller and inside. So inversion sends circles and lines to circles and lines. It does not send centers to centers: the inverse of the small circle's center is not the center of its image.
+Now turn on the two circles, and drag either one to move it. The teal circle always passes through $O$, and its image is the dashed teal line. Points of that circle near $O$ are sent far away, so its image must run off to infinity, and the circles that do that are lines. The plum circle misses $O$, and its image is again a circle. So inversion sends circles and lines to circles and lines. It does not send centers to centers: the inverse of the small circle's center is not the center of its image.
 
 This is what makes inversion useful. Two circles that touch at a point become two parallel lines after an inversion centered there, and a question about circles squeezed between them becomes a question about circles between parallel lines, which is often easy. Many classical proofs about chains of touching circles go this way; the books below have several.
 
