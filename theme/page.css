@@ -96,6 +96,8 @@ body[data-accent] {
 /* A figure with its controls right under it, centered. This is our own markup, inside the
    page's :html: block. */
 .fm-fig mtp-canvas { display: block; width: 100%; max-width: calc(var(--chunk) * 8); margin-inline: auto; }
+/* A figure that is the whole point of its page takes the full width of the text. */
+.fm-fig-wide mtp-canvas { max-width: none; }
 .fm-fig-controls {
   display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--chunk-sixth) var(--chunk-third);
   font-family: var(--fm-sans);

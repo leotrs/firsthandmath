@@ -28,7 +28,7 @@ Now turn on *circles and their images*. The terracotta circle passes through $O$
 
 This is what makes inversion useful. Two circles that touch at a point become two parallel lines after an inversion centered there, and a question about circles squeezed between them becomes a question about circles between parallel lines, which is often easy. Many classical proofs about chains of touching circles go this way; the books below have several.
 
-Inversion also :aside:liouville,keeps angles::. Two curves that cross at some angle have images that cross at the same angle, with the sense of turning reversed. The figure does not show this. It moves one point at a time, and an angle needs two curves through a point. I have not found a picture that makes it as plain as the pointer makes $|p|\,|q| = 1$. If you know one, tell me.
+Inversion also :aside:liouville,keeps angles::. Two curves that cross at some angle have images that cross at the same angle, with the sense of turning reversed. The figure does not show this. It moves one point at a time, and an angle needs two curves through a point. No picture is known that makes this as plain as the pointer makes $|p|\,|q| = 1$. Suggestions are welcome.
 
 :aside: {:label: liouville} In three or more dimensions this has a strong converse, due to Liouville: every map that keeps angles is built from inversions in spheres, reflections and similarities. In the plane there are many more, for example every complex function with a nonzero derivative. ::
 
