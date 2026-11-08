@@ -1,6 +1,6 @@
 /* Firsthand Math: what every page shares: the palette, the fonts and the site header.
    Palette and type are in BRAND.md. */
-@import url("https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&family=Source+Sans+3:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&family=Source+Sans+3:wght@400;500;600;700&display=swap");
 
 :root {
   color-scheme: light dark;
@@ -15,8 +15,6 @@
   --fm-rule: light-dark(#e4dccd, #2d2f36);
   --fm-sans: "Source Sans 3", sans-serif;
   --fm-serif: "Source Serif 4", serif;
-  /* The wordmark keeps its own face until the logo is settled. */
-  --fm-logo: Newsreader, serif;
 }
 /* RSM's dark mode toggle puts dark-theme or light-theme on <html>; these win over the default
    above, which follows the system. */
@@ -32,7 +30,7 @@ body { margin: 0; color: var(--fm-ink); }
   border-bottom: 1px solid var(--fm-rule);
 }
 .fm-brand { display: flex; align-items: center; gap: 10px; color: var(--fm-ink); text-decoration: none; }
-.fm-brand span { font: 500 22px/1 var(--fm-logo); letter-spacing: -.01em; }
+.fm-brand span { font: 600 22px/1 var(--fm-serif); letter-spacing: -.01em; }
 /* With the wordmark centered on the tile, its baseline sits above the F's; this puts the two
    baselines on one line. */
 .fm-brand span { position: relative; top: .14em; }

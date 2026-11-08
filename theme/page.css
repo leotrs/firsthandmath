@@ -127,3 +127,8 @@ body[data-accent] {
   font-family: var(--fm-sans); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78em;
   font-weight: var(--weight-semi); font-style: normal; color: var(--primary-700); margin-right: 0.55em; white-space: nowrap;
 }
+
+/* The title and every section heading end in a terracotta period, the dot of the logo, as on
+   the site's own pages. CSS only: the period is not in the text, so RSM's contents and links
+   are unchanged. The Abstract and Table of Contents labels keep their own look. */
+.manuscriptwrapper :is(h1, h2, h3):not(:is(.abstract, .toc) *)::after { content: "."; color: var(--fm-terracotta); }

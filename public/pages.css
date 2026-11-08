@@ -66,3 +66,6 @@ main .fm-card:is(:link, :visited) { text-decoration: none; }
 
 /* The word the site is named for, where the About page says why. */
 .fm-key { color: var(--fm-terracotta); }
+
+/* Every heading ends in a terracotta period, the dot of the logo (as aris.pub does). */
+h1::after, h2::after { content: "."; color: var(--fm-terracotta); }
