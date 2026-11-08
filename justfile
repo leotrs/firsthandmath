@@ -2,6 +2,8 @@
 #   just site          the site's own pages (public/) and the one copy of the mathterpiece runtime
 #   just build NAME    one exploration, explorations/NAME/, into _site/NAME/
 #   just dev NAME      serve the site and rebuild NAME on every change
+#   just all           the site and every exploration
+#   just deploy        build everything and publish _site/ to Netlify
 # Every tool runs through uv from the local development checkouts of mathterpiece and RSM.
 # Each exploration is a folder holding NAME.rsm, its figures' .mtp files, figs/*.html placing
 # them, and page.json with its colophon.
@@ -43,6 +45,21 @@ build name:
     mkdir -p "_site/{{name}}/assets"
     cp -R "$stage"/out/assets/. "_site/{{name}}/assets/"
     uv run --no-project python site/compose.py site/content-page.html "$dir"/page.json "$stage"/out/index.html "_site/{{name}}/index.html"
+
+# The site's own pages and every exploration.
+all:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # From an empty _site/, so that nothing left from an earlier build is published.
+    if [ -d _site ]; then rm -r _site; fi
+    just site
+    for dir in explorations/*/; do just build "$(basename "$dir")"; done
+
+# Build everything and publish it to the Netlify site this folder is linked to (netlify link).
+deploy: all
+    # The empty content page is only for designing the shell.
+    rm -r _site/content-page
+    npx -y netlify-cli@27.16.2 deploy --dir _site --prod
 
 # Serve the site, rebuild NAME on every change to it, and reload the open pages.
 dev name:
