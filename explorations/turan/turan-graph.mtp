@@ -40,8 +40,8 @@
 
 ; Every drawn property of the graph (where each vertex is and its color, whether each edge is drawn,
 ; where each bag is and how tall) is a value of its own, moved by the animations below, so that
-; every change glides. A motif instance cannot yet be declared T|none (bead mtp-3f9l), so every
-; vertex, edge and bag exists, and those not in use are faded out and out of the pointer's reach.
+; every change glides. Every vertex, edge and bag exists, and those not in use are faded out and
+; out of the pointer's reach, rather than hidden with exists-when, so that they glide in and out.
 (motif vertex ((int part 0 (>= 0) (<= 4)) (int idx 0) (color paint) (real alpha 1 (>= 0) (<= 1)) (bool shown true))
   doc@'A vertex of the graph; part is the part it is in, and pos where it is drawn.'
   (circle_ (r 10) (fill paint) (stroke paper) (stroke-width 2) (opacity alpha) (pointer-events shown)))
