@@ -98,6 +98,9 @@ Decided by the author, 2026-11-08.
 - **Licence:** text and figures CC BY-NC 4.0; build scripts and theme MIT.
 - **Source:** this repository, public on GitHub under the author's own account (not Aris). Drafts
   are public too, on branches; only `main` is published.
+- **Launch:** the site goes live first, quietly, and is checked on real phones; each short is
+  published after, linking to its page. The first site has three explorations: the inversion
+  note, Turán and Bourgain (the author, 2026-11-08).
 - **Hosting:** Netlify. The site is built on the author's laptop (`just build`) and uploaded
   (`just deploy`); the built site is not committed.
 
@@ -119,5 +122,10 @@ terracotta point beside it, on a tile with rounded corners.
 
 - The site's domain is `firsthandmath.com`, registered by the author on 2026-11-08 at Namecheap
   (with free domain privacy and auto-renew).
-- YouTube `@firsthand` and `firsthandmath.org` were free on 2026-11-07. Registering them is the
-  author's step.
+- YouTube: the channel "Firsthand Math", handle `@FirsthandMath`, created by the author on
+  2026-11-08 as a Brand Account. Its profile picture is the light mark filled to a full square, so
+  that YouTube's circle crop has no transparent corners. Its description:
+  "Firsthand Math is a channel for people who want to do more than just nod along. Mathematics
+  explained and explored, with every figure online at firsthandmath.com, ready to be poked at."
+  Channel copy uses no first person and does not name the author.
+- `firsthandmath.org` was free on 2026-11-07; registering it is the author's step.

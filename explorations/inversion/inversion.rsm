@@ -1,0 +1,66 @@
+# Turning a circle inside out {
+  :label: inversion
+  :eyebrow: Note
+}
+
+:config: {
+  :numbering: none
+  :citation-style: author-parens-year
+  :override-date: 8 November 2026 · 4 minute read
+}
+::
+
+Fix a circle of radius 1 with center $O$. Inversion in this circle sends a point $p$, other than $O$, to the point $q$ on the ray from $O$ through $p$ at distance $1/|p|$ from $O$. Points near the circle move a little. Points near $O$ are sent far away, and far points come in close to $O$. Points on the circle stay where they are. Inverting twice gives $p$ back, so the points come in pairs.
+
+:html: {
+  :path: figs/inversion.html
+  :nonum:
+}
+::
+
+Move the pointer over the figure: $p$ follows it, and $q$ follows $p$. Rest it on the circle and the two meet. On a phone, drag a finger.
+
+The readout under the figure says $|p|\,|q| = 1$ wherever $p$ goes. That is only the definition, but watching $q$ run off as $p$ nears the center shows what it costs: $O$ has no partner. The usual fix is to add one point at infinity and make it the partner of $O$. Inversion is then a one-to-one map of the plane with that point added, which is :aside:sphere,the Riemann sphere::.
+
+:aside: {:label: sphere} In complex numbers, with $O$ at $0$, inversion is $z \mapsto 1/\bar z$. Followed by the reflection $z \mapsto \bar z$ it becomes $z \mapsto 1/z$. ::
+
+Now turn on *circles and their images*. The terracotta circle passes through $O$, and its image is the teal line. Points of that circle near $O$ are sent far away, so its image must run off to infinity, and the circles that do that are lines. The other circle misses $O$, and its image is again a circle, smaller and inside. So inversion sends circles and lines to circles and lines. It does not send centers to centers: the inverse of the small circle's center is not the center of its image.
+
+This is what makes inversion useful. Two circles that touch at a point become two parallel lines after an inversion centered there, and a question about circles squeezed between them becomes a question about circles between parallel lines, which is often easy. Many classical proofs about chains of touching circles go this way; the books below have several.
+
+Inversion also :aside:liouville,keeps angles::. Two curves that cross at some angle have images that cross at the same angle, with the sense of turning reversed. The figure does not show this. It moves one point at a time, and an angle needs two curves through a point. I have not found a picture that makes it as plain as the pointer makes $|p|\,|q| = 1$. If you know one, tell me.
+
+:aside: {:label: liouville} In three or more dimensions this has a strong converse, due to Liouville: every map that keeps angles is built from inversions in spheres, reflections and similarities. In the plane there are many more, for example every complex function with a nonzero derivative. ::
+
+## Sources {
+  :nonum:
+  :label: sources
+}
+
+Needham, chapter 3, draws everything above and much more, with complex numbers. Coxeter, chapter 6, and Coxeter and Greitzer, chapter 5, do it with classical geometry and many exercises: :cite:needham, coxeter, coxetergreitzer::.
+
+:references:
+
+@book{needham,
+  title={Visual Complex Analysis},
+  author={Needham, Tristan},
+  year={1997},
+  publisher={Oxford University Press},
+}
+
+@book{coxeter,
+  title={Introduction to Geometry},
+  author={Coxeter, H. S. M.},
+  year={1969},
+  publisher={Wiley},
+  edition={2nd},
+}
+
+@book{coxetergreitzer,
+  title={Geometry Revisited},
+  author={Coxeter, H. S. M. and Greitzer, S. L.},
+  year={1967},
+  publisher={Mathematical Association of America},
+}
+
+::

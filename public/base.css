@@ -1,0 +1,65 @@
+/* Firsthand Math: what every page shares: the palette, the fonts and the site header.
+   Palette and type are in BRAND.md. */
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Source+Sans+3:wght@400;500;600;700&display=swap");
+
+:root {
+  color-scheme: light dark;
+  --fm-paper: light-dark(#faf7f0, #17181c);
+  --fm-ink: light-dark(#1f2a44, #ece6da);
+  --fm-soft: light-dark(#8a93a6, #8f97a8);
+  /* soft alone is below 4.5:1 for small text, so small gray text is moved toward ink */
+  --fm-quiet: light-dark(#5b6476, #a8aebb);
+  --fm-terracotta: light-dark(#e76f51, #f08a6c);
+  --fm-teal: light-dark(#2a9d8f, #4cc2b3);
+  --fm-plum: light-dark(#6d597a, #a88bb8);
+  --fm-rule: light-dark(#e4dccd, #2d2f36);
+  --fm-sans: "Source Sans 3", sans-serif;
+  --fm-serif: Newsreader, serif;
+}
+/* RSM's dark mode toggle puts dark-theme or light-theme on <html>; these win over the default
+   above, which follows the system. */
+:root.dark-theme { color-scheme: dark; }
+:root.light-theme { color-scheme: light; }
+html, body { background: var(--fm-paper); }
+body { margin: 0; color: var(--fm-ink); }
+
+/* Header */
+.fm-site {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 76rem; margin: 0 auto; padding: 18px 32px;
+  border-bottom: 1px solid var(--fm-rule);
+}
+.fm-brand { display: flex; align-items: center; gap: 10px; color: var(--fm-ink); text-decoration: none; }
+.fm-brand span { font: 500 22px/1 var(--fm-serif); letter-spacing: -.01em; }
+/* With the wordmark centered on the tile, its baseline sits above the F's; this puts the two
+   baselines on one line. */
+.fm-brand span { position: relative; top: .14em; }
+.fm-mark { width: 30px; height: 30px; display: block; }
+.fm-mark .tile { fill: light-dark(#1f2a44, #efe7d8); }
+.fm-mark .f { fill: light-dark(#faf7f0, #1f2a44); }
+
+.fm-site nav { display: flex; gap: 6px; }
+.fm-site nav a {
+  font: 500 15px/1 var(--fm-sans); color: var(--fm-quiet); text-decoration: none;
+  padding: 9px 12px; border-radius: 8px;
+  transition: background-color .12s, color .12s;
+}
+.fm-site nav a:hover { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 7%, transparent); }
+.fm-site nav a:active { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 14%, transparent); transform: translateY(1px); }
+.fm-site nav a[aria-current="page"] { color: var(--fm-ink); box-shadow: inset 0 -2px 0 var(--fm-terracotta); border-radius: 8px 8px 0 0; }
+.fm-site a:focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
+
+/* The kind of an exploration, and its byline */
+.fm-kind { font: 600 12px var(--fm-sans); letter-spacing: .08em; text-transform: uppercase; }
+.fm-note { color: var(--fm-plum); }
+.fm-digestion { color: var(--fm-teal); }
+.fm-meta { font: 400 14px var(--fm-sans); color: var(--fm-quiet); }
+
+@media (max-width: 600px) {
+  .fm-site { padding: 12px 14px; }
+  .fm-brand span { font-size: 19px; }
+  .fm-mark { width: 26px; height: 26px; }
+  .fm-site nav { gap: 0; }
+  .fm-site nav a { font-size: 14px; padding: 9px 8px; }
+  .fm-site nav a:nth-child(2) { display: none; }
+}

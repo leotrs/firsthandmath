@@ -1,0 +1,19 @@
+/* Firsthand Math: the content page around an exploration that RSM built. Only the shell's own
+   parts are styled here; RSM's page keeps its own layout. */
+
+/* The colophon is placed on RSM's text column by the shell's script. */
+
+.fm-band { box-sizing: border-box; width: 100%; background: color-mix(in srgb, var(--fm-ink) 4%, var(--fm-paper)); padding: 28px 0; }
+.fm-colophon {
+  display: grid; grid-template-columns: 7.5rem 1fr; gap: .6rem 1rem;
+  font: 400 1rem/1.5 var(--fm-serif); color: var(--fm-quiet);
+}
+.fm-colophon dt { font: 600 .75rem var(--fm-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--fm-ink); padding-top: .2rem; }
+.fm-colophon dd { margin: 0; }
+.fm-colophon a:is(:link, :visited) { color: inherit; text-decoration: underline; text-decoration-color: var(--fm-terracotta); text-underline-offset: .18em; }
+
+@media (max-width: 600px) {
+  .fm-band { padding: 22px 0; }
+  .fm-colophon { grid-template-columns: 1fr; gap: .15rem; }
+  .fm-colophon dd { margin-bottom: .6rem; }
+}

@@ -1,0 +1,204 @@
+; A small graph and its adjacency spectrum. Click a vertex and then another to join them, click an
+; edge to remove it, or start from a preset. The spectrum is drawn on a vertical axis with two
+; bounds on the spectral radius lambda_1: the average degree 2m/n below, and Nikiforov's ceiling
+; sqrt(2m(1 - 1/r)) above, which holds for graphs with no K_{r+1}. Put a K_{r+1} in the graph and
+; lambda_1 can climb past the ceiling.
+
+(import house paper ink soft terracotta teal saffron plum variable number)
+(import ease cubic-in-out)
+
+(int r 2 (>= 2) (<= 5) doc@'The forbidden clique is K_{r+1}.')
+(int sel -1 (>= -1) (<= 5) doc@'The vertex picked to be joined, or -1 for none.')
+
+(list[string] subscripts ['₀' '₁' '₂' '₃' '₄' '₅' '₆' '₇' '₈' '₉'] (const))
+(func[string] sub ((int k)) (or? subscripts[k] ''))
+
+; The six vertices go round a circle, the first at the top.
+(func[point] spot ((int i))
+  (let ((t (- (/ pi 2) (/ (* 2 pi i) 6))))
+    [(* 115 (cos t)) (* 115 (sin t))]))
+
+; The fifteen pairs of vertices, a below b.
+(list[list[int]] pairs
+  [[0 1] [0 2] [0 3] [0 4] [0 5] [1 2] [1 3] [1 4] [1 5] [2 3] [2 4] [2 5] [3 4] [3 5] [4 5]]
+  (const))
+
+; Whether the pair a, b is an edge of preset k: 0 is C_6, 1 is K_{3,3}, 2 is K_{2,2,2}, 3 is none.
+(func[bool] in-preset ((int k) (int a) (int b))
+  (cond ((= k 0) (or (= (- b a) 1) (and (= a 0) (= b 5))))
+        ((= k 1) (!= (mod a 2) (mod b 2)))
+        ((= k 2) (!= (floor (/ a 2)) (floor (/ b 2))))
+        (else false)))
+
+(list[string] preset-names ['C₆' 'K₃,₃' 'K₂,₂,₂' 'Clear'] (const))
+
+(motif vertex ((int idx 0) (bool picked false))
+  doc@'A vertex; picked while it waits to be joined to another.'
+  (circle_ (r 13) (fill (if picked plum paper)) (stroke ink) (stroke-width 2)))
+(motif link ((int a 0) (int b 0) (bool on false) (real alpha 0 (>= 0) (<= 1)))
+  doc@'The edge between vertices a and b, there while on; alpha fades it in and out.'
+  (line_ (from (spot a)) (to (spot b)) (stroke ink) (stroke-width 2) (stroke-opacity alpha)
+    (pointer-events on)))
+
+; What the spectrum plot shows, each a value of its own so that it glides when the graph changes.
+(real span free@3.3)
+(list[real] eig-y free@[-2 -1 -1 1 1 2])
+(real avg-y free@2)
+(real ceil-y free@2.45)
+
+(func[real] y-of ((real v)) (or? (* 128 (/ v span)) 0))
+; The two bounds' labels, kept at least 20 apart so that they never overlap, the ceiling's above.
+(func[real] ceil-label-y ()
+  (let ((a (y-of avg-y)) (c (y-of ceil-y)))
+    (if (< (abs (- c a)) 20) (+ (/ (+ a c) 2) (if (>= c a) 10 -10)) c)))
+(func[real] floor-label-y ()
+  (let ((a (y-of avg-y)) (c (y-of ceil-y)))
+    (if (< (abs (- c a)) 20) (- (/ (+ a c) 2) (if (>= c a) 10 -10)) a)))
+; How many earlier eigenvalues (in sorted order) equal this one, to set repeats side by side.
+(func[int] repeats ((int i))
+  (count (range i) (fn j (< (abs (- (or? eig-y[j] 0) (or? eig-y[i] 0))) 0.005))))
+
+; The graph starts as C_6. The spectrum plot is a group of the same scene, set 400 to the right,
+; that a second canvas shows.
+(scene graph
+  (group edges
+    (foreach k 15
+      (link #'edge-{k}' (a (or? pairs[k][0] 0)) (b (or? pairs[k][1] 0))
+        (on free@(in-preset 0 (or? pairs[k][0] 0) (or? pairs[k][1] 0)))
+        (alpha free@(if (in-preset 0 (or? pairs[k][0] 0) (or? pairs[k][1] 0)) 1 0)))))
+  (group verts
+    (foreach i 6
+      (vertex #'v-{i}' (idx i) (picked (= sel i)) (pos (spot i)))))
+  (group spectrum-plot (translate [400 0])
+    (group axis (defaults (stroke ink) (stroke-width 1))
+      (line spine (from [0 (y-of (- span))]) (to [0 (y-of span)]))
+      (foreach t 11
+        (line|none #'tick-{t}' (from [-4 (y-of (- t 5))]) (to [4 (y-of (- t 5))]))
+        (exists-when #'tick-{t}' (<= (abs (- t 5)) (floor span)))
+        (text|none #'tick-label-{t}' $'{(- t 5)}' (pos [-9 (y-of (- t 5))]) (font number) (fill soft)
+          (halign 'end') (valign 'middle') (stroke none))
+        (exists-when #'tick-label-{t}' (<= (abs (- t 5)) (floor span))))
+      (text axis-title 'eigenvalues' (pos [0 (+ (y-of span) 10)]) (font number) (fill soft)
+        (halign 'middle') (valign 'bottom') (stroke none)))
+    (group bounds (defaults (stroke-width 2) (dash [5 3]))
+      (line|none floor-mark (from [0 (y-of avg-y)]) (to [28 (y-of avg-y)]) (stroke teal))
+      (exists-when floor-mark (> avg-y 0.001))
+      (text|none floor-label $'2m/n = {avg-y:.2f}' (pos [32 (floor-label-y)]) (font number) (fill teal)
+        (stroke none) (halign 'start') (valign 'middle'))
+      (exists-when floor-label (> avg-y 0.001))
+      (line|none ceil-mark (from [0 (y-of ceil-y)]) (to [28 (y-of ceil-y)]) (stroke terracotta))
+      (exists-when ceil-mark (> avg-y 0.001))
+      (text|none ceil-label $'ceiling = {ceil-y:.2f}' (pos [32 (ceil-label-y)]) (font number)
+        (fill terracotta) (stroke none) (halign 'start') (valign 'middle'))
+      (exists-when ceil-label (> avg-y 0.001)))
+    (group eigs
+      (foreach i 6
+        (circle_ (pos [(+ 11 (* 12 (repeats i))) (y-of (or? eig-y[i] 0))]) (r 5)
+          (fill (if (= i 5) plum soft)) (stroke none)))
+      (text|none lambda-label $'λ₁ = {(or? eig-y[5] 0):.2f}' (pos [-22 (y-of (or? eig-y[5] 0))])
+        (font number) (fill plum) (halign 'end') (valign 'middle'))
+      (exists-when lambda-label (> avg-y 0.001)))))
+
+(canvas graph-view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
+  doc@'The graph: click two vertices to join them, click an edge to remove it.'
+  edges verts)
+
+; Whether a and b are joined, in either order.
+(func[bool] joined ((int a) (int b))
+  (any edges (fn e (and (or? e.on false)
+                        (or (and (= (or? e.a 0) a) (= (or? e.b 0) b)) (and (= (or? e.a 0) b) (= (or? e.b 0) a)))))))
+(func[int] m () (count edges (fn e (or? e.on false))))
+
+; The adjacency matrix, and its eigenvalues by cyclic Jacobi rotations: each rotation zeroes one
+; entry off the diagonal, and after a few sweeps the diagonal holds the eigenvalues.
+(func[list[list[real]]] adjacency ()
+  (map 6 (fn i (map 6 (fn j (if (joined i j) 1.0 0.0))))))
+(func[real] at ((list[list[real]] A) (int i) (int j)) (or? A[i][j] 0))
+(func[list[list[real]]] rotate ((list[list[real]] A) (list[int] pq))
+  (let ((p (or? pq[0] 0)) (q (or? pq[1] 1)) (apq (at A p q)))
+    (if (< (abs apq) 1e-12)
+        A
+        (let ((tau (or? (/ (- (at A q q) (at A p p)) (* 2 apq)) 0))
+              (t (or? (/ (if (>= tau 0) 1 -1) (+ (abs tau) (sqrt (+ (* tau tau) 1)))) 0))
+              (c (or? (/ 1 (sqrt (+ (* t t) 1))) 1))
+              (s (* t c))
+              ; B = A G changes columns p and q; then G^T B changes rows p and q.
+              (B (map 6 (fn k (map 6 (fn j (or? (cond ((= j p) (- (* c (at A k p)) (* s (at A k q))))
+                                                       ((= j q) (+ (* s (at A k p)) (* c (at A k q))))
+                                                       (else (at A k j)))
+                                                 0.0)))))))
+          (map 6 (fn i (map 6 (fn j (or? (cond ((= i p) (- (* c (at B p j)) (* s (at B q j))))
+                                               ((= i q) (+ (* s (at B p j)) (* c (at B q j))))
+                                               (else (at B i j)))
+                                         0.0)))))))))
+(func[list[real]] spectrum ()
+  (let ((D (reduce (range 8) (adjacency) (fn ((list[list[real]] A) (int sweep)) (reduce pairs A rotate)))))
+    (sort (map 6 (fn i (at D i i))) (fn x x))))
+(func[real] lambda1 () (let ((sp (spectrum))) (or? sp[5] 0)))
+
+; The clique number: the most vertices in a subset whose every pair is joined, over all 63 subsets.
+(func[bool] has ((int s) (int i)) (= (mod (floor (/ s (^ 2 i))) 2) 1))
+(func[int] clique-number ()
+  (reduce (range 1 64 (gap 1)) 0
+    (fn ((int best) (int s))
+      (if (all pairs (fn pq (or (not (has s (or? pq[0] 0))) (not (has s (or? pq[1] 0))) (joined (or? pq[0] 0) (or? pq[1] 0)))))
+          (let ((size (count (range 6) (fn i (has s i))))) (if (> size best) size best))
+          best))))
+(func[real] average () (/ (* 2 (m)) 6))
+(func[real] ceiling () (sqrt (* 2 (m) (- 1 (/ 1 r)))))
+
+; The spectrum's axis runs from -span to span, with room above the highest mark.
+(func[real] target-span () (let ((sp (spectrum))) (+ (max (lambda1) (ceiling) (abs (or? sp[0] 0)) 2) 0.7)))
+
+(canvas spectrum-view (x 290) (y -150) (width 230) (height 300) (pan false) (zoom false)
+  doc@'The spectrum, with the two bounds on the spectral radius.'
+  spectrum-plot)
+
+; After any change to the graph or to r, the edges fade in or out and the plot glides to the new
+; spectrum and bounds.
+(animation refresh
+  (at-once (defaults (duration 0.6) (ease cubic-in-out))
+    (foreach e edges (move e.alpha (to (if (or? e.on false) 1 0))))
+    (move span (to (target-span)))
+    (move eig-y (to (spectrum)))
+    (move avg-y (to (average)))
+    (move ceil-y (to (ceiling)))))
+
+; A vertex click picks the vertex, or joins the picked vertex to it, or drops the pick.
+(foreach v verts
+  (on-click v
+    (animation
+      (foreach e edges
+        (move e.on (to (if (and (>= sel 0) (!= sel (or? v.idx 0))
+                                (or (and (= (or? e.a 0) sel) (= (or? e.b 0) (or? v.idx 0)))
+                                    (and (= (or? e.b 0) sel) (= (or? e.a 0) (or? v.idx 0)))))
+                           true (or? e.on false)))
+          (duration 0)))
+      (move sel (to (cond ((= sel -1) (or? v.idx 0)) (else -1))) (duration 0))
+      refresh)
+    doc@'Picks the vertex, or joins the picked vertex to it.'))
+(foreach e edges
+  (on-click e (animation (move e.on (to false) (duration 0)) refresh) doc@'Removes the edge.'))
+
+(foreach k 4
+  (button #'preset-{k}'
+    (animation
+      (foreach e edges (move e.on (to (in-preset k (or? e.a 0) (or? e.b 0))) (duration 0)))
+      (move sel (to -1) (duration 0))
+      refresh)
+    (label (or? preset-names[k] ''))
+    doc@'Draws this graph.'))
+(button fewer (animation (move r (to (- r 1)) (duration 0)) refresh) (active (> r 2)) (label '−'))
+(button more (animation (move r (to (+ r 1)) (duration 0)) refresh) (active (< r 5)) (label '+'))
+(readout graph-label 'Graph' doc@'Names the row of preset graphs.')
+(readout forbid-label $'Forbid K{(sub (+ r 1))}' doc@'The forbidden clique.')
+
+(readout caption
+  (let ((kq $'K{(sub (+ r 1))}') (l (lambda1)) (c (ceiling)))
+    (cond ((= (m) 0) 'This graph has no edges, so its spectral radius is 0.')
+          ((> (clique-number) r)
+           (if (> l (+ c 0.000001))
+               $'This graph contains a {kq}, so the Nikiforov bound no longer applies, and its spectral radius λ₁ = {l:.2f} has climbed past the {kq}-free ceiling.'
+               $'This graph contains a {kq}, so the Nikiforov bound no longer applies.'))
+          (else $'This graph is {kq}-free, so its spectral radius λ₁ = {l:.2f} sits at or below the Nikiforov ceiling {c:.2f}.')))
+  doc@'Says how the spectral radius compares with the ceiling.')

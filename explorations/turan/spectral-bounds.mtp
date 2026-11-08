@@ -1,0 +1,100 @@
+; Two bounds on the spectral radius squeeze the edge count: the Rayleigh floor 2m/n <= lambda_1 and
+; the Nikiforov ceiling lambda_1 <= sqrt(2m(1 - 1/omega)) for K_{omega+1}-free graphs. Against m the
+; floor is a line and the ceiling a square root; they meet at m* = (1 - 1/omega) n^2 / 2, the Turán
+; bound, where the Turán graph T_omega(n) sits. Past m* the floor is above the ceiling, so no
+; K_{omega+1}-free graph has that many edges. The buttons choose the forbidden clique, the slider n.
+
+(import house paper ink soft terracotta teal saffron plum variable number)
+(import ease cubic-in-out)
+
+(real w 2 (>= 2) (<= 5) doc@'omega, the clique size allowed; moved smoothly between whole values.')
+(int n 8 (>= 4) (<= 20) doc@'The number of vertices.')
+
+(list[string] subscripts ['₀' '₁' '₂' '₃' '₄' '₅' '₆' '₇' '₈' '₉'] (const))
+(func[string] sub ((int k))
+  (if (< k 10) (or? subscripts[k] '') $'{(or? subscripts[(floor (/ k 10))] '')}{(or? subscripts[(mod k 10)] '')}'))
+
+; The plot's frame: m from 0 to the edges of K_n across, lambda_1 from 0 to n - 1 (that of K_n) up,
+; drawn 1 wide and plot-h tall.
+(real plot-h 0.62 (const))
+(func[real] m-max () (/ (* n (- n 1)) 2))
+(func[real] l-max () (- n 1))
+(func[real] mstar () (or? (/ (* (- 1 (/ 1 w)) n n) 2) 0))
+(func[real] ray ((real m)) (or? (/ (* 2 m) n) 0))
+(func[real] nik ((real m)) (or? (sqrt (* 2 m (- 1 (/ 1 w)))) 0))
+(func[point] at ((real m) (real l)) [(or? (/ m (m-max)) 0) (or? (* plot-h (/ l (l-max))) 0)])
+
+; A tick step near a fifth of the span, from 1, 2 and 5 times a power of ten.
+(func[real] nice ((real span))
+  (reduce [1 2 5 10 20 25 50 100] 100 (fn ((real best) (real s)) (if (and (>= s (/ span 5)) (< s best)) s best))))
+
+(scene plot
+  (group grid (defaults (stroke soft) (stroke-width 0.5) (stroke-opacity 0.4))
+    (foreach t 8
+      (line|none #'grid-x-{t}' (from (at (* t (nice (m-max))) 0)) (to (at (* t (nice (m-max))) (l-max))))
+      (exists-when #'grid-x-{t}' (<= (* t (nice (m-max))) (m-max)))
+      (line|none #'grid-y-{t}' (from (at 0 (* t (nice (l-max))))) (to (at (m-max) (* t (nice (l-max))))))
+      (exists-when #'grid-y-{t}' (<= (* t (nice (l-max))) (l-max)))))
+  (group regions (defaults (stroke none))
+    (polygon band
+      (points (map 82 (fn i (if (<= i 40)
+                                (at (* (/ i 40) (mstar)) (ray (* (/ i 40) (mstar))))
+                                (at (* (/ (- 81 i) 40) (mstar)) (nik (* (/ (- 81 i) 40) (mstar))))))))
+      (fill teal) (fill-opacity 0.14))
+    (polygon infeasible
+      (points (map 82 (fn i (let ((m0 (mstar)) (span (- (m-max) (mstar))))
+                              (if (<= i 40)
+                                  (at (+ m0 (* (/ i 40) span)) (min (l-max) (ray (+ m0 (* (/ i 40) span)))))
+                                  (at (+ m0 (* (/ (- 81 i) 40) span)) (nik (+ m0 (* (/ (- 81 i) 40) span)))))))))
+      (fill terracotta) (fill-opacity 0.12)))
+  (group curves (defaults (fill none) (stroke-width 2))
+    (polyline ceiling (points (map 61 (fn i (at (* (/ i 60) (m-max)) (nik (* (/ i 60) (m-max)))))))
+      (stroke terracotta))
+    (line floor (from (at 0 0)) (to (at (m-max) (l-max))) (stroke teal)))
+  (group axes (defaults (stroke ink) (stroke-width 1))
+    (line x-axis (from [0 0]) (to [1 0]))
+    (line y-axis (from [0 0]) (to [0 plot-h])))
+  (group ticks (defaults (fill soft) (font number))
+    (foreach t 8
+      (text|none #'tick-x-{t}' $'{(* t (nice (m-max))):.0f}' (pos (+ (at (* t (nice (m-max))) 0) [0 -0.035]))
+        (halign 'middle') (valign 'top'))
+      (exists-when #'tick-x-{t}' (<= (* t (nice (m-max))) (m-max)))
+      (text|none #'tick-y-{t}' $'{(* t (nice (l-max))):.0f}' (pos (+ (at 0 (* t (nice (l-max)))) [-0.02 0]))
+        (halign 'end') (valign 'middle'))
+      (exists-when #'tick-y-{t}' (<= (* t (nice (l-max))) (l-max)))))
+  (group labels (defaults (font number))
+    (text x-title 'm (edges)' (pos [1 -0.13]) (halign 'end') (valign 'top') (fill soft))
+    (text y-title 'λ₁ (spectral radius)' (pos [0 (+ plot-h 0.03)]) (halign 'start') (valign 'bottom') (fill soft))
+    ; Each label beside its own curve, where the band between them is wide: the ceiling's above it,
+    ; the floor's below it, where nothing else is drawn.
+    (text ceiling-label 'Nikiforov ceiling' (pos (+ (at (* 0.4 (mstar)) (nik (* 0.4 (mstar)))) [-0.03 0.06]))
+      (halign 'middle') (valign 'bottom') (fill terracotta))
+    (text floor-label 'Rayleigh floor' (pos (+ (at (* 0.6 (mstar)) (ray (* 0.6 (mstar)))) [0.015 -0.02]))
+      (halign 'start') (valign 'top') (fill teal)))
+  (group turan
+    (line drop (from (at (mstar) 0)) (to (at (mstar) (ray (mstar))))
+      (stroke ink) (stroke-width 1) (dash [3 3]))
+    (circle point (pos (at (mstar) (ray (mstar)))) (r 0.012) (fill ink) (stroke paper) (stroke-width 1.5))
+    (text point-label $'T{(sub (round w))}({n})' (pos (+ (at (mstar) (ray (mstar))) [0 0.03]))
+      (font number) (fill ink) (halign 'middle') (valign 'bottom'))
+    (text mstar-label $'m* = {(round (mstar))}' (pos (+ (at (mstar) 0) [0 -0.075]))
+      (font number) (fill ink) (halign 'middle') (valign 'top'))))
+
+(canvas view (x -0.12) (y -0.17) (width 1.3) (height 0.9) (pan false) (zoom false)
+  doc@'The two bounds against the edge count, and where they meet.'
+  plot)
+
+(foreach k 4
+  (button #'forbid-{k}'
+    (animation (move w (to (+ k 2)) (duration 0.6) (ease cubic-in-out)))
+    (label $'K{(sub (+ k 3))}')
+    doc@'Forbids this clique.'))
+(slider vertices (move n (from 4) (to 20)) (step 17) (label 'Vertices') doc@'Sets n, the number of vertices.')
+(readout forbid-label 'Forbid' doc@'Names the row of clique buttons.')
+
+(readout caption
+  (let ((kq $'K{(sub (+ (round w) 1))}')
+        (ms (round (mstar)))
+        (ed (if (= (round (mstar)) 1) '1 edge' $'{(round (mstar))} edges')))
+    $'Forbidding {kq} on {n} vertices, the Rayleigh floor and Nikiforov ceiling meet at {ed}, the Turán bound, attained by T{(sub (round w))}({n}).')
+  doc@'Says where the two bounds meet.')

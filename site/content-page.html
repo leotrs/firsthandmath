@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firsthand Math</title>
+<link rel="stylesheet" href="/base.css">
+<link rel="stylesheet" href="/content.css">
+<!-- One copy of the mathterpiece runtime for the whole site, at /mathterpiece.js. -->
+<script type="module" src="/mathterpiece.js"></script>
+</head>
+<body>
+<header class="fm-site">
+<a class="fm-brand" href="/"><svg class="fm-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" class="tile"/><text x="28" y="49" text-anchor="middle" font-family="Newsreader, serif" font-size="44" font-weight="500" class="f">F</text><circle cx="48" cy="45" r="5.5" fill="#e76f51"/></svg><span>Firsthand Math</span></a>
+<nav><a href="/">Explorations</a><a href="https://www.youtube.com/@FirsthandMath">Videos</a><a href="/about/">About</a></nav>
+</header>
+<main class="fm-content">
+<div class="fm-body"></div>
+</main>
+<footer class="fm-band">
+<dl class="fm-colophon">
+<dt>How to cite</dt><dd>Citation</dd>
+<dt>Source</dt><dd>Source</dd>
+<dt>Licence</dt><dd>Licence</dd>
+</dl>
+</footer>
+<script>
+// The colophon sits on RSM's text column, wherever RSM puts it at this width.
+(() => {
+  const align = () => {
+    const col = document.querySelector(".manuscriptwrapper .paragraph .hr-content-zone");
+    if (!col) return;
+    const r = col.getBoundingClientRect();
+    for (const el of document.querySelectorAll(".fm-colophon")) {
+      el.style.marginLeft = `${r.left}px`;
+      el.style.width = `${r.width}px`;
+    }
+  };
+  addEventListener("load", align);
+  addEventListener("resize", align);
+  // RSM moves its column after load too: when the sidebar opens or the margin column turns on,
+  // or the reader changes the reading width.
+  document.addEventListener("rsm:margin-layout", align);
+  new MutationObserver(align).observe(document.documentElement, { attributes: true });
+  addEventListener("DOMContentLoaded", () => {
+    const wrapper = document.querySelector(".manuscriptwrapper");
+    if (wrapper) new ResizeObserver(align).observe(wrapper);
+  });
+  align();
+})();
+</script>
+</body>
+</html>

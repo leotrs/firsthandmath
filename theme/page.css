@@ -1,0 +1,110 @@
+/* Firsthand Math over BRAIID, for the exploration pages that RSM builds. This file only sets
+   BRAIID's variables; RSM's layout and affordances are left as RSM draws them. */
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Source+Sans+3:wght@400;500;600;700&display=swap");
+
+:root {
+  --fm-paper: light-dark(#faf7f0, #17181c);
+  --fm-ink: light-dark(#1f2a44, #ece6da);
+  --fm-soft: light-dark(#8a93a6, #8f97a8);
+  /* soft alone is below 4.5:1 for small text, so small gray text is moved toward ink */
+  --fm-quiet: light-dark(#5b6476, #a8aebb);
+  --fm-terracotta: light-dark(#e76f51, #f08a6c);
+  --fm-teal: light-dark(#2a9d8f, #4cc2b3);
+  --fm-plum: light-dark(#6d597a, #a88bb8);
+  --fm-rule: light-dark(#e4dccd, #2d2f36);
+  --fm-sans: "Source Sans 3", sans-serif;
+  --fm-serif: Newsreader, serif;
+
+  --surface-page: var(--fm-paper);
+  --text-body: var(--fm-ink);
+  --text-subtle: var(--fm-quiet);
+  --border-primary: var(--fm-rule);
+  --text-action: var(--fm-ink);
+  --text-action-hover: var(--fm-terracotta);
+  --link-default: var(--fm-ink);
+  --link-hover: var(--fm-terracotta);
+  --mtp-control-rest: var(--fm-soft);
+  --mtp-control-active: var(--fm-ink);
+}
+/* BRAIID's grays are blue-tinted, which reads as blue on the warm paper (hover washes, the rail's
+   pill). The whole scale is replaced with grays mixed from Firsthand's ink into its paper; paper
+   and ink swap in dark mode, so the scale turns as BRAIID's own does. */
+:root {
+  --gray-0: var(--fm-paper);
+  --gray-50: color-mix(in srgb, var(--fm-ink) 2%, var(--fm-paper));
+  --gray-75: color-mix(in srgb, var(--fm-ink) 4%, var(--fm-paper));
+  --gray-100: color-mix(in srgb, var(--fm-ink) 7%, var(--fm-paper));
+  --gray-200: color-mix(in srgb, var(--fm-ink) 14%, var(--fm-paper));
+  --gray-300: color-mix(in srgb, var(--fm-ink) 24%, var(--fm-paper));
+  --gray-400: color-mix(in srgb, var(--fm-ink) 32%, var(--fm-paper));
+  --gray-500: color-mix(in srgb, var(--fm-ink) 40%, var(--fm-paper));
+  --gray-550: color-mix(in srgb, var(--fm-ink) 48%, var(--fm-paper));
+  --gray-600: color-mix(in srgb, var(--fm-ink) 52%, var(--fm-paper));
+  --gray-700: color-mix(in srgb, var(--fm-ink) 62%, var(--fm-paper));
+  --gray-750: color-mix(in srgb, var(--fm-ink) 68%, var(--fm-paper));
+  --gray-800: color-mix(in srgb, var(--fm-ink) 75%, var(--fm-paper));
+  --gray-900: color-mix(in srgb, var(--fm-ink) 85%, var(--fm-paper));
+  --gray-950: color-mix(in srgb, var(--fm-ink) 93%, var(--fm-paper));
+  --gray-1000: var(--fm-ink);
+}
+/* Newsreader is for the manuscript's text only; RSM's interface (the sidebar, menus, tooltips) keeps
+   BRAIID's own font. It applies while the reader is on RSM's default typeface, which RSM marks as
+   "sans"; picking serif or legible in RSM's sidebar gives BRAIID's own fonts. (This file is not in
+   BRAIID's cascade layer, so it must step aside explicitly.) */
+:root:not([data-reading-typeface="serif"]):not([data-reading-typeface="legible"]) .manuscriptwrapper > .manuscript {
+  --font-body: var(--fm-serif);
+  --font-heading: var(--fm-serif);
+  /* BRAIID sets the text's font once, on the wrapper; the text inherits that, so it is set here too. */
+  font-family: var(--font-body);
+}
+/* BRAIID colors everything that follows the accent (links, keywords, the rail and wash of a selected
+   block) from two scales of eleven shades, set on body[data-accent]. Both scales are replaced here
+   with shades of Firsthand's plum: toward the paper for the light shades, toward the ink for the dark
+   ones, which color text and so are dark enough to read well on the paper (about 7:1 and up). Paper
+   and ink swap in dark mode, so the shades turn as BRAIID's own do. */
+body[data-accent] {
+  --primary-50: color-mix(in srgb, var(--fm-plum) 6%, var(--fm-paper));
+  --primary-100: color-mix(in srgb, var(--fm-plum) 12%, var(--fm-paper));
+  --primary-200: color-mix(in srgb, var(--fm-plum) 24%, var(--fm-paper));
+  --primary-300: color-mix(in srgb, var(--fm-plum) 40%, var(--fm-paper));
+  --primary-400: color-mix(in srgb, var(--fm-plum) 60%, var(--fm-paper));
+  --primary-500: color-mix(in srgb, var(--fm-plum) 80%, var(--fm-paper));
+  --primary-600: color-mix(in srgb, var(--fm-plum) 85%, var(--fm-ink));
+  --primary-700: color-mix(in srgb, var(--fm-plum) 65%, var(--fm-ink));
+  --primary-800: color-mix(in srgb, var(--fm-plum) 50%, var(--fm-ink));
+  --primary-900: color-mix(in srgb, var(--fm-plum) 35%, var(--fm-ink));
+  --primary-950: color-mix(in srgb, var(--fm-plum) 20%, var(--fm-ink));
+  --information-50: var(--primary-50);
+  --information-100: var(--primary-100);
+  --information-200: var(--primary-200);
+  --information-300: var(--primary-300);
+  --information-400: var(--primary-400);
+  --information-500: var(--primary-500);
+  --information-600: var(--primary-600);
+  --information-700: var(--primary-700);
+  --information-800: var(--primary-800);
+  --information-900: var(--primary-900);
+  --information-950: var(--primary-950);
+}
+
+/* The page title, as on the home page: Newsreader at normal weight, in ink. */
+.manuscriptwrapper h1 {
+  font-weight: 400; color: var(--fm-ink);
+  font-size: clamp(2.2rem, 5vw, 3.3rem); letter-spacing: -.015em;
+}
+
+/* A figure with its controls right under it, centered. This is our own markup, inside the
+   page's :html: block. */
+.fm-fig mtp-canvas { display: block; width: 100%; max-width: calc(var(--chunk) * 8); margin-inline: auto; }
+.fm-fig-controls {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--chunk-sixth) var(--chunk-third);
+  font-family: var(--fm-sans);
+}
+
+/* A figure's live caption: a readout under its controls. */
+.fm-fig > mtp-readout { display: block; margin-top: var(--chunk-sixth); text-align: center; color: var(--fm-quiet); }
+
+/* Two canvases of one figure side by side, stacked when there is no room. */
+.fm-fig-pair { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--chunk-third); }
+.fm-fig-pair mtp-canvas { flex: 1 1 calc(var(--chunk) * 5); max-width: calc(var(--chunk) * 7); margin-inline: 0; }
+.fm-fig > .fm-fig-controls + .fm-fig-controls { margin-top: var(--chunk-sixth); }

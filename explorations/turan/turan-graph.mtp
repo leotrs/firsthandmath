@@ -1,0 +1,146 @@
+; The Turán graph T_r(n): n vertices split into r parts as evenly as possible, every vertex joined
+; to every vertex of every other part. The buttons set r and n, and draw T_r(n) again. Drag a
+; vertex into another part (or tap it, then tap the part) to unbalance the parts, and watch the
+; edge count fall below the most a K_{r+1}-free graph on n vertices can have.
+
+(import house paper ink soft terracotta teal saffron plum variable number)
+(import math norm)
+(import ease cubic-in-out)
+
+(int r 3 (>= 2) (<= 5) doc@'The number of parts.')
+(int n 8 (>= 2) (<= 12) doc@'The number of vertices.')
+
+(list[color] part-colors [terracotta teal saffron plum ink] (const))
+(list[string] subscripts ['₀' '₁' '₂' '₃' '₄' '₅' '₆' '₇' '₈' '₉'] (const))
+
+; Vertex i's part when m vertices are split into k parts as evenly as possible: part sizes then
+; differ by at most one.
+(func[int] even-part ((int i) (int m) (int k))
+  (or? (floor (/ (* i k) m)) 0))
+
+; Where part k of r sits: the parts go round a circle, the first on the left.
+(func[point] part-center ((int k) (int parts))
+  (let ((t (or? (+ pi (/ (* 2 pi k) parts)) pi)))
+    [(* 84 (cos t)) (* 84 (sin t))]))
+
+; Where a vertex sits in its part: the part's vertices are stacked top to bottom, rank counting
+; from the top, size of them in all.
+(func[point] stacked ((int k) (int parts) (int rank) (int size))
+  (+ (part-center k parts) [0 (or? (* -24 (- rank (/ (- size 1) 2))) 0)]))
+
+; Where vertex i starts: in T_3(8), as the page first shows it.
+(func[point] start-place ((int i))
+  (stacked (even-part i 8 3) 3
+    (count (range i) (fn j (= (even-part j 8 3) (even-part i 8 3))))
+    (count (range 8) (fn j (= (even-part j 8 3) (even-part i 8 3))))))
+
+; The edges of a complete multipartite graph with these part sizes on m vertices.
+(func[int] edges-of ((list[int] sizes) (int m))
+  (- (floor (/ (* m (- m 1)) 2)) (reduce sizes 0 (fn ((int acc) (int s)) (+ acc (floor (/ (* s (- s 1)) 2)))))))
+
+; Every drawn property of the graph (where each vertex is and its color, whether each edge is drawn,
+; where each bag is and how tall) is a value of its own, moved by the animations below, so that
+; every change glides. A motif instance cannot yet be declared T|none (bead mtp-3f9l), so every
+; vertex, edge and bag exists, and those not in use are faded out and out of the pointer's reach.
+(motif vertex ((int part 0 (>= 0) (<= 4)) (int idx 0) (color paint) (real alpha 1 (>= 0) (<= 1)) (bool shown true))
+  doc@'A vertex of the graph; part is the part it is in, and pos where it is drawn.'
+  (circle_ (r 10) (fill paint) (stroke paper) (stroke-width 2) (opacity alpha) (pointer-events shown)))
+(motif link ((int a 0) (int b 0) (point p) (point q) (real alpha 0 (>= 0) (<= 1)))
+  doc@'The edge between vertices a and b, drawn while alpha is above 0.'
+  (line_ (from p) (to q) (stroke soft) (stroke-width 1) (stroke-opacity alpha) (pointer-events false)))
+(motif bag ((int k 0) (color paint) (real h 28) (real alpha 0 (>= 0) (<= 1)))
+  doc@'Part k, drawn as a rounded bag h tall around its vertices.'
+  (rect_ (width 48) (height h) (rx 12) (ry 12) (fill paint) (fill-opacity 0.12) (stroke paint)
+    (stroke-width 1.5) (opacity alpha) (pointer-events false)))
+
+; How tall the bag of a part of size s is.
+(func[real] bag-height ((int s)) (+ 28 (* 24 (max 0 (- s 1)))))
+
+; The vertices are declared first, since the edges read them; the canvas draws the bags, then the
+; edges, then the vertices. Every value starts as T_3(8), as the page first shows it.
+(scene graph
+  (group verts
+    (foreach i 12
+      (vertex #'v-{i}' (part free@(even-part i 8 3)) (idx i) (shown (< i n))
+        (paint free@(or? part-colors[(even-part i 8 3)] ink))
+        (alpha free@(if (< i 8) 1 0))
+        (pos free@(start-place i)))))
+  (group edges
+    (foreach ((i 12) (j (range i)))
+      (link #'edge-{i}-{j}' (a i) (b j) (p (or? verts[j].pos [0 0])) (q (or? verts[i].pos [0 0]))
+        (alpha free@(if (and (< i 8) (!= (even-part i 8 3) (even-part j 8 3))) 0.7 0)))))
+  (group bags
+    (foreach k 5
+      (bag #'bag-{k}' (k k) (paint part-colors[k])
+        (h free@(bag-height (count (range 8) (fn j (= (even-part j 8 3) k)))))
+        (alpha free@(if (< k 3) 1 0))
+        (pos free@(part-center k 3))))))
+
+(canvas view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
+  doc@'The graph, its parts drawn as bags.'
+  bags edges verts)
+
+(func[int] part-of ((int i)) (or? verts[i].part 0))
+; Where vertex i belongs now: in its part's bag, stacked in the order of the vertices.
+(func[point] place ((int i))
+  (stacked (part-of i) r
+    (count (range i) (fn j (= (part-of j) (part-of i))))
+    (count (range n) (fn j (= (part-of j) (part-of i))))))
+; The part nearest a point, among the r parts.
+(func[int] nearest-part ((point at))
+  (reduce (range r) 0
+    (fn ((int best) (int k))
+      (if (< (norm (- at (part-center k r))) (norm (- at (part-center best r)))) k best))))
+; How many of the n vertices part k holds.
+(func[int] part-size ((int k)) (count (range n) (fn j (= (part-of j) k))))
+
+; Everything glides to how the parts now are: the vertices to their places and colors, the edges
+; in or out, the bags to their places and sizes.
+(animation settle
+  (at-once (defaults (duration 0.8) (ease cubic-in-out))
+    (foreach v verts
+      (move v.pos (to (place (or? v.idx 0))))
+      (move v.paint (to (or? part-colors[(part-of (or? v.idx 0))] ink)))
+      (move v.alpha (to (if (< (or? v.idx 0) n) 1 0))))
+    (foreach e edges
+      (move e.alpha (to (if (and (< (or? e.a 0) n) (< (or? e.b 0) n) (!= (part-of (or? e.a 0)) (part-of (or? e.b 0)))) 0.7 0))))
+    (foreach g bags
+      (move g.pos (to (part-center (or? g.k 0) r)))
+      (move g.h (to (bag-height (part-size (or? g.k 0)))))
+      (move g.alpha (to (if (< (or? g.k 0) r) 1 0))))))
+; Every vertex back in its part of T_r(n), then everything glides there.
+(animation even-out
+  (at-once (foreach v verts (move v.part (to (even-part (or? v.idx 0) n r)) (duration 0))))
+  settle)
+
+(foreach v verts
+  (on-drag v v.pos doc@'Moves the vertex; it joins the part nearest where it is dropped.')
+  (on-dragend v
+    (animation (move v.part (to (nearest-part v.pos)) (duration 0)) settle)
+    doc@'Puts the vertex in the part nearest where it was dropped, and everything in place.'))
+
+(button fewer-parts (animation (move r (to (- r 1)) (duration 0)) even-out) (active (> r 2)) (label '−'))
+(button more-parts (animation (move r (to (+ r 1)) (duration 0)) even-out) (active (< r 5)) (label '+'))
+(button fewer-vertices (animation (move n (to (- n 1)) (duration 0)) even-out) (active (> n 2)) (label '−'))
+(button more-vertices (animation (move n (to (+ n 1)) (duration 0)) even-out) (active (< n 12)) (label '+'))
+(button rebalance (animation even-out) (label 'Rebalance'))
+
+(readout parts-count $'Parts {r}' doc@'The number of parts.')
+(readout vertices-count $'Vertices {n}' doc@'The number of vertices.')
+
+; The caption: the part sizes, and the edges against the most a K_{r+1}-free graph can have.
+(readout caption
+  (let ((sizes (sort (map r part-size) (fn s (- s))))
+        (empties (count sizes (fn s (= s 0))))
+        (listed (reduce sizes ''
+                  (fn ((string acc) (int s)) (cond ((= s 0) acc) ((= acc '') $'{s}') (else $'{acc}, {s}')))))
+        (e (edges-of (map r part-size) n))
+        (most (edges-of (map r (fn k (count (range n) (fn i (= (even-part i n r) k))))) n))
+        (t $'T{(or? subscripts[r] '')}({n})')
+        (kq $'K{(or? subscripts[(+ r 1)] '')}')
+        (ed (if (= e 1) '1 edge' $'{e} edges'))
+        (empty-note (if (> empties 0) $', {empties} empty' '')))
+    (if (= e most)
+        $'{t} splits these {n} vertices into parts of sizes {listed}, the {ed} being the most any {kq}-free graph on {n} vertices can have.'
+        $'These parts (sizes {listed}{empty-note}) span {ed}, {(- most e)} short of the {most} in the balanced {t}.'))
+  doc@'Says how the parts compare with the Turán graph.')

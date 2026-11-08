@@ -1,0 +1,12 @@
+; Firsthand Math's colors and fonts (BRAND.md). Each color has its dark value, drawn where the
+; page's color-scheme is dark.
+(color paper (light-dark '#faf7f0' '#17181c'))
+(color ink (light-dark '#1f2a44' '#ece6da'))
+(color soft (light-dark '#8a93a6' '#8f97a8'))
+(color terracotta (light-dark '#e76f51' '#f08a6c'))
+(color teal (light-dark '#2a9d8f' '#4cc2b3'))
+(color saffron (light-dark '#e9c46a' '#f2d27e'))
+(color plum (light-dark '#6d597a' '#a88bb8'))
+
+(font variable (family 'Newsreader, serif') (style 'italic') (size 20))
+(font number (family '"Source Sans 3", sans-serif') (size 14))
