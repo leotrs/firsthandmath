@@ -36,6 +36,17 @@ main.fm-home { max-width: 76rem; }
 .fm-hero-figure img { display: block; width: 100%; height: auto; }
 .fm-intro { max-width: 40rem; margin: 32px 0 0; color: var(--fm-quiet); }
 
+/* Home: the other explorations, as cards */
+.fm-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 40px; margin: 48px 0 0; }
+.fm-card { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; }
+main .fm-card:is(:link, :visited) { text-decoration: none; }
+.fm-card-figure { display: block; border: 1px solid var(--fm-rule); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+.fm-card-figure img { display: block; width: 100%; height: 12rem; object-fit: contain; }
+.fm-card h2 { font: 400 1.5rem/1.2 var(--fm-serif); margin: 4px 0 2px; }
+.fm-card p:not(.fm-meta) { font-size: 1.05rem; color: var(--fm-ink); margin: 0; }
+.fm-card:hover h2 { text-decoration: underline; text-decoration-color: var(--fm-terracotta); text-decoration-thickness: 2px; text-underline-offset: .12em; }
+.fm-card:hover .fm-card-figure { border-color: var(--fm-soft); }
+
 @media (max-width: 600px) {
   main { padding: 0 18px 3rem; }
   .fm-hero { grid-template-columns: 1fr; gap: 24px; padding: 24px 0; }
