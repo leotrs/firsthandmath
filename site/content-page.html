@@ -25,10 +25,13 @@
 </dl>
 </footer>
 <script>
-// The colophon sits on RSM's text column, wherever RSM puts it at this width.
+// The colophon sits on RSM's text column, wherever RSM puts it at this width. The column is
+// the content zone of a block directly in a section (RSM puts the whole page in one): a block
+// nested in another is narrower, and a hidden or folded one has no width.
 (() => {
   const align = () => {
-    const col = document.querySelector(".manuscriptwrapper .paragraph .hr-content-zone");
+    const col = [...document.querySelectorAll(".manuscriptwrapper section > .hr > .hr-content-zone")]
+      .find((z) => z.getBoundingClientRect().width > 0);
     if (!col) return;
     const r = col.getBoundingClientRect();
     for (const el of document.querySelectorAll(".fm-colophon")) {
