@@ -58,8 +58,8 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 
 
 - **Own identity:** not Aris's brackets; BRAIID is an inspiration only.
-- **Type:** Newsreader (a book serif) for headings, the wordmark and long text; Source Sans 3 only
-  for small interface text.
+- **Type:** Source Sans 3 semibold for headings and small interface text; Source Serif 4 for long
+  text and for the logo (2026-11-08; Newsreader before).
 - **Colors:** the house palette the figures already use, so page and figures are one palette.
 
 | name | light | dark |
@@ -106,7 +106,7 @@ Decided by the author, 2026-11-08.
 
 ## The mark
 
-`logo/mark-light.svg` and `logo/mark-dark.svg`: a serif F (Newsreader, weight 500) with a
+`logo/mark-light.svg` and `logo/mark-dark.svg`: a serif F (Source Serif 4, weight 600) with a
 terracotta point beside it, on a tile with rounded corners.
 
 - **Light mode:** ink tile `#1f2a44`, paper F `#faf7f0`.
@@ -114,7 +114,10 @@ terracotta point beside it, on a tile with rounded corners.
 - The point is always terracotta `#e76f51`.
 - Geometry on a 64-unit tile: corner radius 14; F centered at x 28 with its baseline at y 49,
   size 44; the point a circle of radius 5.5 at (48, 45).
-- The wordmark is "Firsthand Math" in Newsreader, weight 500, beside the mark.
+- The F and the wordmark "Firsthand Math" are Source Serif 4, weight 600 (2026-11-08; earlier
+  Newsreader 500).
+- The point means something: every heading, on the site and on the explorations, ends in a
+  terracotta period, the same point (2026-11-08, after aris.pub). It is added by CSS, never typed.
 - YouTube crops the avatar to a circle; the mark survives the crop.
 - Animation: later.
 
