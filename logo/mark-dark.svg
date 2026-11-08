@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#efe7d8"/>
+  <text x="28" y="49" text-anchor="middle" font-family="Newsreader, serif" font-size="44" font-weight="500" fill="#1f2a44">F</text>
+  <circle cx="48" cy="45" r="5.5" fill="#e76f51"/>
+</svg>
