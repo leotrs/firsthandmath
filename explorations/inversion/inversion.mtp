@@ -1,50 +1,78 @@
-; Inversion in a circle, in Firsthand Math's colors. p follows the pointer, and its inverse q sits
-; on the same ray from the center, at distance 1 / |p|. The toggle adds two circles (terracotta,
-; like p) and their images (teal, like q): one through the center, whose image is a line, and one
-; that misses it, whose image is a circle.
+; Inversion in a circle, in Firsthand Math's colors. p is dragged, and its inverse q sits on the
+; same ray from the center, at distance 1 / |p|; dragging q moves p to q's inverse. The toggle
+; adds two circles (terracotta, like p) and their images (teal, like q), each dragged by its
+; center: one through the center, whose image is a line, and one that misses it, whose image is a
+; circle.
 
 (import house paper ink soft terracotta teal variable number)
 (import math norm)
 (import ease cubic-out)
 
+; The inverse of a point x other than the center: on the same ray, at distance 1 / |x|.
+(func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
+; The unit direction at right angles to c, a quarter turn counterclockwise from it.
+(func[point] across ((point c)) (or? (* [(- 0 c.y) c.x] (/ 1 (norm c))) [0 1]))
+
 (point p [0.6 0.35])
 ; The center has no inverse, so there q is drawn at the center.
-(point q (or? (* p (/ 1 (* (norm p) (norm p)))) [0 0]))
-; Along the ray: p's name sits just inside p, and q's just outside q, so the two never meet.
-(point along (or? (* p (/ 0.18 (norm p))) [0.18 0]))
+(point q (inverse p))
+; The ray's direction, for placing the names: p's sits just inside p, and q's just outside q,
+; so the two never meet.
+(point ray (or? (* p (/ 1 (norm p))) [1 0]))
 (bool circles false)
+
+; A circle through the center, dragged by its position: its radius is the distance from the
+; center to that position, so it always passes through the center.
+(motif through-center ()
+  (circle_ (r (norm self.pos)) (stroke terracotta) (fill terracotta) (fill-opacity 0)))
 
 (scene plane
   (circle disk (r 1) (fill teal) (fill-opacity 0) (pointer-events false))
   (circle unit (r 1) (fill none) (stroke ink) (stroke-width 2))
+  ; Cut to what the canvas shows zoomed all the way out, so that a line or a large image circle
+  ; does not run off the figure.
+  (group pairs (clip (rect_ (pos [0 0]) (width 8.8) (height 6)))
+      (defaults (stroke-width 1.75) (opacity (if circles 1 0))) (pointer-events circles)
+    ; A circle through the center, centered at c: its radius is |c|, so it stays through the
+    ; center, and its image is the line of points t with t · c = 1/2, through c / (2 |c|^2) and
+    ; at right angles to c.
+    (through-center through (pos free@[0.4 0.4]))
+    (line_ (from (- (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
+           (to (+ (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
+      (stroke teal) (pointer-events false))
+    ; A circle that misses the center, centered at c with radius r: its image is centered at
+    ; c / (|c|^2 - r^2), with radius r / | |c|^2 - r^2 |.
+    (circle misses (pos free@[-1.3 -0.5]) (r 0.35)
+      (stroke terracotta) (fill terracotta) (fill-opacity 0))
+    (circle_ (pos (or? (* misses.pos (/ 1 (- (* (norm misses.pos) (norm misses.pos)) 0.1225))) [0 0]))
+      (r (abs (or? (/ 0.35 (- (* (norm misses.pos) (norm misses.pos)) 0.1225)) 0)))
+      (stroke teal) (fill none) (pointer-events false)))
   (group marks (pointer-events false)
-    ; A circle through the center, centered at c = [0.4 0.4]: its image is the line of points t
-    ; with t · c = 1/2 (x + y = 1.25), through c / (2 |c|^2) = [0.625 0.625], cut to the canvas,
-    ; which does not clip.
-    ; A circle that misses the center, centered at c = [-1.3 -0.5] with radius 0.35: its image is
-    ; centered at c / (|c|^2 - r^2), with radius r / (|c|^2 - r^2), and |c|^2 - r^2 = 1.8175.
-    (group pairs (defaults (fill none) (stroke-width 1.75) (opacity (if circles 1 0)))
-      (circle_ (pos [0.4 0.4]) (r 0.5657) (stroke terracotta))
-      (line_ (from [-0.25 1.5]) (to [2.2 -0.95]) (stroke teal))
-      (circle_ (pos [-1.3 -0.5]) (r 0.35) (stroke terracotta))
-      (circle_ (pos [-0.7153 -0.2751]) (r 0.1926) (stroke teal)))
     (line_ (from [0 0]) (to (if (> (norm q) (norm p)) q p)) (stroke soft) (stroke-width 1)
         (dash [4 4]))
-    (circle_ (r 0.04) (fill ink))
-    (group names (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
-      (text_ 'p' (pos (- p along)))
-      (text_ 'q' (pos (+ q along))))
-    (group points (defaults (stroke paper) (stroke-width 2))
-      (circle_ (pos p) (r 0.07) (fill terracotta))
-      (circle_ (pos q) (r 0.07) (fill teal)))
-    (text_ $'|p| = {(norm p):.2f}    |q| = {(norm q):.2f}    |p| · |q| = 1'
-        (pos [0 -1.38]) (font number) (fill soft) (halign 'middle'))))
+    (group center-dot (fixed-size true) (circle_ (r 4) (fill ink)))
 
-(canvas view (x -2.2) (y -1.5) (width 4.4) (height 3) (pan false) (zoom false)
+    (text_ $'|p| = {(norm p):.2f}    |q| = {(norm q):.2f}    |p| · |q| = 1'
+        (pos [0 -1.38]) (font number) (fill soft) (halign 'middle')))
+  ; The three points keep their size on screen at every zoom, in pixels.
+  ; Each name sits 26 pixels from its point, along the ray.
+  (group names (pointer-events false) (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
+    (group p-name (translate p) (fixed-size true) (text_ 'p' (pos (* ray -26))))
+    (group q-name (translate q) (fixed-size true) (text_ 'q' (pos (* ray 26)))))
+  (group p-dot (translate p) (fixed-size true)
+    (circle_ (r 9) (fill terracotta) (stroke paper) (stroke-width 2)))
+  (group q-dot (translate q) (fixed-size true)
+    (circle_ (r 9) (fill teal) (stroke paper) (stroke-width 2))))
+
+; The reader may zoom out to twice the view box, and in to 10 times closer.
+(canvas view (x -2.2) (y -1.5) (width 4.4) (height 3) (zoom 0.5 10)
   doc@'The circle, p, and its inverse q.'
   plane)
 
-(on-pointermove view p doc@'p follows the pointer.')
+(on-drag p-dot (move p (to pointer)) doc@'Moves p; q follows.')
+(on-drag q-dot (move p (to (inverse pointer))) doc@'Moves q; p follows, to its inverse.')
+(on-drag through through.pos doc@'Moves the circle through the center, which stays through it.')
+(on-drag misses misses.pos doc@'Moves the circle that misses the center.')
 (toggle show-circles circles (label 'circles and their images')
   doc@'Shows a circle through the center and one that misses it, with their images.')
 (on-enter unit
