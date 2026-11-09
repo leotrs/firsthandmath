@@ -4,7 +4,7 @@
 ; bound, where the Turán graph T_omega(n) sits. Past m* the floor is above the ceiling, so no
 ; K_{omega+1}-free graph has that many edges. The buttons choose the forbidden clique, the slider n.
 
-(import house paper ink soft terracotta teal saffron plum variable number)
+(import house paper ink soft terracotta teal saffron indigo variable number)
 (import ease cubic-in-out)
 
 (real w 2 (>= 2) (<= 5) doc@'omega, the clique size allowed; moved smoothly between whole values.')

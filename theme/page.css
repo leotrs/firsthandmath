@@ -10,7 +10,7 @@
   --fm-quiet: light-dark(#5b6476, #a8aebb);
   --fm-terracotta: light-dark(#e76f51, #f08a6c);
   --fm-teal: light-dark(#2a9d8f, #4cc2b3);
-  --fm-plum: light-dark(#6d597a, #a88bb8);
+  --fm-plum: light-dark(#8741a5, #b784cc);
   --fm-rule: light-dark(#e4dccd, #2d2f36);
   --fm-sans: "Source Sans 3", sans-serif;
   --fm-serif: "Source Serif 4", serif;
@@ -58,22 +58,22 @@
   font-family: var(--font-body);
 }
 /* BRAIID colors everything that follows the accent (links, keywords, the rail and wash of a selected
-   block) from two scales of eleven shades, set on body[data-accent]. Both scales are replaced here
-   with shades of Firsthand's plum: toward the paper for the light shades, toward the ink for the dark
-   ones, which color text and so are dark enough to read well on the paper (about 7:1 and up). Paper
-   and ink swap in dark mode, so the shades turn as BRAIID's own do. */
+   block) from two scales of eleven shades, set on body[data-accent]. Both are replaced here with
+   Firsthand's plum, a Tailwind-style scale made from #8e44ad (tailwindcolor.tools). In dark mode the
+   scale is reversed, as BRAIID's own scales are: the light shades become the dark ones. Plum is the
+   site's accent and is never used in figures (BRAND.md). */
 body[data-accent] {
-  --primary-50: color-mix(in srgb, var(--fm-plum) 6%, var(--fm-paper));
-  --primary-100: color-mix(in srgb, var(--fm-plum) 12%, var(--fm-paper));
-  --primary-200: color-mix(in srgb, var(--fm-plum) 24%, var(--fm-paper));
-  --primary-300: color-mix(in srgb, var(--fm-plum) 40%, var(--fm-paper));
-  --primary-400: color-mix(in srgb, var(--fm-plum) 60%, var(--fm-paper));
-  --primary-500: color-mix(in srgb, var(--fm-plum) 80%, var(--fm-paper));
-  --primary-600: color-mix(in srgb, var(--fm-plum) 85%, var(--fm-ink));
-  --primary-700: color-mix(in srgb, var(--fm-plum) 65%, var(--fm-ink));
-  --primary-800: color-mix(in srgb, var(--fm-plum) 50%, var(--fm-ink));
-  --primary-900: color-mix(in srgb, var(--fm-plum) 35%, var(--fm-ink));
-  --primary-950: color-mix(in srgb, var(--fm-plum) 20%, var(--fm-ink));
+  --primary-50: light-dark(#f8f6f8, #231429);
+  --primary-100: light-dark(#f1ecf3, #3b2046);
+  --primary-200: light-dark(#e0d0e6, #502a60);
+  --primary-300: light-dark(#cdafda, #6e3785);
+  --primary-400: light-dark(#b784cc, #8741a5);
+  --primary-500: light-dark(#a15abe, #a15abe);
+  --primary-600: light-dark(#8741a5, #b784cc);
+  --primary-700: light-dark(#6e3785, #cdafda);
+  --primary-800: light-dark(#502a60, #e0d0e6);
+  --primary-900: light-dark(#3b2046, #f1ecf3);
+  --primary-950: light-dark(#231429, #f8f6f8);
   --information-50: var(--primary-50);
   --information-100: var(--primary-100);
   --information-200: var(--primary-200);
@@ -85,6 +85,8 @@ body[data-accent] {
   --information-800: var(--primary-800);
   --information-900: var(--primary-900);
   --information-950: var(--primary-950);
+  /* Keywords one step brighter than BRAIID's default, so they stand out from the text. */
+  --text-keyword: var(--primary-600);
 }
 
 /* The page title, as on the home page: Source Sans 3 semibold, in ink. */

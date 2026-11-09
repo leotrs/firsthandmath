@@ -3,14 +3,14 @@
 ; vertex into another part (or tap it, then tap the part) to unbalance the parts, and watch the
 ; edge count fall below the most a K_{r+1}-free graph on n vertices can have.
 
-(import house paper ink soft terracotta teal saffron plum variable number)
+(import house paper ink soft terracotta teal saffron indigo variable number)
 (import math norm)
 (import ease cubic-in-out)
 
 (int r 3 (>= 2) (<= 5) doc@'The number of parts.')
 (int n 8 (>= 2) (<= 12) doc@'The number of vertices.')
 
-(list[color] part-colors [terracotta teal saffron plum ink] (const))
+(list[color] part-colors [terracotta teal saffron indigo ink] (const))
 (list[string] subscripts ['₀' '₁' '₂' '₃' '₄' '₅' '₆' '₇' '₈' '₉'] (const))
 
 ; Vertex i's part when m vertices are split into k parts as evenly as possible: part sizes then

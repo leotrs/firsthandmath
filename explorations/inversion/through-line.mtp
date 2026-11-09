@@ -1,10 +1,12 @@
 ; Why a circle through the center inverts to a line. A is the point of the teal circle opposite
-; the center O, and A' is its inverse. P is dragged around the teal circle, and its inverse P'
-; stays on the line through A' at right angles to OA. The triangles OPA and OA'P' are similar,
-; so their right angles, at P and at A', are drawn as one mark each.
+; the center O, and A' is its inverse. p is dragged around the teal circle, and its inverse q
+; stays on the line through A' at right angles to OA; dragging q along the line moves p. The
+; triangles OpA and OA'q are similar, and their right angles, at p and at A', are marked.
 
 (import house paper ink soft terracotta teal variable)
 (import math norm)
+
+(func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
 
 ; The teal circle has center c and radius |c|, so it passes through O.
 (point c [0.35 0] (const))
@@ -12,51 +14,67 @@
 (point a [0.7 0] (const))
 (point a-inv [1.4286 0] (const))
 
-; P's angle around c, in degrees, kept away from O, where P' runs far off.
-(real theta 60 (>= -135) (<= 135))
-(point pt (+ c (polar rad theta)))
-(point pt-inv (or? (* pt (/ 1 (* (norm pt) (norm pt)))) a-inv))
+; p's angle around c, in degrees.
+(real theta 60)
+(point p (+ c (polar rad theta)))
+(point q (inverse p))
+; At O, p has no inverse, and q is hidden.
+(bool at-o (< (norm p) 0.000001))
+(point ray (or? (* p (/ 1 (norm p))) [1 0]))
 
-; Unit directions for the two right-angle marks: at P toward O and toward A, at A' toward O
-; and toward P'.
-(point p-to-o (or? (* pt (/ -1 (norm pt))) [-1 0]))
-(point p-to-a (or? (* (- a pt) (/ 1 (norm (- a pt)))) [1 0]))
-(point ai-to-p (or? (* (- pt-inv a-inv) (/ 1 (norm (- pt-inv a-inv)))) [0 1]))
+; The view box's edges, for telling when q is out of the frame, and how far along the ray the
+; frame's edge is.
+(real right 1.85 (const))
+(real half-h 1.15 (const))
+(bool q-out (and (not at-o) (> (abs q.y) half-h)))
+(real edge (min (or? (/ right (abs ray.x)) 100) (or? (/ half-h (abs ray.y)) 100)))
+
+; Unit directions for the two right-angle marks: at p toward O and toward A, at A' toward O
+; and toward q.
+(point p-to-o (* ray -1))
+(point p-to-a (or? (* (- a p) (/ 1 (norm (- a p)))) [1 0]))
+(point ai-to-q (or? (* (- q a-inv) (/ 1 (norm (- q a-inv)))) [0 1]))
 
 (scene plane
   (circle unit (r 1) (fill none) (stroke ink) (stroke-width 2) (pointer-events false))
   (group drawing (clip (rect_ (pos [0.35 0]) (width 3) (height 2.3))) (pointer-events false)
     (defaults (stroke-width 1.5))
-    (triangle_ (a [0 0]) (b pt) (c a) (fill teal) (fill-opacity 0.12) (stroke none))
-    (triangle_ (a [0 0]) (b a-inv) (c pt-inv) (fill teal) (fill-opacity 0.12) (stroke none))
+    (triangle_ (a [0 0]) (b p) (c a) (fill teal) (fill-opacity 0.12) (stroke none))
+    (triangle_ (a [0 0]) (b a-inv) (c q) (fill teal) (fill-opacity 0.12) (stroke none))
     (circle_ (pos c) (r rad) (stroke teal) (fill none))
     (line_ (from [a-inv.x -5]) (to [a-inv.x 5]) (stroke teal) (dash [6 4]))
     (line_ (from [0 0]) (to a-inv) (stroke soft))
-    (line_ (from [0 0]) (to (* pt-inv 3)) (stroke soft) (dash [4 4]))
-    (line_ (from pt) (to a) (stroke soft)))
+    (line_ (from [0 0]) (to (* ray 5)) (stroke soft) (dash [4 4]))
+    (line_ (from p) (to a) (stroke soft))
+    ; When q is out of the frame, an arrow at the frame's edge points along the ray toward it.
+    (line_ (from (* ray (- edge 0.3))) (to (* ray (- edge 0.05)))
+      (stroke terracotta) (stroke-width 2) (head-end 'dart') (opacity (if q-out 1 0))))
   (group marks (pointer-events false) (defaults (stroke ink) (stroke-width 1.5) (fill none))
-    (group at-p (translate pt) (fixed-size true)
+    (group at-p (translate p) (fixed-size true)
       (polyline_ (points [(* p-to-o 17) (+ (* p-to-o 17) (* p-to-a 17)) (* p-to-a 17)])))
     (group at-a-inv (translate a-inv) (fixed-size true)
-      (polyline_ (points [[-13 0] (+ [-13 0] (* ai-to-p 13)) (* ai-to-p 13)]))))
+      (polyline_ (points [[-13 0] (+ [-13 0] (* ai-to-q 13)) (* ai-to-q 13)]))))
   (group names (pointer-events false) (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
     (group o-name (fixed-size true) (text_ 'O' (pos [-16 -16])))
     (group a-name (translate a) (fixed-size true) (text_ 'A' (pos [14 -16])))
     (group a-inv-name (translate a-inv) (fixed-size true) (text_ 'A′' (pos [18 -16])))
-    (group p-name (translate pt) (fixed-size true) (text_ 'P' (pos (* (+ p-to-o p-to-a) -17))))
-    (group p-inv-name (translate pt-inv) (fixed-size true) (text_ 'P′' (pos [20 0]))))
+    (group p-name (translate p) (fixed-size true) (text_ 'p' (pos (* (+ p-to-o p-to-a) -17))))
+    (group q-name (translate q) (fixed-size true) (text_ 'q' (pos [18 0]) (opacity (if at-o 0 1)))))
   (group dots (pointer-events false) (defaults (fill ink) (stroke none))
     (group o-dot (fixed-size true) (circle_ (r 4)))
     (group a-dot (translate a) (fixed-size true) (circle_ (r 4)))
     (group a-inv-dot (translate a-inv) (fixed-size true) (circle_ (r 4))))
-  (group p-inv-dot (translate pt-inv) (fixed-size true) (pointer-events false)
-    (circle_ (r 7) (fill paper) (stroke terracotta) (stroke-width 3)))
-  (group p-dot (translate pt) (fixed-size true)
-    (circle_ (r 8) (fill terracotta) (stroke paper) (stroke-width 2))))
+  (group q-dot (translate q) (fixed-size true) (pointer-events (not at-o))
+    (circle_ (r 8) (fill paper) (stroke terracotta) (stroke-width 3) (opacity (if at-o 0 1))))
+  (group p-dot (translate p) (fixed-size true)
+    (circle_ (r 9) (fill terracotta) (stroke paper) (stroke-width 2))))
 
 (canvas view (x -1.15) (y -1.15) (width 3) (height 2.3) (pan false) (zoom false)
-  doc@'A circle through the center, a point P on it, and its inverse P′ on the image line.'
+  doc@'A circle through the center, a point p on it, and its inverse q on the image line.'
   plane)
 
-(on-drag p-dot (move theta (to (let ((q (or? (to-polar (- pointer c)) [0 theta]))) q[1])))
-  doc@'Moves P around the circle; P′ follows along the line.')
+(on-drag p-dot (move theta (to (let ((d (or? (to-polar (- pointer c)) [0 theta]))) d[1])))
+  doc@'Moves p around the circle; q follows along the line.')
+; q is kept on the line: the pointer's height on the line is inverted back onto the circle.
+(on-drag q-dot (move theta (to (let ((d (or? (to-polar (- (inverse [a-inv.x pointer.y]) c)) [0 theta]))) d[1])))
+  doc@'Moves q along the line; p follows around the circle.')

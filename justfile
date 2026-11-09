@@ -4,6 +4,7 @@
 #   just dev NAME      serve the site and rebuild NAME on every change
 #   just all           the site and every exploration
 #   just deploy        build everything and publish _site/ to Netlify
+#   just preview       build everything and publish _site/ to a draft address on Netlify
 # Every tool runs through uv from the local development checkouts of mathterpiece and RSM.
 # Each exploration is a folder holding NAME.rsm, its figures' .mtp files, figs/*.html placing
 # them, and page.json with its colophon.
@@ -60,6 +61,12 @@ deploy: all
     # The empty content page is only for designing the shell.
     rm -r _site/content-page
     npx -y netlify-cli@27.16.2 deploy --dir _site --prod
+
+# Build everything and publish it to a draft address on Netlify, apart from the live site, to
+# look at on a phone or send to someone. Each run gets a new address, printed at the end.
+preview: all
+    rm -r _site/content-page
+    npx -y netlify-cli@27.16.2 deploy --dir _site --json | uv run --no-project python -c "import json, sys; print(json.load(sys.stdin)['deploy_url'])"
 
 # Serve the site, rebuild NAME on every change to it, and reload the open pages.
 dev name:

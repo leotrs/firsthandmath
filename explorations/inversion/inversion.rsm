@@ -27,7 +27,7 @@ The readout under the figure says $|p|\,|q| = 1$ wherever $p$ goes. That is only
 
 :aside: {:label: sphere} In complex numbers, with $O$ at $0$, inversion is $z \mapsto 1/\bar z$. Followed by the reflection $z \mapsto \bar z$ it becomes $z \mapsto 1/z$. ::
 
-Now turn on the two circles, and drag either one to move it. The teal circle always passes through $O$, and its image is the dashed teal line. Points of that circle near $O$ are sent far away, so its image must run off to infinity, and the circles that do that are lines. The plum circle misses $O$, and its image is again a circle. So inversion sends circles and lines to circles and lines. It does not send centers to centers: the inverse of the small circle's center is not the center of its image.
+Now turn on the two circles, and drag either one to move it. The teal circle always passes through $O$, and its image is the dashed teal line. Points of that circle near $O$ are sent far away, so its image must run off to infinity, and the circles that do that are lines. The indigo circle misses $O$, and its image is again a circle. So inversion sends circles and lines to circles and lines. It does not send centers to centers: the inverse of the small circle's center is not the center of its image.
 
 The image of the teal circle is a line, and not just a curve that runs off to infinity. A proof follows, with a figure of its own.
 
@@ -45,9 +45,9 @@ The image of the teal circle is a line, and not just a curve that runs off to in
   :path: figs/through-line.html
   :nonum:
 }
-:caption: The circle through $O$, with $A$ opposite $O$ and $A'$ the inverse of $A$. As $P$ goes
-around the circle, its inverse $P'$ stays on the dashed line through $A'$. The triangles $OPA$ and
-$OA'P'$ are similar, and each has a right angle, at $P$ and at $A'$.
+:caption: The circle through $O$, with $A$ opposite $O$ and $A'$ the inverse of $A$. As $p$ goes
+around the circle, its inverse $q$ stays on the dashed line through $A'$. The triangles $OpA$ and
+$OA'q$ are similar, and each has a right angle, at $p$ and at $A'$.
 ::
 
 :proof:
@@ -61,21 +61,21 @@ $OA'P'$ are similar, and each has a right angle, at $P$ and at $A'$.
 
   :step: {:label: stp-line-on}
 
-    :claim: For every point $P$ of $C$ other than $O$, its inverse $P'$ lies on $L$. ::
+    :claim: For every point $p$ of $C$ other than $O$, its inverse $q$ lies on $L$. ::
 
     :p:
 
-      :step: {:label: stp-line-a} If $P = A$, then $P' = A'$, which lies on $L$. From now on
-      $P$ is neither $O$ nor $A$. ::
+      :step: {:label: stp-line-a} If $p = A$, then $q = A'$, which lies on $L$. From now on
+      $p$ is neither $O$ nor $A$. ::
 
-      :step: {:label: stp-line-thales} The angle $OPA$ is a right angle, since $OA$ is a
+      :step: {:label: stp-line-thales} The angle $OpA$ is a right angle, since $OA$ is a
       diameter of $C$. ::
 
-      :step: {:label: stp-line-similar} The triangles $OPA$ and $OA'P'$ are similar. They share
-      the angle at $O$, and $|OP|\,|OP'| = 1 = |OA|\,|OA'|$ gives $|OP| / |OA'| = |OA| / |OP'|$. ::
+      :step: {:label: stp-line-similar} The triangles $OpA$ and $OA'q$ are similar. They share
+      the angle at $O$, and $|Op|\,|Oq| = 1 = |OA|\,|OA'|$ gives $|Op| / |OA'| = |OA| / |Oq|$. ::
 
-      :step: By :ref:stp-line-similar::, the angle $OA'P'$ equals the angle $OPA$, a right angle
-      by :ref:stp-line-thales::. So $P'$ lies on the line through $A'$ at right angles to $OA$,
+      :step: By :ref:stp-line-similar::, the angle $OA'q$ equals the angle $OpA$, a right angle
+      by :ref:stp-line-thales::. So $q$ lies on the line through $A'$ at right angles to $OA$,
       which is $L$. ::
 
     ::
@@ -87,8 +87,8 @@ $OA'P'$ are similar, and each has a right angle, at $P$ and at $A'$.
     :claim: Every point $X$ of $L$ is the inverse of a point of $C$. ::
 
     :p: $X$ lies on the same side as $A$ of the line through $O$ at right angles to $OA$, so the
-    ray from $O$ through $X$ meets $C$ at a point $P$ other than $O$. By :ref:stp-line-on::, $P'$
-    lies on $L$, and it lies on the same ray. The ray meets $L$ only at $X$, so $P' = X$. ::
+    ray from $O$ through $X$ meets $C$ at a point $p$ other than $O$. By :ref:stp-line-on::, the inverse $q$ of $p$
+    lies on $L$, and it lies on the same ray. The ray meets $L$ only at $X$, so $q = X$. ::
 
   ::
 

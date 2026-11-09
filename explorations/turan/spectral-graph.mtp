@@ -4,7 +4,7 @@
 ; sqrt(2m(1 - 1/r)) above, which holds for graphs with no K_{r+1}. Put a K_{r+1} in the graph and
 ; lambda_1 can climb past the ceiling.
 
-(import house paper ink soft terracotta teal saffron plum variable number)
+(import house paper ink soft terracotta teal saffron indigo variable number)
 (import ease cubic-in-out)
 
 (int r 2 (>= 2) (<= 5) doc@'The forbidden clique is K_{r+1}.')
@@ -34,7 +34,7 @@
 
 (motif vertex ((int idx 0) (bool picked false))
   doc@'A vertex; picked while it waits to be joined to another.'
-  (circle_ (r 13) (fill (if picked plum paper)) (stroke ink) (stroke-width 2)))
+  (circle_ (r 13) (fill (if picked indigo paper)) (stroke ink) (stroke-width 2)))
 (motif link ((int a 0) (int b 0) (bool on false) (real alpha 0 (>= 0) (<= 1)))
   doc@'The edge between vertices a and b, there while on; alpha fades it in and out.'
   (line_ (from (spot a)) (to (spot b)) (stroke ink) (stroke-width 2) (stroke-opacity alpha)
@@ -94,9 +94,9 @@
     (group eigs
       (foreach i 6
         (circle_ (pos [(+ 11 (* 12 (repeats i))) (y-of (or? eig-y[i] 0))]) (r 5)
-          (fill (if (= i 5) plum soft)) (stroke none)))
+          (fill (if (= i 5) indigo soft)) (stroke none)))
       (text|none lambda-label $'λ₁ = {(or? eig-y[5] 0):.2f}' (pos [-22 (y-of (or? eig-y[5] 0))])
-        (font number) (fill plum) (halign 'end') (valign 'middle'))
+        (font number) (fill indigo) (halign 'end') (valign 'middle'))
       (exists-when lambda-label (> avg-y 0.001)))))
 
 (canvas graph-view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)

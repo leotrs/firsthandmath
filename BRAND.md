@@ -60,7 +60,14 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 - **Own identity:** not Aris's brackets; BRAIID is an inspiration only.
 - **Type:** Source Sans 3 semibold for headings and small interface text; Source Serif 4 for long
   text and for the logo (2026-11-08; Newsreader before).
-- **Colors:** the house palette the figures already use, so page and figures are one palette.
+- **Colors** (2026-11-09): the site and the figures share one color, terracotta, and otherwise
+  keep apart, so a color on a page never means two things.
+  - **Terracotta** is the main accent of both: the logo's dot, the period after every heading,
+    the highlighted word, and in figures what matters most (p and q).
+  - **Plum** is the site's own accent, never used in figures: keywords in proofs, links inside the
+    text, the selected block and the sidebar. It is a scale of eleven shades, made from `#8e44ad`
+    with tailwindcolor.tools; keywords use 600.
+  - **Teal, saffron and indigo** are figure colors only.
 
 | name | light | dark |
 |---|---|---|
@@ -70,12 +77,12 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 | terracotta (accent) | `#e76f51` | `#f08a6c` |
 | teal | `#2a9d8f` | `#4cc2b3` |
 | saffron | `#e9c46a` | `#f2d27e` |
-| plum | `#6d597a` | `#a88bb8` |
+| indigo (figures) | `#3f4fb5` | `#9aa6f0` |
+| plum (site, 600) | `#8741a5` | `#b784cc` |
 
 - Figures are transparent by default and sit on the page. Every color in a figure should be a
   house token so it follows light and dark mode (bead mtp-m34w.1).
-- The page keeps its small accents (terracotta kicker, teal and plum labels for Digestions and
-  Notes).
+- The page keeps its small accents (teal and plum labels for Digestions and Notes).
 - Figure controls are gray at rest and ink while in use, never BRAIID's blue (bead mtp-kwy2.1).
 
 ## The home page
