@@ -1,0 +1,62 @@
+; Why a circle through the center inverts to a line. A is the point of the teal circle opposite
+; the center O, and A' is its inverse. P is dragged around the teal circle, and its inverse P'
+; stays on the line through A' at right angles to OA. The triangles OPA and OA'P' are similar,
+; so their right angles, at P and at A', are drawn as one mark each.
+
+(import house paper ink soft terracotta teal variable)
+(import math norm)
+
+; The teal circle has center c and radius |c|, so it passes through O.
+(point c [0.35 0] (const))
+(real rad 0.35 (const))
+(point a [0.7 0] (const))
+(point a-inv [1.4286 0] (const))
+
+; P's angle around c, in degrees, kept away from O, where P' runs far off.
+(real theta 60 (>= -135) (<= 135))
+(point pt (+ c (polar rad theta)))
+(point pt-inv (or? (* pt (/ 1 (* (norm pt) (norm pt)))) a-inv))
+
+; Unit directions for the two right-angle marks: at P toward O and toward A, at A' toward O
+; and toward P'.
+(point p-to-o (or? (* pt (/ -1 (norm pt))) [-1 0]))
+(point p-to-a (or? (* (- a pt) (/ 1 (norm (- a pt)))) [1 0]))
+(point ai-to-p (or? (* (- pt-inv a-inv) (/ 1 (norm (- pt-inv a-inv)))) [0 1]))
+
+(scene plane
+  (circle unit (r 1) (fill none) (stroke ink) (stroke-width 2) (pointer-events false))
+  (group drawing (clip (rect_ (pos [0.35 0]) (width 3) (height 2.3))) (pointer-events false)
+    (defaults (stroke-width 1.5))
+    (triangle_ (a [0 0]) (b pt) (c a) (fill teal) (fill-opacity 0.12) (stroke none))
+    (triangle_ (a [0 0]) (b a-inv) (c pt-inv) (fill teal) (fill-opacity 0.12) (stroke none))
+    (circle_ (pos c) (r rad) (stroke teal) (fill none))
+    (line_ (from [a-inv.x -5]) (to [a-inv.x 5]) (stroke teal) (dash [6 4]))
+    (line_ (from [0 0]) (to a-inv) (stroke soft))
+    (line_ (from [0 0]) (to (* pt-inv 3)) (stroke soft) (dash [4 4]))
+    (line_ (from pt) (to a) (stroke soft)))
+  (group marks (pointer-events false) (defaults (stroke ink) (stroke-width 1.5) (fill none))
+    (group at-p (translate pt) (fixed-size true)
+      (polyline_ (points [(* p-to-o 17) (+ (* p-to-o 17) (* p-to-a 17)) (* p-to-a 17)])))
+    (group at-a-inv (translate a-inv) (fixed-size true)
+      (polyline_ (points [[-13 0] (+ [-13 0] (* ai-to-p 13)) (* ai-to-p 13)]))))
+  (group names (pointer-events false) (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
+    (group o-name (fixed-size true) (text_ 'O' (pos [-16 -16])))
+    (group a-name (translate a) (fixed-size true) (text_ 'A' (pos [14 -16])))
+    (group a-inv-name (translate a-inv) (fixed-size true) (text_ 'A′' (pos [18 -16])))
+    (group p-name (translate pt) (fixed-size true) (text_ 'P' (pos (* (+ p-to-o p-to-a) -17))))
+    (group p-inv-name (translate pt-inv) (fixed-size true) (text_ 'P′' (pos [20 0]))))
+  (group dots (pointer-events false) (defaults (fill ink) (stroke none))
+    (group o-dot (fixed-size true) (circle_ (r 4)))
+    (group a-dot (translate a) (fixed-size true) (circle_ (r 4)))
+    (group a-inv-dot (translate a-inv) (fixed-size true) (circle_ (r 4))))
+  (group p-inv-dot (translate pt-inv) (fixed-size true) (pointer-events false)
+    (circle_ (r 7) (fill paper) (stroke terracotta) (stroke-width 3)))
+  (group p-dot (translate pt) (fixed-size true)
+    (circle_ (r 8) (fill terracotta) (stroke paper) (stroke-width 2))))
+
+(canvas view (x -1.15) (y -1.15) (width 3) (height 2.3) (pan false) (zoom false)
+  doc@'A circle through the center, a point P on it, and its inverse P′ on the image line.'
+  plane)
+
+(on-drag p-dot (move theta (to (let ((q (or? (to-polar (- pointer c)) [0 theta]))) q[1])))
+  doc@'Moves P around the circle; P′ follows along the line.')
