@@ -39,6 +39,9 @@ page: a mathematician writing for a curious reader, in full, connected sentences
 - **Honest:** say what is hard, what is open and what is unknown, plainly and without an appeal
   to the reader.
 
+Pages released before Firsthand Math, such as the Turán page, keep their own voice and are not
+rewritten to match.
+
 Samples, from the author's papers:
 
 - "Consider a finite undirected unweighted graph G and add a new node to it arbitrarily
