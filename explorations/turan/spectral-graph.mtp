@@ -86,17 +86,17 @@
       (text|none floor-label $'2m/n = {avg-y:.2f}' (pos [32 (floor-label-y)]) (font number) (fill teal)
         (stroke none) (halign 'start') (valign 'middle'))
       (exists-when floor-label (> avg-y 0.001))
-      (line|none ceil-mark (from [0 (y-of ceil-y)]) (to [28 (y-of ceil-y)]) (stroke terracotta))
+      (line|none ceil-mark (from [0 (y-of ceil-y)]) (to [28 (y-of ceil-y)]) (stroke ink))
       (exists-when ceil-mark (> avg-y 0.001))
       (text|none ceil-label $'ceiling = {ceil-y:.2f}' (pos [32 (ceil-label-y)]) (font number)
-        (fill terracotta) (stroke none) (halign 'start') (valign 'middle'))
+        (fill ink) (stroke none) (halign 'start') (valign 'middle'))
       (exists-when ceil-label (> avg-y 0.001)))
     (group eigs
       (foreach i 6
         (circle_ (pos [(+ 11 (* 12 (repeats i))) (y-of (or? eig-y[i] 0))]) (r 5)
-          (fill (if (= i 5) indigo soft)) (stroke none)))
+          (fill (if (= i 5) terracotta soft)) (stroke none)))
       (text|none lambda-label $'λ₁ = {(or? eig-y[5] 0):.2f}' (pos [-22 (y-of (or? eig-y[5] 0))])
-        (font number) (fill indigo) (halign 'end') (valign 'middle'))
+        (font number) (fill terracotta) (halign 'end') (valign 'middle'))
       (exists-when lambda-label (> avg-y 0.001)))))
 
 (canvas graph-view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)

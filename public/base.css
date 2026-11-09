@@ -47,7 +47,7 @@ body { margin: 0; color: var(--fm-ink); }
 .fm-site nav a:hover { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 7%, transparent); }
 .fm-site nav a:active { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 14%, transparent); transform: translateY(1px); }
 .fm-site nav a[aria-current="page"] { color: var(--fm-ink); box-shadow: inset 0 -2px 0 var(--fm-terracotta); border-radius: 8px 8px 0 0; }
-.fm-site a:focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
+a:not(.manuscriptwrapper a):focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
 
 /* The kind of an exploration, and its byline */
 .fm-kind { font: 600 12px var(--fm-sans); letter-spacing: .08em; text-transform: uppercase; }
@@ -57,9 +57,9 @@ body { margin: 0; color: var(--fm-ink); }
 
 @media (max-width: 600px) {
   .fm-site { padding: 12px 14px; }
-  .fm-brand span { font-size: 19px; }
+  .fm-brand { gap: 8px; }
+  .fm-brand span { font-size: 17px; }
   .fm-mark { width: 26px; height: 26px; }
   .fm-site nav { gap: 0; }
-  .fm-site nav a { font-size: 14px; padding: 9px 8px; }
-  .fm-site nav a:nth-child(2) { display: none; }
+  .fm-site nav a { font-size: 13px; padding: 9px 6px; }
 }

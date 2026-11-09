@@ -18,21 +18,36 @@ videos, thumbnails, social profiles.
 
 ## Voice
 
-A researcher showing a colleague something worth seeing.
+Set by the author, 2026-11-09. The register is that of the author's papers and of the About
+page: a mathematician writing for a curious reader, in full, connected sentences.
 
-- **Specific:** name the actual object and the actual claim.
-- **Plain:** short sentences, ordinary words; technical terms only when the figure needs them,
-  defined when used.
-- **Unhurried and honest:** no hype, no urgency. Say what is hard, what is open, what is unknown.
+- **Full sentences, joined by their logic.** Sentences carry a whole thought and are joined by
+  words such as "namely", "furthermore", "however", "since" and "though". Never staccato: no runs
+  of short sentences, and no fragments.
+- **Never punchy.** No slogans, no teasers, no lines written to land. A sentence states the
+  mathematics and stops.
+- **No clause hung on a noun.** Never "the circle the figure shows has radius 1", and avoid long
+  clauses introduced by "that". Write "the circle shown in the figure has radius 1", or, shorter,
+  "the circle in the figure has radius 1".
+- **No first person,** neither "I" nor "we", and the reader is not addressed or given
+  instructions ("drag p", "now turn on").
+- **Nothing that is not a person acts as one.** A figure, a readout, a proof or a page does not
+  say, show, want, cost or know anything. Write "the product shown under the figure", not "the
+  readout says".
+- **Specific:** name the actual object and the actual claim, in the usual mathematical terms
+  ("fix", "let", "is its own inverse", "preserves angles").
+- **Honest:** say what is hard, what is open and what is unknown, plainly and without an appeal
+  to the reader.
 
-Samples:
+Samples, from the author's papers:
 
-- A short's title: "Every finite metric space fits in a plane, almost." Not "This will blow your
-  mind".
-- An exploration's opening: "Bourgain showed that any n points can be drawn in a space of
-  dimension about log n, stretching no distance by more than a factor of log n. The figure below
-  draws them. Move the points and watch the stretch."
-- A note's ending: "I don't know a proof that avoids the random choice. If you do, tell me."
+- "Consider a finite undirected unweighted graph G and add a new node to it arbitrarily
+  connecting it to pre-existing nodes. We study the behavior of the Perron eigenvalue of the
+  non-backtracking matrix of G before and after such a node addition." (The pages use the same
+  register without "we".)
+- "Much effort has been spent on characterizing the spectrum of the non-backtracking matrix of
+  certain classes of graphs, with special emphasis on the leading eigenvalue or the second
+  eigenvector."
 
 ## Content
 

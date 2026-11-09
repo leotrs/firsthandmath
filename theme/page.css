@@ -57,37 +57,26 @@
   /* BRAIID sets the text's font once, on the wrapper; the text inherits that, so it is set here too. */
   font-family: var(--font-body);
 }
-/* BRAIID colors everything that follows the accent (links, keywords, the rail and wash of a selected
-   block) from two scales of eleven shades, set on body[data-accent]. Both are replaced here with
-   Firsthand's plum, a Tailwind-style scale made from #8e44ad (tailwindcolor.tools). In dark mode the
-   scale is reversed, as BRAIID's own scales are: the light shades become the dark ones. Plum is the
-   site's accent and is never used in figures (BRAND.md). */
-body[data-accent] {
-  --primary-50: light-dark(#f8f6f8, #231429);
-  --primary-100: light-dark(#f1ecf3, #3b2046);
-  --primary-200: light-dark(#e0d0e6, #502a60);
-  --primary-300: light-dark(#cdafda, #6e3785);
-  --primary-400: light-dark(#b784cc, #8741a5);
-  --primary-500: light-dark(#a15abe, #a15abe);
-  --primary-600: light-dark(#8741a5, #b784cc);
-  --primary-700: light-dark(#6e3785, #cdafda);
-  --primary-800: light-dark(#502a60, #e0d0e6);
-  --primary-900: light-dark(#3b2046, #f1ecf3);
-  --primary-950: light-dark(#231429, #f8f6f8);
-  --information-50: var(--primary-50);
-  --information-100: var(--primary-100);
-  --information-200: var(--primary-200);
-  --information-300: var(--primary-300);
-  --information-400: var(--primary-400);
-  --information-500: var(--primary-500);
-  --information-600: var(--primary-600);
-  --information-700: var(--primary-700);
-  --information-800: var(--primary-800);
-  --information-900: var(--primary-900);
-  --information-950: var(--primary-950);
-  /* Keywords one step brighter than BRAIID's default, so they stand out from the text. */
-  --text-keyword: var(--primary-600);
+/* The page's accent is BRAIID's default, blue, and every color that follows the accent (links,
+   keywords, the selected block, the sidebar) is built from BRAIID's blue scale. That scale is
+   replaced here with Firsthand's plum, a Tailwind-style scale made from #8e44ad
+   (tailwindcolor.tools), reversed in dark mode as BRAIID's own scales are. Plum is the site's
+   accent and is never used in figures (BRAND.md). */
+:root {
+  --blue-50: light-dark(#f8f6f8, #231429);
+  --blue-100: light-dark(#f1ecf3, #3b2046);
+  --blue-200: light-dark(#e0d0e6, #502a60);
+  --blue-300: light-dark(#cdafda, #6e3785);
+  --blue-400: light-dark(#b784cc, #8741a5);
+  --blue-500: light-dark(#a15abe, #a15abe);
+  --blue-600: light-dark(#8741a5, #b784cc);
+  --blue-700: light-dark(#6e3785, #cdafda);
+  --blue-800: light-dark(#502a60, #e0d0e6);
+  --blue-900: light-dark(#3b2046, #f1ecf3);
+  --blue-950: light-dark(#231429, #f8f6f8);
 }
+/* Keywords one step brighter than BRAIID's default, so they stand out from the text. */
+body[data-accent] { --text-keyword: var(--primary-600); }
 
 /* The page title, as on the home page: Source Sans 3 semibold, in ink. */
 .manuscriptwrapper h1 {
