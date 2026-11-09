@@ -6,6 +6,32 @@
 <title>Firsthand Math</title>
 <link rel="stylesheet" href="/base.css">
 <link rel="stylesheet" href="/content.css">
+<!-- While the fonts load, MathJax typesets and RSM lays out the page, the page moves around; the
+     text and the colophon are hidden until then, and fade in. Without JavaScript nothing is hidden. -->
+<script>document.documentElement.classList.add("fm-loading");</script>
+<!-- MathJax and its two main fonts start downloading at once, instead of after RSM's scripts ask
+     for them, which shortens the wait. -->
+<link rel="preload" href="/rsm-static/mathjax-3.2.2/tex-chtml-full.js" as="script">
+<link rel="preload" href="/rsm-static/mathjax-3.2.2/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/rsm-static/mathjax-3.2.2/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff" as="font" type="font/woff" crossorigin>
+<style>
+.fm-content, .fm-band { transition: opacity .25s ease-out; }
+.fm-loading .fm-content, .fm-loading .fm-band { opacity: 0; }
+/* While hidden, a pulsing outline of a page stands in for it: a label, a title, lines of text and
+   a figure. */
+.fm-loader { display: none; }
+.fm-loading .fm-loader {
+  display: flex; flex-direction: column; gap: 14px; position: absolute; left: 0; right: 0;
+  width: min(704px, calc(100% - 40px)); margin: 48px auto 0; pointer-events: none;
+  animation: fm-pulse 1.4s ease-in-out infinite;
+}
+.fm-loader i { display: block; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--fm-ink) 10%, var(--fm-paper)); }
+.fm-loader .fm-l-label { width: 18%; height: 10px; }
+.fm-loader .fm-l-title { width: 80%; height: 40px; border-radius: 10px; margin: 6px 0 10px; }
+.fm-loader .fm-l-figure { height: 220px; border-radius: 12px; margin: 12px 0; }
+@keyframes fm-pulse { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .fm-content, .fm-band { transition: none; } .fm-loading .fm-loader { animation: none; } }
+</style>
 <!-- One copy of the mathterpiece runtime for the whole site, at /mathterpiece.js. -->
 <script type="module" src="/mathterpiece.js"></script>
 </head>
@@ -14,6 +40,7 @@
 <a class="fm-brand" href="/"><svg class="fm-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" class="tile"/><text x="28" y="49" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="44" font-weight="600" class="f">F</text><circle cx="48" cy="45" r="5.5" fill="#e76f51"/></svg><span>Firsthand Math</span></a>
 <nav><a href="/">Explorations</a><a href="https://www.youtube.com/@FirsthandMath">Videos</a><a href="/about/">About</a></nav>
 </header>
+<div class="fm-loader" aria-hidden="true"><i class="fm-l-label"></i><i class="fm-l-title"></i><i style="width:30%"></i><i></i><i></i><i style="width:92%"></i><i style="width:60%"></i><i class="fm-l-figure"></i><i></i><i style="width:85%"></i></div>
 <main class="fm-content">
 <div class="fm-body"></div>
 </main>
@@ -50,6 +77,27 @@
     if (wrapper) new ResizeObserver(align).observe(wrapper);
   });
   align();
+})();
+</script>
+<script>
+// Shown once MathJax has typeset every formula and the fonts it pulls in are ready, after a short
+// pause for RSM's layout. RSM creates the formulas only after the page has loaded, so an empty
+// list means not yet. Shown after 5 seconds in any case, so a slow or failed load never hides the
+// page.
+(() => {
+  const root = document.documentElement;
+  const reveal = () => root.classList.remove("fm-loading");
+  setTimeout(reveal, 5000);
+  const typeset = () => new Promise((r) => {
+    const done = () => {
+      if (!window.MathJax?.typesetPromise) return false;
+      const math = document.querySelectorAll(".math[data-latex], .mathblock[data-latex]");
+      return math.length > 0 && [...math].every((m) => m.querySelector("mjx-container"));
+    };
+    const check = () => (done() ? r() : setTimeout(check, 50));
+    check();
+  });
+  typeset().then(() => document.fonts.ready).then(() => setTimeout(reveal, 200));
 })();
 </script>
 </body>

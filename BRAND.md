@@ -124,8 +124,7 @@ Decided by the author, 2026-11-08.
 - **Source:** this repository, public on GitHub under the author's own account (not Aris). Drafts
   are public too, on branches; only `main` is published.
 - **Launch:** the site goes live first, quietly, and is checked on real phones; each short is
-  published after, linking to its page. The first site has three explorations: the inversion
-  note, Turán and Bourgain (the author, 2026-11-08).
+  published after, linking to its page.
 - **Hosting:** Netlify. The site is built on the author's laptop (`just build`) and uploaded
   (`just deploy`); the built site is not committed.
 
