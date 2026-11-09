@@ -1,6 +1,6 @@
 ; Why a circle through the center inverts to a line. A is the point of the teal circle opposite
 ; the center O, and A' is its inverse. p is dragged around the teal circle, and its inverse q
-; stays on the line through A' at right angles to OA; dragging q along the line moves p. The
+; stays on the line through A' at right angles to OA; only p is dragged. The
 ; triangles OpA and OA'q are similar, and their right angles, at p and at A', are marked.
 
 (import house paper ink soft terracotta teal variable)
@@ -58,13 +58,13 @@
     (group o-name (fixed-size true) (text_ 'O' (pos [-16 -16])))
     (group a-name (translate a) (fixed-size true) (text_ 'A' (pos [14 -16])))
     (group a-inv-name (translate a-inv) (fixed-size true) (text_ 'A′' (pos [18 -16])))
-    (group p-name (translate p) (fixed-size true) (text_ 'p' (pos (* (+ p-to-o p-to-a) -17))))
-    (group q-name (translate q) (fixed-size true) (text_ 'q' (pos [18 0]) (opacity (if at-o 0 1)))))
+    (group p-name (translate p) (fixed-size true) (text_ 'P' (pos (* (+ p-to-o p-to-a) -17))))
+    (group q-name (translate q) (fixed-size true) (text_ 'Q' (pos [18 0]) (opacity (if at-o 0 1)))))
   (group dots (pointer-events false) (defaults (fill ink) (stroke none))
     (group o-dot (fixed-size true) (circle_ (r 4)))
     (group a-dot (translate a) (fixed-size true) (circle_ (r 4)))
     (group a-inv-dot (translate a-inv) (fixed-size true) (circle_ (r 4))))
-  (group q-dot (translate q) (fixed-size true) (pointer-events (not at-o))
+  (group q-dot (translate q) (fixed-size true) (pointer-events false)
     (circle_ (r 8) (fill paper) (stroke terracotta) (stroke-width 3) (opacity (if at-o 0 1))))
   (group p-dot (translate p) (fixed-size true)
     (circle_ (r 9) (fill terracotta) (stroke paper) (stroke-width 2))))
@@ -75,6 +75,3 @@
 
 (on-drag p-dot (move theta (to (let ((d (or? (to-polar (- pointer c)) [0 theta]))) d[1])))
   doc@'Moves p around the circle; q follows along the line.')
-; q is kept on the line: the pointer's height on the line is inverted back onto the circle.
-(on-drag q-dot (move theta (to (let ((d (or? (to-polar (- (inverse [a-inv.x pointer.y]) c)) [0 theta]))) d[1])))
-  doc@'Moves q along the line; p follows around the circle.')

@@ -10,6 +10,7 @@
   --fm-quiet: light-dark(#5b6476, #a8aebb);
   --fm-terracotta: light-dark(#e76f51, #f08a6c);
   --fm-teal: light-dark(#2a9d8f, #4cc2b3);
+  --fm-indigo: light-dark(#3f4fb5, #9aa6f0);
   --fm-plum: light-dark(#8741a5, #b784cc);
   --fm-rule: light-dark(#e4dccd, #2d2f36);
   --fm-sans: "Source Sans 3", sans-serif;
@@ -93,6 +94,32 @@ body[data-accent] { --text-keyword: var(--primary-600); }
   display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--chunk-sixth) var(--chunk-third);
   font-family: var(--fm-sans);
 }
+
+/* A formula under a figure that follows it, such as |P| |Q| = 1, centered between the figure and
+   its controls. */
+.fm-fig > mtp-display { display: block; text-align: center; margin-block: var(--chunk-twelfth) var(--chunk-sixth); }
+/* MathJax gives a displayed formula a margin above and below; under a figure it would open a gap. */
+.fm-fig > mtp-display mjx-container { margin: 0 !important; }
+
+/* A toggle that shows a pair of shapes is a chip led by a short stroke in that pair's color, given
+   on the toggle as --fm-swatch; it is tinted in that color while on. The checkbox stays in the
+   page, hidden, so the keyboard and screen readers still reach it. */
+.fm-fig mtp-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.fm-fig mtp-toggle label {
+  gap: var(--chunk-sixth); padding: var(--chunk-twelfth) var(--chunk-third) var(--chunk-twelfth) var(--chunk-quarter);
+  border: var(--border-extrathin) solid color-mix(in srgb, var(--fm-ink) 22%, var(--fm-paper)); border-radius: var(--radius-xl);
+  font-family: var(--fm-sans); font-weight: 500; color: var(--fm-quiet); cursor: pointer;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.fm-fig mtp-toggle label::before {
+  content: ""; width: var(--chunk-third); border-top: var(--border-thin) solid var(--fm-swatch, var(--fm-ink)); opacity: .45;
+}
+.fm-fig mtp-toggle:has(input:checked) label {
+  border-color: var(--fm-swatch, var(--fm-ink)); color: var(--fm-ink);
+  background: color-mix(in srgb, var(--fm-swatch, var(--fm-ink)) 12%, var(--fm-paper));
+}
+.fm-fig mtp-toggle:has(input:checked) label::before { opacity: 1; }
+.fm-fig mtp-toggle:has(input:focus-visible) label { outline: var(--border-thin) solid var(--fm-ink); outline-offset: var(--border-thin); }
 
 /* A figure's live caption: a readout under its controls. */
 .fm-fig > mtp-readout { display: block; margin-top: var(--chunk-sixth); text-align: center; color: var(--fm-quiet); }

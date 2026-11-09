@@ -10,26 +10,26 @@
 }
 ::
 
-Fix a circle of radius 1 with center $O$. Inversion in this circle maps each point $p$ other than $O$ to the point $q$ on the ray from $O$ through $p$ at distance $1/|p|$ from $O$. Points on the circle are fixed, points inside the circle are mapped outside it and points outside are mapped inside, and points close to $O$ are mapped far away from it. Since $1/(1/|p|) = |p|$, inverting $q$ gives back $p$, and so inversion is its own inverse.
+Fix a circle of radius 1 with center $O$. Inversion in this circle maps each point $P$ other than $O$ to the point $Q$ on the ray from $O$ through $P$ at distance $1/|P|$ from $O$. Points on the circle are fixed, points inside the circle are mapped outside it and points outside are mapped inside, and points close to $O$ are mapped far away from it. Since $1/(1/|P|) = |P|$, inverting $Q$ gives back $P$, and so inversion is its own inverse.
 
 :html: {
   :path: figs/inversion.html
   :nonum:
 }
-:caption: Inversion in the circle of radius 1 with center $O$. The point $q$ lies on the ray from
-$O$ through $p$, at distance $1/|p|$, so $|p|\,|q| = 1$. Each circle is drawn in the same color as its
+:caption: Inversion in the circle of radius 1 with center $O$. The point $Q$ lies on the ray from
+$O$ through $P$, at distance $1/|P|$, so $|P|\,|Q| = 1$. Each circle is drawn in the same color as its
 image, and the image is dashed.
 ::
 
-In the figure, both $p$ and $q$ can be dragged, and each one is redrawn at the inverse of the other. The two points coincide exactly when they lie on the circle.
+In the figure, the point $P$ can be dragged, and $Q$ is redrawn at its inverse. The two points coincide exactly when they lie on the circle.
 
-The product $|p|\,|q|$ shown under the figure is always equal to 1, as the definition requires. As $p$ approaches $O$, however, $q$ moves off to infinity, and $O$ itself has no inverse. The standard remedy is to add a single point at infinity to the plane and to define it as the inverse of $O$. With this point added, inversion is a one-to-one map of the extended plane, known as :aside:sphere,the Riemann sphere::.
+The product $|P|\,|Q|$ shown under the figure is always equal to 1, as the definition requires. As $P$ approaches $O$, however, $Q$ moves off to infinity, and $O$ itself has no inverse. The standard remedy is to add a single point at infinity to the plane and to define it as the inverse of $O$. With this point added, inversion is a one-to-one map of the extended plane, known as :aside:sphere,the Riemann sphere::.
 
 :aside: {:label: sphere} In complex coordinates with $O$ at $0$, inversion is the map $z \mapsto 1/\bar z$, and its composition with the reflection $z \mapsto \bar z$ is the map $z \mapsto 1/z$. ::
 
-The two toggles under the figure add two circles, each drawn together with its image: a teal circle through $O$, and an indigo circle not passing through $O$. Both circles can be dragged by their centers. The image of the teal circle is always a line. This is plausible, since the points of the teal circle close to $O$ are mapped far away, and its image must therefore be unbounded. The image of the indigo circle, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of the indigo circle is not the center of its image.
+The two toggles under the figure add two circles, each drawn together with its image: a green circle through $O$, and a blue circle not passing through $O$. Both circles can be dragged by their centers. The image of the green circle is always a line. This is plausible, since the points of the green circle close to $O$ are mapped far away, and its image must therefore be unbounded. The image of the blue circle, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of the blue circle is not the center of its image.
 
-An unbounded image is not necessarily a line, however, so this claim requires proof. A proof using only similar triangles is given below, together with a second figure.
+An unbounded image is not necessarily a line, however, so this claim requires proof. A proof using only similar triangles is given below.
 
 :theorem: {
   :label: thm-line
@@ -45,9 +45,9 @@ An unbounded image is not necessarily a line, however, so this claim requires pr
   :path: figs/through-line.html
   :nonum:
 }
-:caption: A circle through $O$, with $A$ the point opposite $O$ and $A'$ the inverse of $A$. As $p$ is
-dragged around the circle, its inverse $q$ remains on the dashed line through $A'$. The triangles $OpA$
-and $OA'q$ are similar, with right angles at $p$ and at $A'$.
+:caption: A circle through $O$, with $A$ the point opposite $O$ and $A'$ the inverse of $A$. As $P$ is
+dragged around the circle, its inverse $Q$ remains on the dashed line through $A'$. The triangles $OPA$
+and $OA'Q$ are similar, with right angles at $P$ and at $A'$.
 ::
 
 :proof:
@@ -61,21 +61,21 @@ and $OA'q$ are similar, with right angles at $p$ and at $A'$.
 
   :step: {:label: stp-line-on}
 
-    :claim: For every point $p$ of $C$ other than $O$, its inverse $q$ lies on $L$. ::
+    :claim: For every point $P$ of $C$ other than $O$, its inverse $Q$ lies on $L$. ::
 
     :p:
 
-      :step: {:label: stp-line-a} If $p = A$, then $q = A'$, which lies on $L$. From now on
-      $p$ is neither $O$ nor $A$. ::
+      :step: {:label: stp-line-a} If $P = A$, then $Q = A'$, which lies on $L$. From now on
+      $P$ is neither $O$ nor $A$. ::
 
-      :step: {:label: stp-line-thales} The angle $OpA$ is a right angle, since $OA$ is a
+      :step: {:label: stp-line-thales} The angle $OPA$ is a right angle, since $OA$ is a
       diameter of $C$. ::
 
-      :step: {:label: stp-line-similar} The triangles $OpA$ and $OA'q$ are similar. They share
-      the angle at $O$, and $|Op|\,|Oq| = 1 = |OA|\,|OA'|$ gives $|Op| / |OA'| = |OA| / |Oq|$. ::
+      :step: {:label: stp-line-similar} The triangles $OPA$ and $OA'Q$ are similar. They share
+      the angle at $O$, and $|OP|\,|OQ| = 1 = |OA|\,|OA'|$ gives $|OP| / |OA'| = |OA| / |OQ|$. ::
 
-      :step: By :ref:stp-line-similar::, the angle $OA'q$ equals the angle $OpA$, a right angle
-      by :ref:stp-line-thales::. So $q$ lies on the line through $A'$ at right angles to $OA$,
+      :step: By :ref:stp-line-similar::, the angle $OA'Q$ equals the angle $OPA$, a right angle
+      by :ref:stp-line-thales::. So $Q$ lies on the line through $A'$ at right angles to $OA$,
       which is $L$. ::
 
     ::
@@ -87,8 +87,8 @@ and $OA'q$ are similar, with right angles at $p$ and at $A'$.
     :claim: Every point $X$ of $L$ is the inverse of a point of $C$. ::
 
     :p: $X$ lies on the same side as $A$ of the line through $O$ at right angles to $OA$, so the
-    ray from $O$ through $X$ meets $C$ at a point $p$ other than $O$. By :ref:stp-line-on::, the inverse $q$ of $p$
-    lies on $L$, and it lies on the same ray. The ray meets $L$ only at $X$, so $q = X$. ::
+    ray from $O$ through $X$ meets $C$ at a point $P$ other than $O$. By :ref:stp-line-on::, the inverse $Q$ of $P$
+    lies on $L$, and it lies on the same ray. The ray meets $L$ only at $X$, so $Q = X$. ::
 
   ::
 
@@ -98,7 +98,7 @@ and $OA'q$ are similar, with right angles at $p$ and at $A'$.
 
 Inversion is a useful tool in classical geometry for this reason. An inversion centered at the point where two circles are tangent maps them to two parallel lines, and a question about circles packed between the two tangent circles becomes a question about circles packed between two parallel lines, which is often much easier. Many classical results about chains of tangent circles are proved in this way, and several examples can be found in chapter 6 of :cite:coxeter:: and in chapter 5 of :cite:coxetergreitzer::. Inversion is also covered, using complex numbers, in chapter 3 of :cite:needham::.
 
-Inversion also :aside:liouville,preserves angles::. Two curves crossing at a given angle are mapped to two curves crossing at the same angle, with the orientation reversed. This property is not illustrated in the figure above, since an angle involves two curves through a point, while the figure has a single point to drag. A picture of angle preservation as direct as the one for $|p|\,|q| = 1$ is not known.
+Inversion also :aside:liouville,preserves angles::. Two curves crossing at a given angle are mapped to two curves crossing at the same angle, with the orientation reversed. This property is not illustrated in the figure above, since an angle involves two curves through a point, while the figure has a single point to drag. A picture of angle preservation as direct as the one for $|P|\,|Q| = 1$ is not known.
 
 :aside: {:label: liouville} In three or more dimensions there is a strong converse, due to Liouville: every angle-preserving map is a composition of inversions in spheres, reflections and similarities. In the plane there are many more angle-preserving maps, for example every holomorphic function with nonzero derivative. ::
 

@@ -34,6 +34,8 @@ page: a mathematician writing for a curious reader, in full, connected sentences
 - **Nothing that is not a person acts as one.** A figure, a readout, a proof or a page does not
   say, show, want, cost or know anything. Write "the product shown under the figure", not "the
   readout says".
+- **Colors by their plain names.** Page copy calls the figure colors green and blue, never teal
+  or indigo (a hard rule, the author, 2026-11-09).
 - **Specific:** name the actual object and the actual claim, in the usual mathematical terms
   ("fix", "let", "is its own inverse", "preserves angles").
 - **Honest:** say what is hard, what is open and what is unknown, plainly and without an appeal
