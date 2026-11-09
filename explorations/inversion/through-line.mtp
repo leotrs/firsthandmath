@@ -45,7 +45,7 @@
     (circle_ (pos c) (r rad) (stroke teal) (fill none))
     (line_ (from [a-inv.x -5]) (to [a-inv.x 5]) (stroke teal) (dash [6 4]))
     (line_ (from [0 0]) (to a-inv) (stroke soft))
-    (line_ (from [0 0]) (to (* ray 5)) (stroke soft) (dash [4 4]))
+    (line_ (from [0 0]) (to (* ray 5)) (stroke soft) (stroke-width 1.5) (dash [0.1 4]) (line-cap 'round'))
     (line_ (from p) (to a) (stroke soft))
     ; When q is out of the frame, an arrow at the frame's edge points along the ray toward it.
     (line_ (from (* ray (- edge 0.3))) (to (* ray (- edge 0.05)))
@@ -57,6 +57,8 @@
       (polyline_ (points [[-13 0] (+ [-13 0] (* ai-to-q 13)) (* ai-to-q 13)]))))
   (group names (pointer-events false) (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
     (group o-name (fixed-size true) (text_ 'O' (pos [-16 -16])))
+    (group c-name (translate (+ c [-0.247 0.247])) (fixed-size true) (text_ 'C' (pos [-10 10]) (fill teal)))
+    (group c-image-name (translate [a-inv.x -0.6]) (fixed-size true) (text_ 'C′' (pos [16 0]) (fill teal)))
     (group a-name (translate a) (fixed-size true) (text_ 'A' (pos [14 -16])))
     (group a-inv-name (translate a-inv) (fixed-size true) (text_ 'A′' (pos [18 -16])))
     (group p-name (translate p) (fixed-size true) (text_ 'P' (pos (* (+ p-to-o p-to-a) -17))))

@@ -28,7 +28,7 @@ The product $|P|\,|Q|$ shown under :ref:fig-inversion:: is always equal to 1, as
 
 :aside: {:label: sphere} In complex coordinates with $O$ at $0$, inversion is the map $z \mapsto 1/\bar z$, and its composition with the reflection $z \mapsto \bar z$ is the map $z \mapsto 1/z$. ::
 
-The other two toggles under :ref:fig-inversion:: add two circles, each drawn together with its image: a green circle through $O$, and a blue circle not passing through $O$. The image of the green circle is always a line. This is plausible, since the points of the green circle close to $O$ are mapped far away, and its image must therefore be unbounded. The image of the blue circle, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of the blue circle is not the center of its image.
+The other two toggles under :ref:fig-inversion:: add two circles, each drawn together with its image: a circle $C$ through $O$, and a circle $D$ not passing through $O$. The image $C'$ of $C$ is always a line. This is plausible, since the points of $C$ close to $O$ are mapped far away, and $C'$ must therefore be unbounded. The image $D'$ of $D$, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of $D$ is not the center of $D'$.
 
 An unbounded image is not necessarily a line, however, so this claim requires proof. The proof of :ref:thm-line, the theorem below::, uses only similar triangles.
 
@@ -48,8 +48,8 @@ An unbounded image is not necessarily a line, however, so this claim requires pr
   :static: figs/through-line-static.png
   :dark: figs/through-line-static-dark.png
 }
-:caption: A circle through $O$, with $A$ the point opposite $O$ and $A'$ the inverse of $A$. As $P$ is
-dragged around the circle, its inverse $Q$ remains on the dashed line through $A'$. The triangles $OPA$
+:caption: A circle $C$ through $O$, with $A$ the point opposite $O$ and $A'$ the inverse of $A$. As $P$ is
+dragged around $C$, its inverse $Q$ remains on the dashed line $C'$ through $A'$. The triangles $OPA$
 and $OA'Q$ are similar, with right angles at $P$ and at $A'$.
 ::
 
@@ -112,9 +112,9 @@ Inversion is a useful tool in classical geometry for this reason. An inversion c
   :static: figs/tangent-static.png
   :dark: figs/tangent-static-dark.png
 }
-:caption: Inversion centered at $T$, the point where the green and the blue circle are tangent.
-Their images are the two dashed parallel lines, and the circle packed between the two circles is
-mapped to the dashed circle packed between the lines.
+:caption: Inversion centered at $T$, the point where the circles $D_1$ and $D_2$ are tangent. Their
+images are the two dashed parallel lines $D_1'$ and $D_2'$, and the circle $C$ packed between $D_1$ and
+$D_2$ is mapped to the dashed circle $C'$ packed between the lines.
 ::
 
 Inversion also :aside:liouville,preserves angles::. Two curves crossing at a given angle are mapped to two curves crossing at the same angle, with the orientation reversed. In :ref:fig-angles::, a small square grid near the circle is mapped to a curved grid, and wherever two lines of the grid cross at a right angle, their images cross at a right angle too. Closer to $O$, the image grows and bends more, while the crossings stay right angles.

@@ -50,6 +50,15 @@
   (group grip (translate chain-c) (fixed-size true)
     (circle_ (r 11) (fill terracotta) (stroke paper) (stroke-width 2))
     (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
+  ; Names, as in the Pappus figure: D_1 the large circle, D_2 the small one, C the packed circle,
+  ; and their images primed.
+  (group names (pointer-events false) (defaults (font variable) (halign 'middle') (valign 'middle'))
+    (group d1-name (translate [1.707 -0.707]) (fixed-size true) (text_ 'D₁' (pos [14 -14]) (fill teal)))
+    (group d2-name (translate [0.146 -0.354]) (fixed-size true) (text_ 'D₂' (pos [-12 -12]) (fill indigo)))
+    (group d1-image-name (translate [0.5 1.25]) (fixed-size true) (text_ 'D₁′' (pos [-18 0]) (fill teal)))
+    (group d2-image-name (translate [1 1.25]) (fixed-size true) (text_ 'D₂′' (pos [18 0]) (fill indigo)))
+    (group c-name (translate (+ chain-c (* [0.707 0.707] chain-r))) (fixed-size true) (text_ 'C' (pos [10 10]) (fill terracotta)))
+    (group c-image-name (translate (+ image-c [0 -0.25])) (fixed-size true) (text_ 'C′' (pos [0 -14]) (fill terracotta))))
   (group t-dot (fixed-size true) (pointer-events false)
     (circle_ (r 4) (fill ink) (stroke none))
     (text_ 'T' (pos [-14 0]) (font variable) (fill ink) (halign 'middle') (valign 'middle'))))

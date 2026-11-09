@@ -34,8 +34,10 @@ page: a mathematician writing for a curious reader, in full, connected sentences
 - **Nothing that is not a person acts as one.** A figure, a readout, a proof or a page does not
   say, show, want, cost or know anything. Write "the product shown under the figure", not "the
   readout says".
-- **Colors by their plain names.** Page copy calls the figure colors green and blue, never teal
-  or indigo (a hard rule, the author, 2026-11-09).
+- **Shapes by their names, never by their colors** (the author, 2026-11-09). Page copy refers to a
+  shape in a figure by its label ("the circle $C$"), never by its color ("the green circle").
+  Where a color must be named, as for a page's own accents, it is called by its plain name, green
+  or blue, never teal or indigo.
 - **Specific:** name the actual object and the actual claim, in the usual mathematical terms
   ("fix", "let", "is its own inverse", "preserves angles").
 - **Honest:** say what is hard, what is open and what is unknown, plainly and without an appeal
@@ -91,7 +93,7 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 
 | name | light | dark |
 |---|---|---|
-| paper (page) | `#faf7f0` | `#17181c` |
+| paper (page) | `#fdfcf9` | `#17181c` |
 | ink (text) | `#1f2a44` | `#ece6da` |
 | soft | `#8a93a6` | `#8f97a8` |
 | terracotta (accent) | `#e76f51` | `#f08a6c` |
@@ -100,6 +102,13 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 | indigo (figures) | `#3f4fb5` | `#9aa6f0` |
 | plum (site, 600) | `#8741a5` | `#b784cc` |
 
+- The paper was `#faf7f0` until 2026-11-09 and was made a little lighter so that soft and
+  terracotta reach 3:1 contrast with the page, the minimum for lines and shapes (WCAG 1.4.11).
+- **Color is never the only cue** (the author, 2026-11-09). The house palette stays as it is, and
+  every figure stays readable without color: each curve, line and point that the text or another
+  shape needs to tell apart is named on the figure, an image is dashed and its original solid, and
+  a guide in soft is always dotted, so that it never looks like a dashed image under red-green
+  color blindness. Page copy uses the names, never the colors. There is no alternative palette.
 - Figures are transparent by default and sit on the page. Every color in a figure should be a
   house token so it follows light and dark mode (bead mtp-m34w.1).
 - The page keeps its small accents (teal and plum labels for Digestions and Morsels).
@@ -135,7 +144,7 @@ Decided by the author, 2026-11-08.
 `logo/mark-light.svg` and `logo/mark-dark.svg`: a serif F (Source Serif 4, weight 600) with a
 terracotta point beside it, on a tile with rounded corners.
 
-- **Light mode:** ink tile `#1f2a44`, paper F `#faf7f0`.
+- **Light mode:** ink tile `#1f2a44`, paper F `#fdfcf9`.
 - **Dark mode:** paper tile `#efe7d8`, ink F `#1f2a44`.
 - The point is always terracotta `#e76f51`.
 - Geometry on a 64-unit tile: corner radius 14; F centered at x 28 with its baseline at y 49,

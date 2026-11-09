@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light dark;
-  --fm-paper: light-dark(#faf7f0, #17181c);
+  --fm-paper: light-dark(#fdfcf9, #17181c);
   --fm-ink: light-dark(#1f2a44, #ece6da);
   --fm-soft: light-dark(#8a93a6, #8f97a8);
   /* soft alone is below 4.5:1 for small text, so small gray text is moved toward ink */
@@ -36,7 +36,7 @@ body { margin: 0; color: var(--fm-ink); }
 .fm-brand span { position: relative; top: .14em; }
 .fm-mark { width: 30px; height: 30px; display: block; }
 .fm-mark .tile { fill: light-dark(#1f2a44, #efe7d8); }
-.fm-mark .f { fill: light-dark(#faf7f0, #1f2a44); }
+.fm-mark .f { fill: light-dark(#fdfcf9, #1f2a44); }
 
 .fm-site nav { display: flex; gap: 6px; }
 .fm-site nav a {

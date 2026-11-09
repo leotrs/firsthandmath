@@ -75,7 +75,10 @@
         (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
       (line_ (from (- (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
           (to (+ (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
-          (stroke teal) (dash [6 4]) (pointer-events false)))
+          (stroke teal) (dash [6 4]) (pointer-events false))
+      (group through-names (pointer-events false) (defaults (font variable) (fill teal) (halign 'middle') (valign 'middle'))
+        (group c-name (translate (* through-c 2)) (fixed-size true) (text_ 'C' (pos [14 -12])))
+        (group c-image-name (translate (+ (* (inverse through-c) 0.5) (* (across through-c) 0.9))) (fixed-size true) (text_ 'C′' (pos [16 0])))))
     ; A circle that misses the center, centered at c with radius r: its image is centered at
     ; c / (|c|^2 - r^2), with radius r / | |c|^2 - r^2 |.
     (group misses-pair (defaults (opacity (* (if show-misses 1 0) fade-misses))) (pointer-events show-misses)
@@ -86,11 +89,16 @@
         (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
       (circle_ (pos (or? (* misses-c (/ 1 (- (* (norm misses-c) (norm misses-c)) 0.1225))) [0 0]))
           (r (abs (or? (/ 0.35 (- (* (norm misses-c) (norm misses-c)) 0.1225)) 0)))
-          (stroke indigo) (dash [6 4]) (fill none) (pointer-events false))))
+          (stroke indigo) (dash [6 4]) (fill none) (pointer-events false))
+      (group misses-names (pointer-events false) (defaults (font variable) (fill indigo) (halign 'middle') (valign 'middle'))
+        (group d-name (translate (+ misses-c [-0.25 0.25])) (fixed-size true) (text_ 'D' (pos [-10 10])))
+        (group d-image-name (translate (+ (or? (* misses-c (/ 1 (- (* (norm misses-c) (norm misses-c)) 0.1225))) [0 0])
+            (* [0.707 0.707] (abs (or? (/ 0.35 (- (* (norm misses-c) (norm misses-c)) 0.1225)) 0)))))
+          (fixed-size true) (text_ 'D′' (pos [12 10]))))))
 
   (group pq (defaults (opacity (* (if show-pq 1 0) fade-pq))) (pointer-events show-pq)
     (group marks (pointer-events false)
-      (line_ (from [0 0]) (to far) (stroke soft) (stroke-width 1) (dash [4 4]))
+      (line_ (from [0 0]) (to far) (stroke soft) (stroke-width 1.5) (dash [0.1 4]) (line-cap 'round'))
       ; When p or q is out of the frame, an arrow at the frame's edge points along the dashed
       ; line toward it.
       (line_ (from (* ray (- edge 0.32))) (to (* ray (- edge 0.06)))
