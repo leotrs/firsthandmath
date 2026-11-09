@@ -101,6 +101,27 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 /* MathJax gives a displayed formula a margin above and below; under a figure it would open a gap. */
 .fm-fig > mtp-display mjx-container { margin: 0 !important; }
 
+/* A figure's legend: a row for each pair of shapes, with its name or its toggle on the left and its
+   formulas on the right, marked by a stroke in the pair's color (--fm-swatch on the row). On a
+   phone each row stacks, the name above the formulas. */
+.fm-fig-rows { display: grid; gap: var(--chunk-sixth); max-width: calc(var(--chunk) * 14); margin: var(--chunk-sixth) auto 0; }
+.fm-fig-row { display: grid; grid-template-columns: calc(var(--chunk) * 5) 1fr; align-items: center; column-gap: var(--chunk-third); }
+.fm-fig-row-head { display: flex; }
+/* A toggle in a row's head fills it, so the chips of one legend are all as wide. */
+.fm-fig-row-head mtp-toggle, .fm-fig-row-head mtp-toggle label { width: 100%; }
+.fm-fig-row-body { border-left: var(--border-thin) solid var(--fm-swatch, var(--fm-ink)); padding-left: var(--chunk-quarter); }
+.fm-fig-row-body mtp-display { text-align: left !important; }
+.fm-fig-row-body mjx-container { text-align: left !important; margin: 0 !important; }
+.fm-fig-key {
+  display: flex; align-items: center; gap: var(--chunk-sixth); padding-left: var(--chunk-quarter);
+  font-family: var(--fm-sans); font-weight: 500; color: var(--fm-ink);
+}
+.fm-fig-key::before { content: ""; width: var(--chunk-sixth); height: var(--chunk-sixth); border-radius: var(--radius-full); background: var(--fm-swatch, var(--fm-ink)); }
+@media (max-width: 600px) {
+  .fm-fig-row { grid-template-columns: 1fr; row-gap: var(--chunk-twelfth); }
+  .fm-fig-row + .fm-fig-row { margin-top: var(--chunk-twelfth); }
+}
+
 /* A toggle that shows a pair of shapes is a chip led by a short stroke in that pair's color, given
    on the toggle as --fm-swatch; it is tinted in that color while on. The checkbox stays in the
    page, hidden, so the keyboard and screen readers still reach it. */

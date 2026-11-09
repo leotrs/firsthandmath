@@ -1,9 +1,24 @@
 <mtp-model id="inv" src="figs/inversion.mtpc"></mtp-model>
+<!-- Each toggle also shows the formulas about its circle. -->
+<style>
+.fm-fig:has([name="show-pq-toggle"] input:not(:checked)) .fm-shown-by-pq,
+.fm-fig:has([name="show-through-toggle"] input:not(:checked)) .fm-shown-by-through,
+.fm-fig:has([name="show-misses-toggle"] input:not(:checked)) .fm-shown-by-misses { display: none; }
+</style>
 <div class="fm-fig fm-fig-wide">
 <mtp-canvas model="inv" name="view"></mtp-canvas>
-<mtp-display model="inv" name="product-display"></mtp-display>
-<div class="fm-fig-controls">
-<mtp-toggle model="inv" name="show-through-toggle" style="--fm-swatch: var(--fm-teal)"></mtp-toggle>
-<mtp-toggle model="inv" name="show-misses-toggle" style="--fm-swatch: var(--fm-indigo)"></mtp-toggle>
+<div class="fm-fig-rows">
+<div class="fm-fig-row" style="--fm-swatch: var(--fm-terracotta)">
+<div class="fm-fig-row-head"><mtp-toggle model="inv" name="show-pq-toggle"></mtp-toggle></div>
+<div class="fm-fig-row-body fm-shown-by-pq"><mtp-display model="inv" name="product-display"></mtp-display></div>
+</div>
+<div class="fm-fig-row" style="--fm-swatch: var(--fm-teal)">
+<div class="fm-fig-row-head"><mtp-toggle model="inv" name="show-through-toggle"></mtp-toggle></div>
+<div class="fm-fig-row-body fm-shown-by-through"><mtp-display model="inv" name="through-display"></mtp-display></div>
+</div>
+<div class="fm-fig-row" style="--fm-swatch: var(--fm-indigo)">
+<div class="fm-fig-row-head"><mtp-toggle model="inv" name="show-misses-toggle"></mtp-toggle></div>
+<div class="fm-fig-row-body fm-shown-by-misses"><mtp-display model="inv" name="misses-display"></mtp-display></div>
+</div>
 </div>
 </div>

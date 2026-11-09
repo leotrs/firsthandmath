@@ -27,7 +27,7 @@ The product $|P|\,|Q|$ shown under the figure is always equal to 1, as the defin
 
 :aside: {:label: sphere} In complex coordinates with $O$ at $0$, inversion is the map $z \mapsto 1/\bar z$, and its composition with the reflection $z \mapsto \bar z$ is the map $z \mapsto 1/z$. ::
 
-The two toggles under the figure add two circles, each drawn together with its image: a green circle through $O$, and a blue circle not passing through $O$. Both circles can be dragged by their centers. The image of the green circle is always a line. This is plausible, since the points of the green circle close to $O$ are mapped far away, and its image must therefore be unbounded. The image of the blue circle, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of the blue circle is not the center of its image.
+The other two toggles under the figure add two circles, each drawn together with its image: a green circle through $O$, and a blue circle not passing through $O$. Both circles can be dragged by their centers. The image of the green circle is always a line. This is plausible, since the points of the green circle close to $O$ are mapped far away, and its image must therefore be unbounded. The image of the blue circle, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of the blue circle is not the center of its image.
 
 An unbounded image is not necessarily a line, however, so this claim requires proof. A proof using only similar triangles is given below.
 
