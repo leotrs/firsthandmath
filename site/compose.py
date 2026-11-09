@@ -3,7 +3,7 @@
     compose.py SHELL PAGE_JSON RSM_HTML OUT_HTML
 
 OUT_HTML is the shell with RSM's head added to the shell's head, RSM's body in the
-shell's body slot, and the colophon filled from PAGE_JSON. The page's kind (Note, Digestion) and its date line are RSM's eyebrow and date, in the page's source.
+shell's body slot, and the colophon filled from PAGE_JSON. The page's kind (Morsel, Digestion) and its date line are RSM's eyebrow and date, in the page's source.
 """
 import json
 import re

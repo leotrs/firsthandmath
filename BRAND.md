@@ -11,7 +11,7 @@ videos, thumbnails, social profiles.
   that digestion is research in its own right.
 - **Standard:** exact and honest. Claims are checked, sources are cited, difficulty is not hidden.
 - **Form:** the exploration is the main artifact. It lives on the site, surrounded by text that
-  ranges from a short note to a full digestion, sometimes alongside other explorations. It
+  ranges from a short morsel to a full digestion, sometimes alongside other explorations. It
   reaches people through YouTube: mostly shorts, where the exploration plays, sometimes long
   videos; later, other channels.
 - **Authorship:** Leo Torres, by name. His taste picks the topics.
@@ -55,7 +55,7 @@ Samples, from the author's papers:
 ## Content
 
 - **Digestions:** long; a recent result taken apart.
-- **Notes:** short; one idea the author likes, and a figure to try it with.
+- **Morsels:** short; one idea the author likes, and a figure to try it with.
 - Every short video is one of these figures playing; the page puts the same figure in the
   reader's hands.
 - Every exploration page carries the author and date at the top; sources and how to cite at the
@@ -100,7 +100,7 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
 
 - Figures are transparent by default and sit on the page. Every color in a figure should be a
   house token so it follows light and dark mode (bead mtp-m34w.1).
-- The page keeps its small accents (teal and plum labels for Digestions and Notes).
+- The page keeps its small accents (teal and plum labels for Digestions and Morsels).
 - Figure controls are gray at rest and ink while in use, never BRAIID's blue (bead mtp-kwy2.1).
 
 ## The home page
