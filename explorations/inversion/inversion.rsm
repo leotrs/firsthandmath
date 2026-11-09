@@ -145,10 +145,11 @@ is sketched after :ref:fig-pappus::, with the justification of each step left op
   :title: Pappus chain
 }
 
-  Two circles are tangent at $T$, one inside the other, and a chain of circles $C_0, C_1, C_2,
-  \ldots$ lies between them, each tangent to both circles and to the next one, with the center of
-  $C_0$ on the line through the centers of the two circles. Then the center of $C_n$ lies at
-  distance $n\,d_n$ from that line, where $d_n$ is the diameter of $C_n$.
+  Let :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: be two circles tangent at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> ::, one inside the other, and consider a chain
+  of circles :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, each simultaneously tangent to :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> ::, :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: and to the next circle
+  in the chain. The center of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: lies on the line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: through the centers of :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> ::.
+  Write :rawhtml:{:alt: $d_n$} <mtp-display model="pappus" name="dn-inline"></mtp-display> :: for the diameter of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: and :rawhtml:{:alt: $h_n$} <mtp-display model="pappus" name="hn-inline"></mtp-display> :: for the distance from the center of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: to :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::.
+  See :ref:fig-pappus::. Then, :rawhtml:{:alt: $h_n / d_n = n$} <mtp-display model="pappus" name="ratio-inline"></mtp-display> ::.
 
 ::
 
@@ -159,18 +160,18 @@ is sketched after :ref:fig-pappus::, with the justification of each step left op
   :dark: figs/pappus-static-dark.png
 }
 :caption: A Pappus chain between two circles tangent at $T$, and its image under inversion at $T$,
-a stack of equal circles between two parallel lines. The center of the highlighted circle $C_n$
+a stack of congruent circles between two parallel lines. The center of the highlighted circle $C_n$
 lies at height $n$ times its diameter.
 ::
 
 In the proof, inversion is taken in the circle centered at $T$ and meeting $C_n$ at right angles, so that $C_n$
-is mapped to itself. The two tangent circles are mapped to two parallel lines, at right angles to
-the line through their centers, and every circle of the chain is mapped to a circle tangent to both
+is mapped to itself. The circles $D_1$ and $D_2$ are mapped to two parallel lines, at right angles to
+$L$, and every circle of the chain is mapped to a circle tangent to both
 lines. All the images therefore have the same diameter, the distance between the lines, and each is
-tangent to the next. The line through the centers is mapped to itself, and the image of $C_0$ has
+tangent to the next. The line $L$ is mapped to itself, and the image of $C_0$ has
 its center on it, so the images of $C_0, C_1, \ldots, C_n$ are stacked along the gap and the center
-of the image of $C_n$ lies $n$ diameters from that line. Since that image is $C_n$ itself, its
-center lies at distance $n\,d_n$.
+of the image of $C_n$ lies $n$ diameters from $L$. Since that image is $C_n$ itself, its
+center lies at distance $n\,d_n$ from $L$.
 
 :references:
 

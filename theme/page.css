@@ -110,6 +110,8 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 /* A toggle in a row's head fills it, so the chips of one legend are all as wide. */
 .fm-fig-row-head mtp-toggle, .fm-fig-row-head mtp-toggle label { width: 100%; }
 .fm-fig-row-body { border-left: var(--border-thin) solid var(--fm-swatch, var(--fm-ink)); padding-left: var(--chunk-quarter); }
+/* A row whose formulas belong to no colored pair has no stroke. */
+.fm-fig-row-body.fm-unmarked { border-left: none; padding-left: 0; }
 .fm-fig-row-body mtp-display { text-align: left !important; }
 .fm-fig-row-body mjx-container { text-align: left !important; margin: 0 !important; }
 .fm-fig-key {
@@ -120,6 +122,19 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 @media (max-width: 600px) {
   .fm-fig-row { grid-template-columns: 1fr; row-gap: var(--chunk-twelfth); }
   .fm-fig-row + .fm-fig-row { margin-top: var(--chunk-twelfth); }
+}
+
+/* A segmented control: buttons that pick one of a few values, joined into one bar, the selected
+   one filled in the accent of the figure. These are our own markup (.fm-seg around mtp-buttons). */
+.fm-seg { display: inline-flex; }
+/* A button's touch area reaches 6px past it, which would make the figure's box scroll by a few
+   pixels; the figure leaves room for it. */
+.fm-fig:has(.fm-seg) { padding-bottom: var(--chunk-sixth); }
+.fm-seg mtp-button button { border-radius: 0; margin-left: calc(-1 * var(--border-extrathin)); color: var(--fm-ink); }
+.fm-seg mtp-button:first-child button { border-radius: var(--radius-lg) 0 0 var(--radius-lg); margin-left: 0; }
+.fm-seg mtp-button:last-child button { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+.fm-seg mtp-button button[aria-pressed="true"], .fm-seg mtp-button button[aria-pressed="true"]:hover {
+  background: var(--fm-terracotta); border-color: var(--fm-terracotta); color: var(--fm-paper); position: relative; z-index: 1;
 }
 
 /* A toggle that shows a pair of shapes is a chip led by a short stroke in that pair's color, given
@@ -141,6 +156,23 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 }
 .fm-fig mtp-toggle:has(input:checked) label::before { opacity: 1; }
 .fm-fig mtp-toggle:has(input:focus-visible) label { outline: var(--border-thin) solid var(--fm-ink); outline-offset: var(--border-thin); }
+
+/* A toggle that shows no colored pair is a switch instead (.fm-switch on the mtp-toggle): gray when
+   off, ink when on, with its knob drawn as a gradient on the track. */
+.fm-fig mtp-toggle.fm-switch { display: flex; justify-content: flex-start; }
+.fm-fig mtp-toggle.fm-switch label {
+  gap: var(--chunk-sixth); padding: 0; border: none; background: none; width: auto; color: var(--fm-ink);
+}
+.fm-fig mtp-toggle.fm-switch label::before {
+  width: calc(var(--chunk-half) + var(--chunk-twelfth)); height: var(--chunk-third); border: none; border-radius: var(--chunk-sixth); opacity: 1; flex: none;
+  background: radial-gradient(circle at var(--chunk-sixth) 50%, var(--fm-paper) calc(var(--chunk-sixth) * 0.7), transparent calc(var(--chunk-sixth) * 0.75)),
+    color-mix(in srgb, var(--fm-ink) 28%, var(--fm-paper));
+}
+.fm-fig mtp-toggle.fm-switch:has(input:checked) label { background: none; }
+.fm-fig mtp-toggle.fm-switch:has(input:checked) label::before {
+  background: radial-gradient(circle at calc(100% - var(--chunk-sixth)) 50%, var(--fm-paper) calc(var(--chunk-sixth) * 0.7), transparent calc(var(--chunk-sixth) * 0.75)),
+    var(--fm-ink);
+}
 
 /* A figure's live caption: a readout under its controls. */
 .fm-fig > mtp-readout { display: block; margin-top: var(--chunk-sixth); text-align: center; color: var(--fm-quiet); }
