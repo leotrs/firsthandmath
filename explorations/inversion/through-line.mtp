@@ -5,6 +5,7 @@
 
 (import house paper ink soft terracotta teal variable)
 (import math norm)
+(import ease cubic-in-out)
 
 (func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
 
@@ -65,9 +66,12 @@
     (group a-dot (translate a) (fixed-size true) (circle_ (r 4)))
     (group a-inv-dot (translate a-inv) (fixed-size true) (circle_ (r 4))))
   (group q-dot (translate q) (fixed-size true) (pointer-events false)
-    (circle_ (r 8) (fill paper) (stroke terracotta) (stroke-width 3) (opacity (if at-o 0 1))))
+    (circle_ (r 8) (fill none) (stroke terracotta) (stroke-width 2.5) (dash [3 2.5]) (opacity (if at-o 0 1))))
+  ; P, the one thing to drag: a disk with a hand on it, which the page draws in the empty circle of
+  ; radius 10.5.
   (group p-dot (translate p) (fixed-size true)
-    (circle_ (r 9) (fill terracotta) (stroke paper) (stroke-width 2))))
+    (circle_ (r 11) (fill terracotta) (stroke paper) (stroke-width 2))
+    (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false))))
 
 (canvas view (x -1.15) (y -1.15) (width 3) (height 2.3) (pan false) (zoom false)
   doc@'A circle through the center, a point p on it, and its inverse q on the image line.'
@@ -75,3 +79,9 @@
 
 (on-drag p-dot (move theta (to (let ((d (or? (to-polar (- pointer c)) [0 theta]))) d[1])))
   doc@'Moves p around the circle; q follows along the line.')
+; Once, when the figure first comes into view, P goes a little way around the circle and back.
+(on-view view (animation (wait 0.6)
+  (move theta (to 95) (duration 0.6) (ease cubic-in-out))
+  (move theta (to 25) (duration 0.9) (ease cubic-in-out))
+  (move theta (to 60) (duration 0.6) (ease cubic-in-out)))
+  doc@'Moves P a little around the circle and back once, to show that it moves.')

@@ -9,7 +9,7 @@
 
 (import house paper ink soft terracotta teal indigo variable number)
 (import math norm)
-(import ease cubic-out)
+(import ease cubic-out cubic-in-out)
 
 ; The inverse of a point x other than the center: on the same ray, at distance 1 / |x|.
 (func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
@@ -22,6 +22,8 @@
 ; The ray's direction, for placing the names: p's sits just inside p, and q's just outside q,
 ; so the two never meet.
 (point ray (or? (* p (/ 1 (norm p))) [1 0]))
+; At right angles to the ray, for P's name, which so stays clear of the arrows along the ray.
+(point ray-side (polar 1 (+ (let ((r (or? (to-polar ray) [1 0]))) r[1]) 90)))
 ; How close p (and so q) is to the circle: 1 on it, falling to 0 at a distance of 0.12. The rim
 ; thickens and the disk tints with it, so the circle lights up as p reaches it, by finger too.
 ; Whether P and Q are shown, by their toggle; on at first.
@@ -42,7 +44,7 @@
 (real edge (min (or? (/ half-w (abs ray.x)) 100) (or? (/ (if (> ray.y 0) half-h bottom) (abs ray.y)) 100)))
 
 ; The centers of the two circles, dragged; the formulas under the figure read them.
-(point through-c [0.4 0.4])
+(point through-c [0.4 -0.45])
 (point misses-c [-1.3 -0.5])
 (bool show-through false)
 (bool show-misses false)
@@ -54,11 +56,12 @@
 ; A circle through the center, dragged by its position: its radius is the distance from the
 ; center to that position, so it always passes through the center.
 (motif through-center ()
-  (circle_ (r (norm self.pos)) (stroke teal) (fill teal) (fill-opacity 0)))
+  (circle_ (r (norm self.pos)) (stroke teal) (fill teal) (fill-opacity 0) (pointer-events false)))
 
 (scene plane
   (circle disk (r 1) (fill ink) (fill-opacity (* 0.06 near-rim)) (pointer-events false))
   (circle unit (r 1) (fill none) (stroke ink) (stroke-width (+ 2 (* 3 near-rim))) (pointer-events false))
+
   ; Cut to the frame, so that a line or a large image circle does not run off the figure.
   (group pairs (clip (rect_ (pos [0 0.175]) (width 4.4) (height 2.65))) (defaults (stroke-width 1.75))
     ; A circle through the center, centered at c: its radius is |c|, so it stays through the
@@ -66,31 +69,44 @@
     ; at right angles to c.
     (group through-pair (defaults (opacity (* (if show-through 1 0) fade-through))) (pointer-events show-through)
       (through-center through (pos through-c))
+      ; A disk at the circle's center, by which it is dragged; the page draws a hand on it.
+      (group through-grip (translate through-c) (fixed-size true)
+        (circle_ (r 11) (fill teal) (stroke paper) (stroke-width 2))
+        (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
       (line_ (from (- (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
-             (to (+ (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
-        (stroke teal) (dash [6 4]) (pointer-events false)))
+          (to (+ (* (inverse through.pos) 0.5) (* (across through.pos) 6)))
+          (stroke teal) (dash [6 4]) (pointer-events false)))
     ; A circle that misses the center, centered at c with radius r: its image is centered at
     ; c / (|c|^2 - r^2), with radius r / | |c|^2 - r^2 |.
     (group misses-pair (defaults (opacity (* (if show-misses 1 0) fade-misses))) (pointer-events show-misses)
-      (circle misses (pos misses-c) (r 0.35) (stroke indigo) (fill indigo) (fill-opacity 0))
+      (circle misses (pos misses-c) (r 0.35) (stroke indigo) (fill indigo) (fill-opacity 0) (pointer-events false))
+      ; A disk at the circle's center, by which it is dragged; the page draws a hand on it.
+      (group misses-grip (translate misses-c) (fixed-size true)
+        (circle_ (r 11) (fill indigo) (stroke paper) (stroke-width 2))
+        (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
       (circle_ (pos (or? (* misses-c (/ 1 (- (* (norm misses-c) (norm misses-c)) 0.1225))) [0 0]))
-        (r (abs (or? (/ 0.35 (- (* (norm misses-c) (norm misses-c)) 0.1225)) 0)))
-        (stroke indigo) (dash [6 4]) (fill none) (pointer-events false))))
+          (r (abs (or? (/ 0.35 (- (* (norm misses-c) (norm misses-c)) 0.1225)) 0)))
+          (stroke indigo) (dash [6 4]) (fill none) (pointer-events false))))
+
   (group pq (defaults (opacity (* (if show-pq 1 0) fade-pq))) (pointer-events show-pq)
     (group marks (pointer-events false)
       (line_ (from [0 0]) (to far) (stroke soft) (stroke-width 1) (dash [4 4]))
       ; When p or q is out of the frame, an arrow at the frame's edge points along the dashed
       ; line toward it.
       (line_ (from (* ray (- edge 0.32))) (to (* ray (- edge 0.06)))
-        (stroke terracotta) (stroke-width 2) (head-end 'dart') (opacity (if (and far-out show-pq) fade-pq 0)))
+          (stroke terracotta) (stroke-width 2) (head-end 'dart') (opacity (if (and far-out show-pq) fade-pq 0)))
       )
+
     ; The points keep their size on screen, in pixels; each name sits 26 pixels from its point,
     ; along the ray.
     (group names (pointer-events false) (defaults (font variable) (fill ink) (halign 'middle') (valign 'middle'))
-      (group p-name (translate p) (fixed-size true) (text_ 'P' (pos (* ray -26))))
+      (group p-name (translate p) (fixed-size true) (text_ 'P' (pos (* ray-side 22))))
       (group q-name (translate q) (fixed-size true) (text_ 'Q' (pos (* ray 26)))))
+    ; P, a disk with a hand on it, which the page draws in the empty circle of radius 10.5; on the
+    ; circle P shrinks into Q's ring, and the hand fades.
     (group p-dot (translate p) (fixed-size true)
-      (circle_ (r (- 9 (* 4 near-rim))) (fill terracotta) (stroke paper) (stroke-width 2)))
+      (circle_ (r (- 11 (* 6 near-rim))) (fill terracotta) (stroke paper) (stroke-width 2))
+      (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false) (opacity (- 1 near-rim))))
     ; Q is the image, so it is drawn as images are: dashed, with no fill. Only P is dragged.
     (group q-dot (translate q) (fixed-size true) (pointer-events false)
       (circle_ (r 8) (fill none) (stroke terracotta) (stroke-width 2.5) (dash [3 2.5]))))
@@ -115,14 +131,14 @@
     (move fade-pq (to 1)) (move fade-through (to 1)) (move fade-misses (to 1))))
 
 (on-drag p-dot (move p (to (snap pointer))) doc@'Moves p; q follows.')
-(on-drag through (move through-c (to pointer)) doc@'Moves the circle through the center, which stays through it.')
-(on-drag misses (move misses-c (to pointer)) doc@'Moves the circle that misses the center.')
+(on-drag through-grip (move through-c (to pointer)) doc@'Moves the circle through the center, by its grip.')
+(on-drag misses-grip (move misses-c (to pointer)) doc@'Moves the circle that misses the center, by its grip.')
+(on-dragstart through-grip (animation focus-through) doc@'Fades the other pairs.')
+(on-dragstart misses-grip (animation focus-misses) doc@'Fades the other pairs.')
+(on-dragend through-grip (animation unfocus) doc@'Brings the other pairs back.')
+(on-dragend misses-grip (animation unfocus) doc@'Brings the other pairs back.')
 (on-dragstart p-dot (animation focus-pq) doc@'Fades the other pairs.')
-(on-dragstart through (animation focus-through) doc@'Fades the other pairs.')
-(on-dragstart misses (animation focus-misses) doc@'Fades the other pairs.')
 (on-dragend p-dot (animation unfocus) doc@'Brings the other pairs back.')
-(on-dragend through (animation unfocus) doc@'Brings the other pairs back.')
-(on-dragend misses (animation unfocus) doc@'Brings the other pairs back.')
 
 (toggle show-pq-toggle show-pq (label 'P and Q')
   doc@'Shows P and its inverse Q.')
@@ -156,3 +172,9 @@
   (term i (tex $'{(or? (/ 1 (norm misses-c)) 0):.2f}') (fill indigo))
   (term j (tex $'{(abs (or? (/ (norm misses-c) (- (* (norm misses-c) (norm misses-c)) 0.1225)) 0)):.2f}') (fill indigo)))
 (display misses-display misses-facts)
+; Once, when the figure first comes into view, P moves out along its ray, then in, then back.
+(on-view view (animation (wait 0.6)
+  (move p (to [0.78 0.455]) (duration 0.6) (ease cubic-in-out))
+  (move p (to [0.42 0.245]) (duration 0.9) (ease cubic-in-out))
+  (move p (to [0.6 0.35]) (duration 0.6) (ease cubic-in-out)))
+  doc@'Moves P out and in along its ray once, to show that it moves.')

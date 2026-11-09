@@ -1,0 +1,60 @@
+; Inversion preserves angles. A small square grid, its outer square in terracotta, and its image: the grid's lines are mapped to
+; arcs, and wherever two of them cross, the arcs cross at a right angle too. The grid is dragged by
+; its top left corner; closer to O its image grows and bends more, and the crossings stay right angles.
+;
+; Each line of the grid is drawn through many points, and its image through their inverses, so the
+; arcs are exact up to the drawing.
+
+(import house paper ink soft terracotta variable)
+(import math norm)
+(import ease cubic-in-out)
+
+(func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
+(func[list[point]] seg ((point a) (point b)) (map (range 0 1 (num 120)) (fn s (+ a (* (- b a) s)))))
+(func[list[point]] image ((list[point] pts)) (map pts (fn q (inverse q))))
+
+; The grid's center, which the drag moves; its lines are 0.07 apart, seven each way.
+(point g [0.72 0.08])
+(point ex [0.07 0] (const))
+(point ey [0 0.07] (const))
+; The grid's top left corner, from its center, where the handle is.
+(point corner [-0.21 0.21] (const))
+
+(scene plane
+  (circle_ (r 1) (fill none) (stroke ink) (stroke-width 2) (pointer-events false))
+  (group drawing (clip (rect_ (pos [0.6 0.1]) (width 3.8) (height 2.8))) (pointer-events false)
+    (defaults (stroke-width 1) (fill none))
+    (foreach k 7
+      (polyline_ (points (seg (+ g (* ex (- k 3)) (* ey -3)) (+ g (* ex (- k 3)) (* ey 3)))) (stroke ink))
+      (polyline_ (points (seg (+ g (* ey (- k 3)) (* ex -3)) (+ g (* ey (- k 3)) (* ex 3)))) (stroke ink))
+      (polyline_ (points (image (seg (+ g (* ex (- k 3)) (* ey -3)) (+ g (* ex (- k 3)) (* ey 3)))))
+        (stroke ink) (dash [4 3]))
+      (polyline_ (points (image (seg (+ g (* ey (- k 3)) (* ex -3)) (+ g (* ey (- k 3)) (* ex 3)))))
+        (stroke ink) (dash [4 3])))
+    ; The grid's outer square in terracotta, which the handle on its corner matches, and its image.
+    (group edge (defaults (stroke terracotta) (stroke-width 2.5))
+      (foreach side 4
+        (polyline_ (points (seg (+ g (polar 0.297 (+ 45 (* 90 side)))) (+ g (polar 0.297 (+ 135 (* 90 side)))))))
+        (polyline_ (points (image (seg (+ g (polar 0.297 (+ 45 (* 90 side)))) (+ g (polar 0.297 (+ 135 (* 90 side)))))))
+          (dash [5 4])))))
+  (group o-name (fixed-size true) (pointer-events false)
+    (circle_ (r 4) (fill ink) (stroke none))
+    (text_ 'O' (pos [-14 -12]) (font variable) (fill ink) (halign 'middle') (valign 'middle')))
+  ; The disk at the grid's top left corner, by which it is dragged; the page draws a hand in the
+  ; empty circle of radius 10.5.
+  (group grip (translate (+ g corner)) (fixed-size true)
+    (circle_ (r 11) (fill terracotta) (stroke paper) (stroke-width 2))
+    (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false))))
+
+(canvas view (x -1.3) (y -1.3) (width 3.8) (height 2.8) (pan false) (zoom false)
+  doc@'A square grid near the circle and its image, a curved grid whose crossings are right angles.'
+  plane)
+
+(on-drag grip (move g (to (- pointer corner)))
+  doc@'Moves the grid; its image bends more closer to O, and its crossings stay right angles.')
+; Once, when the figure first comes into view, the grid moves toward O and back.
+(on-view view (animation (wait 0.6)
+  (move g (to [0.55 0.08]) (duration 0.7) (ease cubic-in-out))
+  (move g (to [0.8 0.08]) (duration 0.8) (ease cubic-in-out))
+  (move g (to [0.72 0.08]) (duration 0.5) (ease cubic-in-out)))
+  doc@'Moves the grid toward O and back once, to show that it moves.')

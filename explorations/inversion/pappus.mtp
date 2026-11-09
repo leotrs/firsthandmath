@@ -1,0 +1,75 @@
+; A Pappus chain. Two circles are tangent at T, one inside the other, and a chain of circles C0,
+; C1, C2, ... lies between them, each tangent to both and to the next, C0 centered on the line
+; through the centers. Inversion at T maps the two circles to two parallel lines and the chain to a
+; stack of equal circles between them; C_n is at height n times its diameter, as the stack shows.
+; The highlighted circle C_n is chosen by dragging its image up and down the stack.
+;
+; As in the tangent-circles figure: inversion in the circle of radius 1 around T, the large circle
+; with center [1 0] and radius 1 (image the line x = 1/2), the small one with center [0.5 0] and
+; radius 0.5 (image the line x = 1). The image of C_k is the circle with center [0.75 k/2] and
+; radius 1/4; C_k is computed back from it.
+
+(import house paper ink soft terracotta teal indigo variable number)
+(import math norm)
+(import ease cubic-in-out)
+
+(func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
+(point up [0 1] (const))
+(point foot [0.75 0] (const))
+; The image of C_k, and C_k itself: center c / (|c|^2 - r^2) and radius r / (|c|^2 - r^2).
+(func[point] image-center ((real k)) (+ foot (* up (* 0.5 k))))
+(func[real] power ((real k)) (or? (- (* (norm (image-center k)) (norm (image-center k))) 0.0625) 0.5))
+(func[point] chain-center ((real k)) (or? (* (image-center k) (/ 1 (power k))) foot))
+(func[real] chain-radius ((real k)) (or? (/ 0.25 (power k)) 0.5))
+
+; Which circle of the chain is highlighted and measured.
+(int n 3 (>= 1) (<= 4))
+(point cn (chain-center n))
+(real dn (* 2 (chain-radius n)))
+
+(scene plane
+  (group drawing (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4))) (pointer-events false)
+    (defaults (stroke-width 1.5) (fill none))
+    (circle_ (pos [1 0]) (r 1) (stroke teal))
+    (circle_ (pos [0.5 0]) (r 0.5) (stroke indigo))
+    (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
+    (line_ (from [1 -5]) (to [1 5]) (stroke indigo) (dash [6 4]))
+    (line_ (from [-1 0]) (to [3 0]) (stroke soft) (stroke-width 1))
+    ; The chain and its image, the stack: C_n and its image in terracotta, the rest in ink.
+    (foreach k 5
+      (circle_ (pos (chain-center k)) (r (chain-radius k)) (stroke (if (= k n) terracotta ink))
+        (fill (if (= k n) terracotta none)) (fill-opacity 0.15) (stroke-width (if (= k n) 2 1.25)))
+      (circle_ (pos (image-center k)) (r 0.25) (stroke (if (= k n) terracotta soft)) (dash [5 4])
+        (stroke-width (if (= k n) 2 1.25))))
+    ; The height of C_n's center above the line, and of its image's.
+    (line_ (from [cn.x 0]) (to cn) (stroke terracotta) (stroke-width 2) (head-start 'bar') (head-end 'bar'))
+    (line_ (from foot) (to (image-center n)) (stroke terracotta) (stroke-width 2) (dash [3 3])
+      (head-start 'bar') (head-end 'bar')))
+  (group t-dot (fixed-size true) (pointer-events false)
+    (circle_ (r 4) (fill ink) (stroke none))
+    (text_ 'T' (pos [-14 0]) (font variable) (fill ink) (halign 'middle') (valign 'middle')))
+  ; The disk at the center of C_n's image in the stack, where the circles are large, by which
+  ; another circle is chosen; the page draws a hand in the empty circle of radius 10.5.
+  (group pick (translate (image-center n)) (fixed-size true)
+    (circle_ (r 11) (fill terracotta) (stroke paper) (stroke-width 2))
+    (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false))))
+
+(canvas view (x -0.25) (y -1.05) (width 2.35) (height 3.4) (pan false) (zoom false)
+  doc@'A Pappus chain between two circles tangent at T, and its image, a stack of equal circles.'
+  plane)
+
+; The pointer's height in the stack picks the circle.
+(on-drag pick (move n (to (round (* 2 (. pointer y)))))
+  doc@'Picks another circle of the chain to measure.')
+; Once, when the figure first comes into view, the highlight steps down the chain and back.
+(on-view view (animation (wait 0.6)
+  (move n (to 1) (duration 0.5)) (move n (to 4) (duration 0.8)) (move n (to 3) (duration 0.4)))
+  doc@'Steps the highlighted circle along the chain once, to show that it can be chosen.')
+
+; Under the figure: the height of C_n's center is n times its diameter.
+(formula pappus
+  tex'\text{height of the center} = \term{h}{} = \term{n}{} \times \term{d}{}'
+  (term h (tex $'{cn.y:.3f}') (fill terracotta))
+  (term n (tex $'{n}'))
+  (term d (tex $'{dn:.3f}') (fill terracotta)))
+(display pappus-display pappus)

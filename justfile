@@ -5,6 +5,7 @@
 #   just all           the site and every exploration
 #   just deploy        build everything and publish _site/ to Netlify
 #   just preview       build everything and publish _site/ to a draft address on Netlify
+#   just statics NAME  capture NAME's widgets at their starting position, for RSM's tooltips
 # Every tool runs through uv from the local development checkouts of mathterpiece and RSM.
 # Each exploration is a folder holding NAME.rsm, its figures' .mtp files, figs/*.html placing
 # them, and page.json with its colophon.
@@ -57,16 +58,34 @@ all:
     for dir in explorations/*/; do just build "$(basename "$dir")"; done
 
 # Build everything and publish it to the Netlify site this folder is linked to (netlify link).
-deploy: all
+deploy: check-statics all
     # The empty content page is only for designing the shell.
     rm -r _site/content-page
     npx -y netlify-cli@27.16.2 deploy --dir _site --prod
 
 # Build everything and publish it to a draft address on Netlify, apart from the live site, to
 # look at on a phone or send to someone. Each run gets a new address, printed at the end.
-preview: all
+preview: check-statics all
     rm -r _site/content-page
     npx -y netlify-cli@27.16.2 deploy --dir _site --json | uv run --no-project python -c "import json, sys; print(json.load(sys.stdin)['deploy_url'])"
+
+# Capture each widget of NAME at its starting position, light and dark, into its figs/ folder: the
+# pictures RSM shows in a reference's tooltip and in place of the figure without JavaScript.
+statics name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f _site/mathterpiece.js ] || just site
+    just build {{name}}
+    uv run --no-project python -m http.server 8797 --directory _site >/dev/null 2>&1 &
+    server=$!
+    trap 'kill $server' EXIT
+    sleep 1
+    MATHTERPIECE={{mtp}} node site/statics.mjs {{name}} http://localhost:8797
+    rm _site/{{name}}/statics-capture.html
+
+# Refuse to publish while a widget's static pictures are older than its figure.
+check-statics:
+    uv run --no-project python site/check_statics.py
 
 # Serve the site, rebuild NAME on every change to it, and reload the open pages.
 dev name:

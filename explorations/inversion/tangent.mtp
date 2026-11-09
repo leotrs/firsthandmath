@@ -1,0 +1,70 @@
+; Two circles tangent at T, and inversion in a circle centered at T. Both circles pass through T,
+; so their images are lines, and since the circles are tangent there the lines are parallel. A third
+; circle, packed between the two, is mapped to a circle packed between the two lines. Dragging the
+; third circle slides its image along the gap between the lines.
+;
+; Inversion here is in the circle of radius 1 around T, drawn faint. The large circle has center
+; [1 0] and radius 1, so its image is the line x = 1/2; the small one has center [0.5 0] and
+; radius 0.5, so its image is the line x = 1. The image of the third circle has center [0.75 h]
+; and radius 0.25, tangent to both lines; the third circle is computed back from it, since
+; inversion is its own inverse.
+
+(import house paper ink soft terracotta teal indigo variable)
+(import math norm)
+(import ease cubic-in-out)
+
+(func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
+
+; The height of the image circle's center, which the drag sets.
+; Far beyond the frame, so the packed circle can be dragged right up to T; its image then leaves
+; the frame along the gap.
+(real h 0.45 (>= -60) (<= 60))
+(point image-c [0.75 h])
+(real image-r 0.25 (const))
+; The circle whose image that is: its center c / (|c|^2 - r^2) and radius r / | |c|^2 - r^2 |.
+; (or? …) only because of mtp-ob7p: a product of norms is inferred maybe-none.
+(real power (or? (- (* (norm image-c) (norm image-c)) 0.0625) 0.5))
+(point chain-c (or? (* image-c (/ 1 power)) [1.5 0]))
+(real chain-r (abs (or? (/ image-r power) 0.5)))
+
+
+(scene plane
+  (circle_ (r 1) (fill none) (stroke soft) (stroke-width 1) (dash [2 4]) (pointer-events false))
+  (group drawing (clip (rect_ (pos [0.9 0]) (width 2.6) (height 2.8))) (pointer-events false)
+    (defaults (stroke-width 1.75) (fill none))
+    (circle_ (pos [1 0]) (r 1) (stroke teal))
+    (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
+    (circle_ (pos [0.5 0]) (r 0.5) (stroke indigo))
+    (line_ (from [1 -5]) (to [1 5]) (stroke indigo) (dash [6 4]))
+    (circle_ (pos image-c) (r image-r) (stroke terracotta) (dash [6 4]))
+    ; When the image circle is out of the frame, above or below, an arrow at that edge of the gap
+    ; points to it, as in the first figure.
+    (line_ (from [0.75 1.08]) (to [0.75 1.34]) (stroke terracotta) (stroke-width 2) (head-end 'dart')
+      (opacity (if (> h 1.65) 1 0)))
+    (line_ (from [0.75 -1.08]) (to [0.75 -1.34]) (stroke terracotta) (stroke-width 2) (head-end 'dart')
+      (opacity (if (< h -1.65) 1 0))))
+  (circle chain (pos chain-c) (r chain-r) (stroke terracotta) (stroke-width 1.75)
+    (fill none) (pointer-events false))
+  ; The disk at the packed circle's center, by which it is dragged; the page draws a hand in the empty
+  ; circle of radius 10.5.
+  (group grip (translate chain-c) (fixed-size true)
+    (circle_ (r 11) (fill terracotta) (stroke paper) (stroke-width 2))
+    (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
+  (group t-dot (fixed-size true) (pointer-events false)
+    (circle_ (r 4) (fill ink) (stroke none))
+    (text_ 'T' (pos [-14 0]) (font variable) (fill ink) (halign 'middle') (valign 'middle'))))
+
+(canvas view (x -0.4) (y -1.4) (width 2.6) (height 2.8) (pan false) (zoom false)
+  doc@'Two circles tangent at T, a circle packed between them, and their images under inversion at T.'
+  plane)
+
+; The pointer is inverted, and its height sets where the image circle sits along the gap.
+(on-drag grip (move h (to (. (inverse pointer) y)))
+  doc@'Slides the packed circle between the two circles; its image slides between the lines.')
+
+; Once, when the figure first comes into view, the packed circle nudges along its path and back.
+(on-view view (animation (wait 0.6)
+  (move h (to 0.8) (duration 0.6) (ease cubic-in-out))
+  (move h (to 0.1) (duration 0.9) (ease cubic-in-out))
+  (move h (to 0.45) (duration 0.6) (ease cubic-in-out)))
+  doc@'Nudges the packed circle once, to show that it moves.')
