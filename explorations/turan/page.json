@@ -1,5 +1,6 @@
 {
-  "cite": "Leo Torres, \"Turán's theorem, from edges to eigenvalues\", Firsthand Math, 1 September 2026.",
+  "cite": "Leo Torres, \"Turán's theorem, from edges to eigenvalues\", Scroll Press, 31 August 2026, <a href=\"https://doi.org/10.5281/zenodo.22199342\">doi:10.5281/zenodo.22199342</a>.",
   "source": "This page and its figures, on <a href=\"https://github.com/leotrs/firsthandmath/tree/main/explorations/turan\">GitHub</a>. The page is written in <a href=\"https://github.com/aris-pub/rsm\">RSM</a> and the figures in <a href=\"https://github.com/aris-pub/mathterpiece\">mathterpiece</a>.",
-  "licence": "Text and figures under <a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">CC BY-NC 4.0</a>."
+  "licence": "Text and figures under <a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">CC BY-NC 4.0</a>.",
+  "canonical": "https://scroll.press/2026/turan"
 }

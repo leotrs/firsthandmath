@@ -30,6 +30,9 @@ if title:
 # RSM's styles and scripts read attributes it puts on <body>.
 out = out.replace("<body>", f"<body{body.group(1)}>", 1)
 out = out.replace('<div class="fm-body"></div>', f'<div class="fm-body">{body.group(2)}</div>')
+# A page first published elsewhere names that copy as the original, for search engines.
+if page.get("canonical"):
+    out = out.replace("</head>", f'<link rel="canonical" href="{page["canonical"]}">\n</head>', 1)
 out = out.replace("<dd>Citation</dd>", f'<dd>{page["cite"]}</dd>')
 out = out.replace("<dd>Source</dd>", f'<dd>{page["source"]}</dd>')
 out = out.replace("<dd>Licence</dd>", f'<dd>{page["licence"]}</dd>')

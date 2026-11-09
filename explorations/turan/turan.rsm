@@ -4,9 +4,11 @@
 }
 
 :config: {
-  :override-date: 1 September 2026 · 27 minute read
+  :override-date: 31 August 2026 · 27 minute read
 }
 ::
+
+:paragraph: {:class: publication-note} :span: {:class: meta-label} First published :: This page was first published on Scroll Press on 31 August 2026, at :url:https://scroll.press/2026/turan, scroll.press/2026/turan::, where it is citable as doi:10.5281/zenodo.22199342. This copy has been edited for clarity and to fit with the rest of Firsthand Math.
 
 :abstract:
 
