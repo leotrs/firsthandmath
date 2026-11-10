@@ -49,7 +49,7 @@
 ; has shown so far. The images are drawn for inversion in the circle centered at T of radius
 ; sqrt(inv-k), which is the unit circle at first and is dragged, or moved, to the one that leaves
 ; C_n in place.
-(int stage 0 (>= 0) (<= 6))
+(int stage 0 (>= 0) (<= 5))
 (real inv-k 1 (>= 0.05) (<= 9))
 (real lines-a 0 (>= 0) (<= 1))
 (real stack-n 0 (>= 0) (<= 6))
@@ -114,13 +114,13 @@
         (defaults (stroke-width 1.5) (fill none) (opacity lines-a))
       (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
       (line_ (from (+ (* right far) [0 -5])) (to (+ (* right far) [0 5])) (stroke indigo) (dash [6 4]))
-      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 6) 1 0)))
+      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 5) 1 0)))
       ; A notch at every multiple of the image's diameter, as on the height of C_n.
       (foreach j 5
         (line_ (from (+ foot [-0.03 0] (* up (* (+ j 1) gap)))) (to (+ foot [0.03 0] (* up (* (+ j 1) gap))))
-          (stroke soft) (opacity (if (and (>= stage 6) (< (+ j 1) n)) 1 0))))
+          (stroke soft) (opacity (if (and (>= stage 5) (< (+ j 1) n)) 1 0))))
       (line_ (from (- (image-center n) [image-r 0])) (to (+ (image-center n) [image-r 0])) (stroke soft)
-          (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 6) 1 0))))
+          (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 5) 1 0))))
     (group stack
       (foreach k 6
         (circle #'stack-{k}' (pos (image-center k)) (r image-r) (stroke (if (= k n) terracotta soft)) (dash [5 4])
@@ -130,7 +130,7 @@
   (group marks
     ; In step 3 of the tour, the disk on the circle of inversion, by which its radius is set; the page
     ; draws the arrows in the empty circle of radius 10.5.
-    (group inv-grip (translate (* [-0.5 -0.866] (or? (sqrt inv-k) 1))) (fixed-size true) (defaults (opacity (if (= stage 4) 1 0)))
+    (group inv-grip (translate (* [-0.5 -0.866] (or? (sqrt inv-k) 1))) (fixed-size true) (defaults (opacity (if (= stage 3) 1 0)))
       (circle_ (r 11) (fill soft) (stroke paper) (stroke-width 2))
       (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The disk at five o'clock on the inner circle, by which its radius is set; the page draws a hand
@@ -195,19 +195,17 @@
 ; to the step before.
 (stepper hints (label 'hints')
   (animation
-    ; The values of h_n / d_n, which the first question shows.
-    (move stage (to 1) (duration 0))
-    (in-order (move stage (to 2) (duration 0)) (move inv-k (to 1) (duration 0)) (move show-images (to true) (duration 0))
+    (in-order (move stage (to 1) (duration 0)) (move inv-k (to 1) (duration 0)) (move show-images (to true) (duration 0))
       (at-once (move glow-d1 (to 1) (duration 0.4)) (move glow-d2 (to 1) (duration 0.4))))
-    (in-order (move stage (to 3) (duration 0))
+    (in-order (move stage (to 2) (duration 0))
       (at-once (move glow-d1 (to 0) (duration 0.4)) (move glow-d2 (to 0) (duration 0.4)) (move lines-a (to 1) (duration 0.8))))
-    (in-order (move stage (to 4) (duration 0)) (move view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
+    (in-order (move stage (to 3) (duration 0)) (move view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
       (move stack-n (to 6) (duration 1.5)))
-    (in-order (move stage (to 5) (duration 0)) (move inv-k (to rho2) (duration 1.2) (ease cubic-in-out)))
-    (in-order (move stage (to 6) (duration 0)) (move count-n (to n) (duration 1.5))))
+    (in-order (move stage (to 4) (duration 0)) (move inv-k (to rho2) (duration 1.2) (ease cubic-in-out)))
+    (in-order (move stage (to 5) (duration 0)) (move count-n (to n) (duration 1.5))))
   doc@'Asks one question per step about why the ratio is n; each step first shows the answer to the one before.')
 
-(on-drag inv-grip (move inv-k (to (or? (* (norm pointer) (norm pointer)) 1))) (active (= stage 4))
+(on-drag inv-grip (move inv-k (to (or? (* (norm pointer) (norm pointer)) 1))) (active (= stage 3))
   doc@'Sets the radius of the circle of inversion; the images grow and shrink with it.')
 
 ; The control under the figure: one button for each circle of the chain, the selected one filled.

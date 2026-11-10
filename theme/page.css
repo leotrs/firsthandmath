@@ -112,6 +112,9 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 .fm-fig-row-body { border-left: var(--border-thin) solid var(--fm-swatch, var(--fm-ink)); padding-left: var(--chunk-quarter); }
 /* A row whose formulas belong to no colored pair has no stroke. */
 .fm-fig-row-body.fm-unmarked { border-left: none; padding-left: 0; }
+/* A row of its own under centered controls is centered too (.fm-centered on the row). */
+.fm-fig-row.fm-centered { display: flex; justify-content: center; }
+.fm-fig-row.fm-centered mtp-display, .fm-fig-row.fm-centered mjx-container { text-align: center !important; }
 .fm-fig-row-body mtp-display { text-align: left !important; }
 .fm-fig-row-body mjx-container { text-align: left !important; margin: 0 !important; }
 .fm-fig-key {
