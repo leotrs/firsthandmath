@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Short: inversion (dev)</title>
+<!-- Dev only: the vertical frame of the inversion short and its script side by side, for writing
+     and recording. The arrow keys move the short's tour one phrase at a time. Copied to _site/dev/
+     by `just site` and removed before a deploy. -->
+<link rel="stylesheet" href="/base.css">
+<script type="module" src="/mathterpiece.js"></script>
+<style>
+  body { margin: 0; background: var(--fm-paper); color: var(--fm-ink); font-family: var(--fm-serif); }
+  /* The controls' colors, as on the content pages (theme/page.css). */
+  :root { --mtp-control-rest: var(--fm-soft); --mtp-control-active: var(--fm-ink); }
+  .dev { display: grid; grid-template-columns: auto minmax(320px, 1fr); gap: 24px; height: 100vh; padding: 16px; box-sizing: border-box; }
+  .dev > section { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+  .dev h2 { font: 600 12px/1 var(--fm-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fm-quiet); margin: 0 0 8px; }
+  /* The short's frame: 1080 by 1920, drawn at the height of the window, the stepper under it. */
+  .frame { height: calc(100vh - 110px); aspect-ratio: 9 / 16; border: 1px solid var(--fm-rule); border-radius: 8px;
+    background: var(--fm-paper); display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .frame mtp-canvas { display: block; width: 100%; }
+  .controls { display: flex; justify-content: center; padding-top: 12px; }
+  .script { overflow-y: auto; padding-right: 8px; max-width: 46em; }
+  .beat { border-top: 1px solid var(--fm-rule); padding: 12px 0; }
+  .beat header { display: flex; justify-content: space-between; font: 500 13px/1.4 var(--fm-sans); color: var(--fm-quiet); margin-bottom: 6px; }
+  .beat p { margin: 0; font-size: 20px; line-height: 1.6; }
+  .total { font: 600 13px/1.4 var(--fm-sans); color: var(--fm-quiet); padding-top: 12px; border-top: 1px solid var(--fm-rule); }
+  .note { font: 400 13px/1.5 var(--fm-sans); color: var(--fm-quiet); margin: 0 0 8px; }
+  /* The phrase that goes with the step just played, and the one the next step plays. */
+  .script [data-step] { border-radius: 4px; transition: background .2s; }
+  .script [data-step].now { background: color-mix(in srgb, var(--fm-terracotta) 22%, var(--fm-paper)); }
+  .script [data-step].next { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--fm-terracotta) 60%, var(--fm-paper)); }
+</style>
+</head>
+<body>
+<main class="dev">
+  <section>
+    <h2>The short, 9 × 16</h2>
+    <div class="frame">
+      <mtp-model id="short" src="/inversion/assets/figs/pappus.mtpc"></mtp-model>
+      <mtp-canvas model="short" name="short-view"></mtp-canvas>
+    </div>
+    <div class="controls"><mtp-stepper model="short" name="short"></mtp-stepper></div>
+  </section>
+  <section class="script">
+    <h2>Script, draft 1</h2>
+    <p class="note">→ plays the next phrase's step, ← goes back one. The highlighted phrase goes with the
+      step just played; the underlined one is next. Times are estimated at 150 words a minute.</p>
+    <div class="beat"><header><span>1. Setup</span><span class="t"></span></header>
+      <p><span data-step="1">Two circles, D₁ and D₂,</span> <span data-step="2">touch at a point T, one inside the other.</span>
+        <span data-step="3">Between them lies a chain of circles, C₀, C₁, C₂ and so on,</span>
+        <span data-step="4">each tangent to both and to the next, with C₀ centered on the line L through T and the two centers.</span></p></div>
+    <div class="beat"><header><span>2. The fact</span><span class="t"></span></header>
+      <p><span data-step="5">Pappus of Alexandria proved, some 1,700 years ago, that the center of Cₙ lies exactly n of its own diameters above L,</span>
+        <span data-step="6">whatever the sizes of D₁ and D₂.</span></p></div>
+    <div class="beat"><header><span>3. Inversion</span><span class="t"></span></header>
+      <p><span data-step="7">The reason is inversion. Inversion in a circle centered at T sends each point P to the point on the ray from T through P whose distance from T is r² divided by the distance from T to P, where r is the radius of that circle. It turns circles through T into straight lines, and it keeps tangent circles tangent.</span></p></div>
+    <div class="beat"><header><span>4. The reason</span><span class="t"></span></header>
+      <p><span data-step="8">Since D₁ and D₂ pass through T, they become two parallel lines,</span>
+        <span data-step="9">and the chain becomes a stack of equal circles between them, each touching the next.</span>
+        <span data-step="10">The image of Cₙ therefore lies n diameters above L.</span>
+        <span data-step="11">When the circle of inversion crosses Cₙ at right angles, Cₙ is its own image,</span>
+        <span data-step="12">so Cₙ itself lies n of its own diameters above L.</span></p></div>
+    <div class="beat"><header><span>5. End</span><span class="t"></span></header>
+      <p>The figure is at firsthandmath.com/inversion.</p></div>
+    <div class="total"></div>
+  </section>
+</main>
+<script>
+  // Word counts and spoken times, so the script's length is seen while it is edited.
+  const WPM = 150;
+  let words = 0;
+  for (const beat of document.querySelectorAll(".beat")) {
+    const n = beat.querySelector("p").textContent.trim().split(/\s+/).length;
+    words += n;
+    beat.querySelector(".t").textContent = `${n} words · ${Math.round((n / WPM) * 60)} s`;
+  }
+  document.querySelector(".total").textContent = `Total: ${words} words · about ${Math.round((words / WPM) * 60)} s`;
+
+  // The phrases follow the stepper's step, which it reports in its data-step attribute.
+  const stepper = document.querySelector("mtp-stepper");
+  const mark = () => {
+    const at = Number(stepper.getAttribute("data-step") ?? 0);
+    for (const phrase of document.querySelectorAll(".script [data-step]")) {
+      const k = Number(phrase.dataset.step);
+      phrase.classList.toggle("now", k === at);
+      phrase.classList.toggle("next", k === at + 1);
+    }
+    document.querySelector(".script .now")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  };
+  new MutationObserver(mark).observe(stepper, { attributes: true, attributeFilter: ["data-step"] });
+  mark();
+</script>
+</body>
+</html>

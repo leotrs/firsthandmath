@@ -22,6 +22,9 @@ site:
     # The empty content page, to look at while it is designed.
     mkdir -p _site/content-page
     cp site/content-page.html _site/content-page/index.html
+    # Dev-only pages, such as a short's script beside its page and frame; never deployed.
+    mkdir -p _site/dev/short-inversion
+    cp site/dev/short-inversion.html _site/dev/short-inversion/index.html
     # One copy of RSM's scripts, styles and MathJax for every page, from the local RSM checkout.
     mkdir -p _site/rsm-static
     cp -R {{rsm}}/rsm/static/. _site/rsm-static/
@@ -59,14 +62,14 @@ all:
 
 # Build everything and publish it to the Netlify site this folder is linked to (netlify link).
 deploy: check-statics all
-    # The empty content page is only for designing the shell.
-    rm -r _site/content-page
+    # The empty content page and the dev pages are only for working on the site.
+    rm -r _site/content-page _site/dev
     npx -y netlify-cli@27.16.2 deploy --dir _site --prod
 
 # Build everything and publish it to a draft address on Netlify, apart from the live site, to
 # look at on a phone or send to someone. Each run gets a new address, printed at the end.
 preview: check-statics all
-    rm -r _site/content-page
+    rm -r _site/content-page _site/dev
     npx -y netlify-cli@27.16.2 deploy --dir _site --json | uv run --no-project python -c "import json, sys; print(json.load(sys.stdin)['deploy_url'])"
 
 # Capture each widget of NAME at its starting position, light and dark, into its figs/ folder: the
