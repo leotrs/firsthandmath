@@ -29,17 +29,35 @@ const figures = readdirSync(dir).filter((f) => f.endsWith(".html")).map((f) => {
   return { stem: f.slice(0, -5), id: model[1], src: model[2], canvas: canvas[2], states };
 });
 
+const browser = await chromium.launch();
+
+// Each figure is captured at the width its canvas has on the built page on a desktop screen, since a
+// figure draws its lines, dots and labels at a fixed number of screen pixels: captured wider and
+// shrunk to the page, they would come out thinner and smaller than in the live figure. A figure
+// hidden on the page, as in a folded block, takes the width most of the others have.
+const measure = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+await measure.goto(`${url}/${name}/`);
+await measure.waitForFunction(() => [...document.querySelectorAll("mtp-canvas")].some((c) => c.querySelector("svg")), null, { timeout: 20000 });
+await measure.waitForTimeout(500);
+const onPage = await measure.evaluate(() =>
+  Object.fromEntries([...document.querySelectorAll("mtp-canvas")].map((c) => [c.getAttribute("model"), c.getBoundingClientRect().width])),
+);
+await measure.close();
+const shown = Object.values(onPage).filter((w) => w > 0).map(Math.round);
+const usual = shown.sort((a, b) => shown.filter((w) => w === b).length - shown.filter((w) => w === a).length)[0];
+const widthOf = (f) => (onPage[f.id] > 0 ? Math.round(onPage[f.id]) : usual);
+
 // One page with every figure, beside the exploration's built page so that its assets resolve.
 const page = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="/base.css"><script type="module" src="/mathterpiece.js"></script>
-<style>body{background:var(--fm-paper);margin:0;padding:20px} mtp-canvas{display:block;width:900px;margin-bottom:30px}</style>
-</head><body>${figures.map((f) => `<mtp-model id="${f.id}" src="assets/${f.src}"></mtp-model><mtp-canvas model="${f.id}" name="${f.canvas}"></mtp-canvas>`).join("\n")}</body></html>`;
+<style>body{background:var(--fm-paper);margin:0;padding:20px} mtp-canvas{display:block;margin-bottom:30px}</style>
+</head><body>${figures.map((f) => `<mtp-model id="${f.id}" src="assets/${f.src}"></mtp-model><mtp-canvas model="${f.id}" name="${f.canvas}" style="width:${widthOf(f)}px"></mtp-canvas>`).join("\n")}</body></html>`;
 mkdirSync(join("_site", name), { recursive: true });
 writeFileSync(join("_site", name, "statics-capture.html"), page);
 
-const browser = await chromium.launch();
+// Three times the screen's resolution, so that the picture stays sharp on any screen.
 for (const scheme of ["light", "dark"]) {
-  const p = await browser.newPage({ viewport: { width: 960, height: 1200 }, deviceScaleFactor: 2, colorScheme: scheme });
+  const p = await browser.newPage({ viewport: { width: 960, height: 1200 }, deviceScaleFactor: 3, colorScheme: scheme });
   await p.addInitScript(() => {
     window.IntersectionObserver = class { observe() {} disconnect() {} unobserve() {} };
   });

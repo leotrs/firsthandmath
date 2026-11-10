@@ -8,5 +8,5 @@
 (color saffron (light-dark '#e9c46a' '#f2d27e'))
 (color indigo (light-dark '#3f4fb5' '#9aa6f0'))
 
-(font variable (family 'Newsreader, serif') (style 'italic') (size 20))
+(font variable (family '"Source Serif 4", serif') (style 'italic') (size 20))
 (font number (family '"Source Sans 3", sans-serif') (size 14))
