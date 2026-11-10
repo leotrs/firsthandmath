@@ -143,7 +143,7 @@ image are arcs, and they cross at right angles, as the lines of the grid do.
 
 :aside: {:label: liouville} In three or more dimensions there is a strong converse, due to Liouville: every angle-preserving map is a composition of inversions in spheres, reflections and similarities. In the plane there are many more angle-preserving maps, for example every holomorphic function with nonzero derivative. ::
 
-## Try it firsthand {
+## Try your hand first {
   :label: try
   :nonum:
 }

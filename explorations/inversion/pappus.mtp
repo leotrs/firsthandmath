@@ -50,10 +50,21 @@
 ; sqrt(inv-k), which is the unit circle at first and is dragged, or moved, to the one that leaves
 ; C_n in place.
 (int stage 0 (>= 0) (<= 5))
-(real inv-k 1 (>= 0.05) (<= 9))
+(real inv-k 1 (>= 0.05) (<= 5))
+; From step 4 on, the circle of inversion follows C_n: lock goes from 0 to 1 in that step, and the
+; radius in use, inv-used, moves from the one dragged in step 3 to the one that leaves C_n in place, and
+; then keeps leaving it in place when D_2 or C_n changes.
+(real lock 0 (>= 0) (<= 1))
+(real inv-used (+ (* (- 1 lock) inv-k) (* lock rho2)))
 (real lines-a 0 (>= 0) (<= 1))
 (real stack-n 0 (>= 0) (<= 6))
 (real count-n -1 (>= -1) (<= 5))
+; Whether this copy of the figure is the one in the hints, set when its canvas, hints-view, first
+; comes into view. There the figure answers only to what helps with the hint at hand: the inner
+; circle keeps its size, C_n is picked only in steps 3 and 5, and the circle of inversion is
+; dragged only in step 4.
+(bool in-hints false)
+(bool picks (or (not in-hints) (= stage 3) (= stage 5)))
 ; Only a still picture of the figure hides the handle (figs/pappus.states.json), since a picture
 ; cannot be dragged.
 (bool show-grip true)
@@ -68,6 +79,10 @@
 (real glow-cn 0 (>= 0) (<= 1))
 (real glow-h 0 (>= 0) (<= 1))
 (real glow-d 0 (>= 0) (<= 1))
+; In hint 3, each circle of the chain lights up with its image in turn: pair-k is the circle, and
+; pair-a how strongly the pair is lit.
+(int pair-k 0 (>= 0) (<= 5))
+(real pair-a 0 (>= 0) (<= 1))
 
 (scene plane
   (group base
@@ -78,8 +93,8 @@
       (circle_ (pos (* right s)) (r s) (stroke indigo) (stroke-width 12) (stroke-opacity (* 0.22 glow-d2)))
       (line_ (from [-1 0]) (to [3 0]) (stroke soft) (stroke-width 12) (stroke-opacity (* 0.22 glow-l)))
       (foreach k 6
-        (circle_ (pos (chain-center k)) (r (chain-radius k)) (stroke (if (= k n) terracotta ink)) (stroke-width 12)
-            (stroke-opacity (* 0.22 (max (if (= k 0) glow-c0 0) (if (= k 1) glow-c1 0) (if (= k n) glow-cn 0))))))
+        (circle_ (pos (chain-center k)) (r (chain-radius k)) (stroke (if (or (= k n) (and (= k pair-k) (> pair-a 0))) terracotta ink)) (stroke-width 12)
+            (stroke-opacity (* 0.22 (max (if (= k 0) glow-c0 0) (if (= k 1) glow-c1 0) (if (= k n) glow-cn 0) (if (= k pair-k) pair-a 0))))))
       (line_ (from [cn.x 0]) (to cn) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-h)))
       (line_ (from (- cn [(chain-radius n) 0])) (to (+ cn [(chain-radius n) 0])) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-d)))
       (circle_ (pos [1 0]) (r 1) (stroke teal))
@@ -103,39 +118,43 @@
   ; The images under inversion, which the toggle shows and hides: the images of the two circles, the
   ; height and the diameter of the image of C_n in gray, and the stack, the image of the chain.
   (group images (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
-   (circle_ (r (or? (sqrt inv-k) 1)) (fill none) (stroke soft) (stroke-width 1.5) (dash [0.1 4]) (line-cap 'round') (pointer-events false))
+   (circle_ (r (or? (sqrt inv-used) 1)) (fill none) (stroke soft) (stroke-width 1.5) (dash [0.1 4]) (line-cap 'round') (pointer-events false))
    ; Each image's number, quietly, matching the control below the figure. Outside the scaled group,
    ; so that the numbers keep their size.
    (foreach k 6
-     (group #'number-{k}' (translate (* (image-center k) inv-k)) (fixed-size true) (pointer-events false) (defaults (opacity (if (<= k count-n) 1 0)))
+     (group #'number-{k}' (translate (* (image-center k) inv-used)) (fixed-size true) (pointer-events false) (defaults (opacity (if (<= k (min n count-n)) 1 0)))
        (text_ $'{k}' (pos [-16 0]) (font number) (fill (if (= k n) terracotta soft)) (halign 'middle') (valign 'middle'))))
-   (group scaled (transform (scale inv-k))
+   (group scaled (transform (scale inv-used))
     (group image-lines (pointer-events false)
         (defaults (stroke-width 1.5) (fill none) (opacity lines-a))
       (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
       (line_ (from (+ (* right far) [0 -5])) (to (+ (* right far) [0 5])) (stroke indigo) (dash [6 4]))
-      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 5) 1 0)))
+      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (> stack-n n) 1 0)))
       ; A notch at every multiple of the image's diameter, as on the height of C_n.
       (foreach j 5
         (line_ (from (+ foot [-0.03 0] (* up (* (+ j 1) gap)))) (to (+ foot [0.03 0] (* up (* (+ j 1) gap))))
-          (stroke soft) (opacity (if (and (>= stage 5) (< (+ j 1) n)) 1 0))))
+          (stroke soft) (opacity (if (and (> stack-n n) (< (+ j 1) n)) 1 0))))
       (line_ (from (- (image-center n) [image-r 0])) (to (+ (image-center n) [image-r 0])) (stroke soft)
-          (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 5) 1 0))))
+          (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (> stack-n n) 1 0))))
     (group stack
+      (foreach k 6
+        (circle_ (pos (image-center k)) (r image-r) (fill none) (stroke terracotta) (stroke-width 12)
+            (stroke-opacity (* 0.22 (if (= k pair-k) pair-a 0))) (pointer-events false)))
       (foreach k 6
         (circle #'stack-{k}' (pos (image-center k)) (r image-r) (stroke (if (= k n) terracotta soft)) (dash [5 4])
             (fill terracotta) (fill-opacity 0) (stroke-width (if (= k n) 2 1.25)) (opacity (if (< k stack-n) 1 0)))
 ))))
 
   (group marks
-    ; In step 3 of the tour, the disk on the circle of inversion, by which its radius is set; the page
-    ; draws the arrows in the empty circle of radius 10.5.
-    (group inv-grip (translate (* [-0.5 -0.866] (or? (sqrt inv-k) 1))) (fixed-size true) (defaults (opacity (if (= stage 3) 1 0)))
+    ; In step 4 of the hints, the disk on top of the circle of inversion, by which its radius is set:
+    ; above T the figure is empty, and with the radius at most sqrt(5) the disk stays in the canvas.
+    ; The page draws the arrows in the empty circle of radius 10.5.
+    (group inv-grip (translate (* up (or? (sqrt inv-used) 1))) (fixed-size true) (defaults (opacity (if (= stage 4) 1 0)))
       (circle_ (r 11) (fill soft) (stroke paper) (stroke-width 2))
       (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The disk at five o'clock on the inner circle, by which its radius is set; the page draws a hand
     ; in the empty circle of radius 10.5.
-    (group grip (translate (* [1.5 -0.866] s)) (fixed-size true) (defaults (opacity (if show-grip 1 0)))
+    (group grip (translate (* [1.5 -0.866] s)) (fixed-size true) (defaults (opacity (if (and show-grip (not in-hints)) 1 0)))
       (circle_ (r 11) (fill indigo) (stroke paper) (stroke-width 2))
       (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The names of the height and the diameter of the selected circle, beside their bars.
@@ -164,16 +183,21 @@
     (toggle-duration 0.35) (toggle-ease cubic-in-out)
   doc@'A Pappus chain between two circles tangent at T, and its image, a stack of congruent circles.'
   base (when show-images images) marks)
+(canvas hints-view (x -0.25) (y -1.05) (width 2.35) (height 2.2) (pan false) (zoom false)
+  doc@'The same figure, in the hints.'
+  base (when show-images images) marks)
+(on-view hints-view (animation (move in-hints (to true) (duration 0)))
+  doc@'Marks this copy of the figure as the one in the hints.')
 
 ; The inner circle is set to the circle through T and the pointer with its center on the line:
 ; its radius is |p|^2 / (2 p.x).
-(on-drag grip (move s (to (or? (/ (* (norm pointer) (norm pointer)) (* 2 (. pointer x))) 0.5)))
+(on-drag grip (move s (to (or? (/ (* (norm pointer) (norm pointer)) (* 2 (. pointer x))) 0.5))) (active (not in-hints))
   doc@'Sets the radius of the inner circle; the chain and its image follow.')
 
 (foreach k 6
-  (on-click #'chain-{k}' (animation (move n (to k) (duration 0)))
+  (on-click #'chain-{k}' (animation (move n (to k) (duration 0))) (active picks)
     doc@'Picks this circle of the chain to measure.')
-  (on-click #'stack-{k}' (animation (move n (to k) (duration 0)))
+  (on-click #'stack-{k}' (animation (move n (to k) (duration 0))) (active picks)
     doc@'Picks the circle of the chain whose image this is.'))
 ; Once, when the figure first comes into view, the highlight steps along the chain and back.
 (on-view view (animation (wait 0.6)
@@ -195,17 +219,30 @@
 ; to the step before.
 (stepper hints (label 'hints')
   (animation
-    (in-order (move stage (to 1) (duration 0)) (move inv-k (to 1) (duration 0)) (move show-images (to true) (duration 0))
+    (in-order (move stage (to 1) (duration 0)) (move inv-k (to 1) (duration 0)) (move lock (to 0) (duration 0)) (move show-images (to true) (duration 0))
       (at-once (move glow-d1 (to 1) (duration 0.4)) (move glow-d2 (to 1) (duration 0.4))))
     (in-order (move stage (to 2) (duration 0))
       (at-once (move glow-d1 (to 0) (duration 0.4)) (move glow-d2 (to 0) (duration 0.4)) (move lines-a (to 1) (duration 0.8))))
-    (in-order (move stage (to 3) (duration 0)) (move view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
-      (move stack-n (to 6) (duration 1.5)))
-    (in-order (move stage (to 4) (duration 0)) (move inv-k (to rho2) (duration 1.2) (ease cubic-in-out)))
-    (in-order (move stage (to 5) (duration 0)) (move count-n (to n) (duration 1.5))))
+    ; Each circle of the chain lit up with its image, in turn, numbered up to the image of C_n.
+    (in-order (move stage (to 3) (duration 0)) (move hints-view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
+      (move pair-a (to 1) (duration 0))
+      (move pair-k (to 0) (duration 0)) (move stack-n (to 1) (duration 0)) (move count-n (to 0) (duration 0)) (wait 0.55)
+      (move pair-k (to 1) (duration 0)) (move stack-n (to 2) (duration 0)) (move count-n (to 1) (duration 0)) (wait 0.55)
+      (move pair-k (to 2) (duration 0)) (move stack-n (to 3) (duration 0)) (move count-n (to 2) (duration 0)) (wait 0.55)
+      (move pair-k (to 3) (duration 0)) (move stack-n (to 4) (duration 0)) (move count-n (to 3) (duration 0)) (wait 0.55)
+      (move pair-k (to 4) (duration 0)) (move stack-n (to 5) (duration 0)) (move count-n (to 4) (duration 0)) (wait 0.55)
+      (move pair-k (to 5) (duration 0)) (move stack-n (to 6) (duration 0)) (move count-n (to 5) (duration 0)) (wait 0.55)
+      (move pair-a (to 0) (duration 0.3)) (move count-n (to 5) (duration 0)))
+    ; The circle of inversion can be dragged.
+    (move stage (to 4) (duration 0))
+    ; The circle that leaves C_n in place, followed from then on.
+    (in-order (move stage (to 5) (duration 0)) (move lock (to 1) (duration 1.2) (ease cubic-in-out))))
   doc@'Asks one question per step about why the ratio is n; each step first shows the answer to the one before.')
 
-(on-drag inv-grip (move inv-k (to (or? (* (norm pointer) (norm pointer)) 1))) (active (= stage 3))
+; It snaps to the circle that leaves C_n in place once within a small distance of it.
+(on-drag inv-grip (move inv-k (to (let ((k (or? (* (norm pointer) (norm pointer)) 1)))
+                                     (if (< (abs (- (sqrt k) (sqrt rho2))) 0.08) rho2 k))))
+    (active (= stage 4))
   doc@'Sets the radius of the circle of inversion; the images grow and shrink with it.')
 
 ; The control under the figure: one button for each circle of the chain, the selected one filled.

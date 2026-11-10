@@ -34,10 +34,13 @@ page: a mathematician writing for a curious reader, in full, connected sentences
 - **Nothing that is not a person acts as one.** A figure, a readout, a proof or a page does not
   say, show, want, cost or know anything. Write "the product shown under the figure", not "the
   readout says".
-- **Try it firsthand has two beats** (the author, 2026-11-10). First a surprising fact the reader
+- **Try your hand first has two beats** (the author, 2026-11-10). First a surprising fact the reader
   finds by playing with a figure, shown plainly (in the inversion page, that the ratio is always a
   whole number, whatever the circles). Then hints, one step at a time, that lead to the reason, and
   end on the moment it becomes clear. The punchline is the reason, not the value.
+  It follows the teacher's question "what do you see, and what do you wonder?": the first beat
+  shows the reader something and makes them wonder about it; the hints help them see why, and
+  establish it.
 - **Never tell the reader how to use a figure** (the author, 2026-11-09). No sentence says what
   can be dragged, clicked, toggled or chosen ("the point $P$ can be dragged", "the toggles add").
   The figure itself makes plain what can be acted on. Text and captions describe the mathematics
