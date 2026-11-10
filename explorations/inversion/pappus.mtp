@@ -251,7 +251,7 @@
 
 ; The control under the figure: one button for each circle of the chain, the selected one filled.
 (foreach k 6
-  (button #'pick-{k}' (label $'C{subscripts[k]}') (animation (move n (to k) (duration 0)))
+  (button #'pick-{k}' (label (tex $'C_{k}')) (animation (move n (to k) (duration 0)))
       (selected (= n k))
     doc@'Picks this circle of the chain to measure.'))
 
