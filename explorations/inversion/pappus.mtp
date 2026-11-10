@@ -65,6 +65,10 @@
 ; dragged only in step 4.
 (bool in-hints false)
 (bool picks (or (not in-hints) (= stage 3) (= stage 5)))
+; In the hints, C_n, its height and its diameter are marked from hint 4 on: hint 3 asks about its
+; image.
+(bool mark-cn (or (not in-hints) (>= stage 4)))
+(real own-bars (if (and in-hints (< stage 4)) 0 1))
 ; Only a still picture of the figure hides the handle (figs/pappus.states.json), since a picture
 ; cannot be dragged.
 (bool show-grip true)
@@ -101,19 +105,19 @@
       (circle_ (pos (* right s)) (r s) (stroke indigo))
       (line_ (from [-1 0]) (to [3 0]) (stroke soft) (stroke-width 1))
       ; The height of C_n's center above the line and its diameter.
-      (line_ (from [cn.x 0]) (to cn) (stroke terracotta) (stroke-width 2) (head-start 'bar') (head-end 'bar'))
+      (line_ (from [cn.x 0]) (to cn) (stroke terracotta) (stroke-width 2) (head-start 'bar') (head-end 'bar') (opacity own-bars))
       ; A notch at every multiple of d_n along the height, so the height reads as n diameters.
       (foreach j 5
         (line_ (from [(- cn.x 0.03) (* (+ j 1) dn)]) (to [(+ cn.x 0.03) (* (+ j 1) dn)]) (stroke terracotta)
-            (stroke-width 2) (opacity (if (< (+ j 1) n) 1 0))))
+            (stroke-width 2) (opacity (if (< (+ j 1) n) own-bars 0))))
       (line_ (from (- cn [(chain-radius n) 0])) (to (+ cn [(chain-radius n) 0])) (stroke terracotta) (stroke-width 2)
-          (head-start 'bar') (head-end 'bar')))
+          (head-start 'bar') (head-end 'bar') (opacity own-bars)))
     ; The chain: C_n in terracotta, the rest in ink. A click on a circle picks it; each has a
     ; transparent fill, so a click inside it counts.
     (group chain (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
       (foreach k 6
-        (circle #'chain-{k}' (pos (chain-center k)) (r (chain-radius k)) (stroke (if (= k n) terracotta ink))
-            (fill terracotta) (fill-opacity 0) (stroke-width (if (= k n) 2 1.25))))))
+        (circle #'chain-{k}' (pos (chain-center k)) (r (chain-radius k)) (stroke (if (and mark-cn (= k n)) terracotta ink))
+            (fill terracotta) (fill-opacity 0) (stroke-width (if (and mark-cn (= k n)) 2 1.25))))))
 
   ; The images under inversion, which the toggle shows and hides: the images of the two circles, the
   ; height and the diameter of the image of C_n in gray, and the stack, the image of the chain.
@@ -129,12 +133,12 @@
         (defaults (stroke-width 1.5) (fill none) (opacity lines-a))
       (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
       (line_ (from (+ (* right far) [0 -5])) (to (+ (* right far) [0 5])) (stroke indigo) (dash [6 4]))
-      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (> stack-n n) 1 0)))
+      (line_ (from foot) (to (image-center n)) (stroke terracotta) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (> stack-n n) 1 0)))
       ; A notch at every multiple of the image's diameter, as on the height of C_n.
       (foreach j 5
         (line_ (from (+ foot [-0.03 0] (* up (* (+ j 1) gap)))) (to (+ foot [0.03 0] (* up (* (+ j 1) gap))))
-          (stroke soft) (opacity (if (and (> stack-n n) (< (+ j 1) n)) 1 0))))
-      (line_ (from (- (image-center n) [image-r 0])) (to (+ (image-center n) [image-r 0])) (stroke soft)
+          (stroke terracotta) (opacity (if (and (> stack-n n) (< (+ j 1) n)) 1 0))))
+      (line_ (from (- (image-center n) [image-r 0])) (to (+ (image-center n) [image-r 0])) (stroke terracotta)
           (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (> stack-n n) 1 0))))
     (group stack
       (foreach k 6
@@ -159,11 +163,11 @@
       (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The names of the height and the diameter of the selected circle, beside their bars.
     (group h-name (translate [cn.x (* 0.5 cn.y)]) (fixed-size true) (pointer-events false)
-      (text_ $'h{subscripts[n]}' (pos [-16 0]) (font variable) (fill terracotta) (opacity (if (> n 0) 1 0)) (halign 'middle') (valign 'middle')))
+      (text_ $'h{subscripts[n]}' (pos [-16 0]) (font variable) (fill terracotta) (opacity (if (> n 0) own-bars 0)) (halign 'middle') (valign 'middle')))
     ; d_n goes inside its circle, just above the diameter, when the circle is large enough to hold it
     ; on a phone-width canvas (about 125 pixels to a unit); otherwise above the circle.
     (group d-name (translate (+ cn (* up (if d-inside 0 (chain-radius n))))) (fixed-size true) (pointer-events false)
-      (text_ $'d{subscripts[n]}' (pos (if d-inside [0 11] [0 13])) (font variable) (fill terracotta) (halign 'middle') (valign 'middle')))
+      (text_ $'d{subscripts[n]}' (pos (if d-inside [0 11] [0 13])) (font variable) (fill terracotta) (opacity own-bars) (halign 'middle') (valign 'middle')))
     ; The names of the two circles and of the line through their centers, as in the theorem: D_1 the
     ; outer circle, D_2 the inner one.
     (group d1-name (translate [1.707 -0.707]) (fixed-size true) (pointer-events false)
@@ -186,8 +190,9 @@
 (canvas hints-view (x -0.25) (y -1.05) (width 2.35) (height 2.2) (pan false) (zoom false)
   doc@'The same figure, in the hints.'
   base (when show-images images) marks)
-(on-view hints-view (animation (move in-hints (to true) (duration 0)))
-  doc@'Marks this copy of the figure as the one in the hints.')
+(on-view hints-view (animation (move in-hints (to true) (duration 0)) (move stage (to 1) (duration 0)) (move show-images (to true) (duration 0))
+                       (at-once (move glow-d1 (to 1) (duration 0.4)) (move glow-d2 (to 1) (duration 0.4))))
+  doc@'Marks this copy of the figure as the one in the hints, and sets it up for the first hint.')
 
 ; The inner circle is set to the circle through T and the pointer with its center on the line:
 ; its radius is |p|^2 / (2 p.x).
@@ -219,25 +224,24 @@
 ; to the step before.
 (stepper hints (label 'hints')
   (animation
-    (in-order (move stage (to 1) (duration 0)) (move inv-k (to 1) (duration 0)) (move lock (to 0) (duration 0)) (move show-images (to true) (duration 0))
-      (at-once (move glow-d1 (to 1) (duration 0.4)) (move glow-d2 (to 1) (duration 0.4))))
     (in-order (move stage (to 2) (duration 0))
       (at-once (move glow-d1 (to 0) (duration 0.4)) (move glow-d2 (to 0) (duration 0.4)) (move lines-a (to 1) (duration 0.8))))
-    ; Each circle of the chain lit up with its image, in turn, numbered up to the image of C_n.
+    ; Each circle of the chain lit up with its image, in turn.
     (in-order (move stage (to 3) (duration 0)) (move hints-view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
       (move pair-a (to 1) (duration 0))
-      (move pair-k (to 0) (duration 0)) (move stack-n (to 1) (duration 0)) (move count-n (to 0) (duration 0)) (wait 0.55)
-      (move pair-k (to 1) (duration 0)) (move stack-n (to 2) (duration 0)) (move count-n (to 1) (duration 0)) (wait 0.55)
-      (move pair-k (to 2) (duration 0)) (move stack-n (to 3) (duration 0)) (move count-n (to 2) (duration 0)) (wait 0.55)
-      (move pair-k (to 3) (duration 0)) (move stack-n (to 4) (duration 0)) (move count-n (to 3) (duration 0)) (wait 0.55)
-      (move pair-k (to 4) (duration 0)) (move stack-n (to 5) (duration 0)) (move count-n (to 4) (duration 0)) (wait 0.55)
-      (move pair-k (to 5) (duration 0)) (move stack-n (to 6) (duration 0)) (move count-n (to 5) (duration 0)) (wait 0.55)
-      (move pair-a (to 0) (duration 0.3)) (move count-n (to 5) (duration 0)))
-    ; The circle of inversion can be dragged.
-    (move stage (to 4) (duration 0))
+      (move pair-k (to 0) (duration 0)) (move stack-n (to 1) (duration 0)) (wait 0.55)
+      (move pair-k (to 1) (duration 0)) (move stack-n (to 2) (duration 0)) (wait 0.55)
+      (move pair-k (to 2) (duration 0)) (move stack-n (to 3) (duration 0)) (wait 0.55)
+      (move pair-k (to 3) (duration 0)) (move stack-n (to 4) (duration 0)) (wait 0.55)
+      (move pair-k (to 4) (duration 0)) (move stack-n (to 5) (duration 0)) (wait 0.55)
+      (move pair-k (to 5) (duration 0)) (move stack-n (to 6) (duration 0)) (wait 0.55)
+      (move pair-a (to 0) (duration 0.3)))
+    ; The images numbered up to the image of C_n, as the answer to hint 3; the circle of inversion
+    ; can be dragged.
+    (in-order (move stage (to 4) (duration 0)) (move count-n (to n) (duration 1.2)) (move count-n (to 5) (duration 0)))
     ; The circle that leaves C_n in place, followed from then on.
     (in-order (move stage (to 5) (duration 0)) (move lock (to 1) (duration 1.2) (ease cubic-in-out))))
-  doc@'Asks one question per step about why the ratio is n; each step first shows the answer to the one before.')
+  doc@'Each step answers the hint before it and asks the next one, about why the ratio is n.')
 
 ; It snaps to the circle that leaves C_n in place once within a small distance of it.
 (on-drag inv-grip (move inv-k (to (let ((k (or? (* (norm pointer) (norm pointer)) 1)))

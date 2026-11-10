@@ -209,14 +209,11 @@ See :ref:fig-pappus::.
 
   :sketch:
 
-  Inversion is taken in the circle centered at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> :: and meeting :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: at right angles, so that :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> ::
-  is mapped to itself. The circles :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: are mapped to two parallel lines, at right angles to
-  :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::, and every circle of the chain is mapped to a circle tangent to both
-  lines. All the images therefore have the same diameter, the distance between the lines, and each is
-  tangent to the next. The line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: is mapped to itself, and the image of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: has
-  its center on it, so the images of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: are stacked along the gap and the center
-  of the image of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: lies $n$ diameters from :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::. Since that image is :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: itself, its
-  center lies at distance $n\,d_n$ from :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::.
+  Inversion is taken in the circle centered at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> :: and meeting :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: at right angles, so that :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: is
+  mapped to itself. :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: are mapped to two parallel lines, and the circles of the
+  chain to circles tangent to both lines, thus all having the same diameter. The line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: is mapped to itself, and the image of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: has its center on it, so
+  the images of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: are stacked along the gap and the center of the image of
+  :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: lies $n$ diameters from :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::. Since that image is :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: itself, the theorem follows.
 
   ::
 

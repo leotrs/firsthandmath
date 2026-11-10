@@ -195,12 +195,12 @@ body[data-accent] { --text-keyword: var(--primary-600); }
   .fm-hints-grid { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); column-gap: var(--chunk-half); align-items: start; }
   .fm-hints .fm-tour-qs { margin-top: 0; }
 }
-.fm-tour-q { display: none; margin: 0; }
-.fm-tour-a { display: none; }
+.fm-tour-q { margin: 0; }
+:is(.fm-tour-q, .fm-tour-a)[data-step] { display: none; }
 /* Keeps a symbol with the punctuation after it, which would otherwise wrap alone onto a new line. */
 .fm-keep { white-space: nowrap; }
-/* Question k is shown from step k on, and its answer, at the end of the same paragraph, from step
-   k + 1 on. Each waits until its step's animation has played (the stepper's data-playing), then
+/* The first question is shown from the start. The question and the answer marked with step k are
+   shown from step k on, the answer at the end of the paragraph of the question it answers. Each waits until its step's animation has played (the stepper's data-playing), then
    fades in, so the figure is looked at first. */
 .fm-fig:has(mtp-stepper[data-step="1"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
 .fm-fig:has(mtp-stepper[data-step="2"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
@@ -231,6 +231,13 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 .fm-fig:has(mtp-stepper[data-step="6"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="6"] { display: none; }
 :is(.fm-tour-q, .fm-tour-a) { animation: fm-hint-in 0.4s ease-out; }
 @keyframes fm-hint-in { from { opacity: 0; } }
+/* The answer the latest step revealed is in bold, and only that one. */
+.fm-fig:has(mtp-stepper[data-step="1"]) .fm-tour-a[data-step="1"],
+.fm-fig:has(mtp-stepper[data-step="2"]) .fm-tour-a[data-step="2"],
+.fm-fig:has(mtp-stepper[data-step="3"]) .fm-tour-a[data-step="3"],
+.fm-fig:has(mtp-stepper[data-step="4"]) .fm-tour-a[data-step="4"],
+.fm-fig:has(mtp-stepper[data-step="5"]) .fm-tour-a[data-step="5"],
+.fm-fig:has(mtp-stepper[data-step="6"]) .fm-tour-a[data-step="6"] { font-weight: var(--weight-bold); }
 @media (prefers-reduced-motion: reduce) { :is(.fm-tour-q, .fm-tour-a) { animation: none; } }
 
 /* A figure's live caption: a readout under its controls. */
