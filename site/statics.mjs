@@ -5,10 +5,13 @@
 //   node site/statics.mjs NAME URL
 //
 // URL serves the built site (_site/), with NAME built. For each figs/X.html of the exploration it
-// writes figs/X-static.png and figs/X-static-dark.png, of the first canvas X.html places. A picture
+// writes figs/X-static.png and figs/X-static-dark.png, of the first canvas X.html places. A figure
+// may also list other states in figs/X.states.json, as {"state": {"name": value, "canvas.attr":
+// value}}: each is written as figs/X-state.png and figs/X-state-dark.png, of the figure with those
+// values written into its model, for a still picture of a state the page itself does not show. A picture
 // cannot be dragged, so the page's hands are left out; and "comes into view" never fires during the
 // capture, so no figure's first nudge moves it from its starting position.
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 
@@ -21,7 +24,9 @@ const figures = readdirSync(dir).filter((f) => f.endsWith(".html")).map((f) => {
   const html = readFileSync(join(dir, f), "utf8");
   const model = html.match(/<mtp-model id="([^"]+)" src="([^"]+)"/);
   const canvas = html.match(/<mtp-canvas model="([^"]+)" name="([^"]+)"/);
-  return { stem: f.slice(0, -5), id: model[1], src: model[2], canvas: canvas[2] };
+  const statesFile = join(dir, `${f.slice(0, -5)}.states.json`);
+  const states = existsSync(statesFile) ? JSON.parse(readFileSync(statesFile, "utf8")) : {};
+  return { stem: f.slice(0, -5), id: model[1], src: model[2], canvas: canvas[2], states };
 });
 
 // One page with every figure, beside the exploration's built page so that its assets resolve.
@@ -45,6 +50,21 @@ for (const scheme of ["light", "dark"]) {
     const out = join(dir, `${f.stem}-static${scheme === "dark" ? "-dark" : ""}.png`);
     await p.locator(`mtp-canvas[model="${f.id}"]`).screenshot({ path: out, omitBackground: true });
     console.log(out);
+  }
+  for (const f of figures) {
+    for (const [state, values] of Object.entries(f.states)) {
+      await p.evaluate(([id, values]) => {
+        const rt = document.getElementById(id).runtime;
+        for (const [name, value] of Object.entries(values)) {
+          const [obj, attr] = name.split(".");
+          rt.write(rt.id(obj), attr ?? null, value);
+        }
+      }, [f.id, values]);
+      await p.waitForTimeout(800);
+      const out = join(dir, `${f.stem}-${state}${scheme === "dark" ? "-dark" : ""}.png`);
+      await p.locator(`mtp-canvas[model="${f.id}"]`).screenshot({ path: out, omitBackground: true });
+      console.log(out);
+    }
   }
   await p.close();
 }

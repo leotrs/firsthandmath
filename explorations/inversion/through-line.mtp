@@ -1,9 +1,9 @@
-; Why a circle through the center inverts to a line. A is the point of the teal circle opposite
-; the center O, and A' is its inverse. p is dragged around the teal circle, and its inverse q
-; stays on the line through A' at right angles to OA; only p is dragged. The
-; triangles OpA and OA'q are similar, and their right angles, at p and at A', are marked.
+; Why a circle through the center inverts to a line. A is the point of the circle C opposite the
+; center O, and A' is its inverse. p is dragged around C, and its inverse q stays on the line C'
+; through A' at right angles to OA; only p is dragged. The triangles OpA and OA'q, in blue, are
+; similar, and their right angles, at p and at A', are marked.
 
-(import house paper ink soft terracotta teal variable)
+(import house paper ink soft terracotta teal indigo variable)
 (import math norm)
 (import ease cubic-in-out)
 
@@ -36,12 +36,29 @@
 (point p-to-a (or? (* (- a p) (/ 1 (norm (- a p)))) [1 0]))
 (point ai-to-q (or? (* (- q a-inv) (/ 1 (norm (- q a-inv)))) [0 1]))
 
+; How strongly each shape named in the caption is highlighted, from 0 to 1, while its name is
+; hovered or after it is tapped: a pale band or halo of the shape's color.
+(real glow-c 0 (>= 0) (<= 1))
+(real glow-cimg 0 (>= 0) (<= 1))
+(real glow-o 0 (>= 0) (<= 1))
+(real glow-a 0 (>= 0) (<= 1))
+(real glow-ainv 0 (>= 0) (<= 1))
+(real glow-p 0 (>= 0) (<= 1))
+(real glow-q 0 (>= 0) (<= 1))
+(real glow-t1 0 (>= 0) (<= 1))
+(real glow-t2 0 (>= 0) (<= 1))
+
 (scene plane
   (circle unit (r 1) (fill none) (stroke ink) (stroke-width 2) (pointer-events false))
   (group drawing (clip (rect_ (pos [0.35 0]) (width 3) (height 2.3))) (pointer-events false)
     (defaults (stroke-width 1.5))
-    (triangle_ (a [0 0]) (b p) (c a) (fill teal) (fill-opacity 0.12) (stroke none))
-    (triangle_ (a [0 0]) (b a-inv) (c q) (fill teal) (fill-opacity 0.12) (stroke none))
+    (triangle_ (a [0 0]) (b p) (c a) (fill indigo) (fill-opacity (+ 0.1 (* 0.22 glow-t1))) (stroke indigo)
+        (stroke-width 6) (stroke-opacity (* 0.3 glow-t1)) (line-join 'round'))
+    (triangle_ (a [0 0]) (b a-inv) (c q) (fill indigo) (fill-opacity (+ 0.1 (* 0.22 glow-t2))) (stroke indigo)
+        (stroke-width 6) (stroke-opacity (* 0.3 glow-t2)) (line-join 'round'))
+    ; The bands, under what they highlight.
+    (circle_ (pos c) (r rad) (stroke teal) (fill none) (stroke-width 12) (stroke-opacity (* 0.22 glow-c)))
+    (line_ (from [a-inv.x -5]) (to [a-inv.x 5]) (stroke teal) (stroke-width 12) (stroke-opacity (* 0.22 glow-cimg)))
     (circle_ (pos c) (r rad) (stroke teal) (fill none))
     (line_ (from [a-inv.x -5]) (to [a-inv.x 5]) (stroke teal) (dash [6 4]))
     (line_ (from [0 0]) (to a-inv) (stroke soft))
@@ -63,6 +80,13 @@
     (group a-inv-name (translate a-inv) (fixed-size true) (text_ 'A′' (pos [18 -16])))
     (group p-name (translate p) (fixed-size true) (text_ 'P' (pos (* (+ p-to-o p-to-a) -17))))
     (group q-name (translate q) (fixed-size true) (text_ 'Q' (pos [18 0]) (opacity (if at-o 0 1)))))
+  ; Halos around the points, under them.
+  (group halos (pointer-events false) (defaults (stroke none))
+    (group o-halo (fixed-size true) (circle_ (r 11) (fill ink) (opacity (* 0.18 glow-o))))
+    (group a-halo (translate a) (fixed-size true) (circle_ (r 11) (fill ink) (opacity (* 0.18 glow-a))))
+    (group a-inv-halo (translate a-inv) (fixed-size true) (circle_ (r 11) (fill ink) (opacity (* 0.18 glow-ainv))))
+    (group p-halo (translate p) (fixed-size true) (circle_ (r 18) (fill terracotta) (opacity (* 0.3 glow-p))))
+    (group q-halo (translate q) (fixed-size true) (circle_ (r 15) (fill terracotta) (opacity (* 0.3 glow-q)))))
   (group dots (pointer-events false) (defaults (fill ink) (stroke none))
     (group o-dot (fixed-size true) (circle_ (r 4)))
     (group a-dot (translate a) (fixed-size true) (circle_ (r 4)))
@@ -87,3 +111,107 @@
   (move theta (to 25) (duration 0.9) (ease cubic-in-out))
   (move theta (to 60) (duration 0.6) (ease cubic-in-out)))
   doc@'Moves P a little around the circle and back once, to show that it moves.')
+
+; The symbols of the caption, each set inline in its sentence. Hovering one highlights what it names
+; in the figure; tapping one (on a phone, where nothing hovers) highlights it for a moment.
+
+(formula sym-c tex'\term{s}{C}'
+  (term s (fill teal)))
+(display c-inline sym-c (kind 'inline'))
+(on-enter sym-c.s (animation (move glow-c (to 1) (duration 0.2)))
+  doc@'Highlights the circle C in the figure.')
+(on-leave sym-c.s (animation (move glow-c (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-c.s (animation (move glow-c (to 1) (duration 0.25)) (wait 1) (move glow-c (to 0) (duration 0.25)))
+  doc@'Highlights the circle C for a moment.')
+
+(formula sym-cimg tex'\term{s}{C^{\prime}}'
+  (term s (fill teal)))
+(display cimg-inline sym-cimg (kind 'inline'))
+(on-enter sym-cimg.s (animation (move glow-cimg (to 1) (duration 0.2)))
+  doc@'Highlights the line C′ in the figure.')
+(on-leave sym-cimg.s (animation (move glow-cimg (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-cimg.s (animation (move glow-cimg (to 1) (duration 0.25)) (wait 1) (move glow-cimg (to 0) (duration 0.25)))
+  doc@'Highlights the line C′ for a moment.')
+
+(formula sym-o tex'\term{s}{O}'
+  (term s (fill ink)))
+(display o-inline sym-o (kind 'inline'))
+(on-enter sym-o.s (animation (move glow-o (to 1) (duration 0.2)))
+  doc@'Highlights the point O in the figure.')
+(on-leave sym-o.s (animation (move glow-o (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-o.s (animation (move glow-o (to 1) (duration 0.25)) (wait 1) (move glow-o (to 0) (duration 0.25)))
+  doc@'Highlights the point O for a moment.')
+
+(formula sym-a tex'\term{s}{A}'
+  (term s (fill ink)))
+(display a-inline sym-a (kind 'inline'))
+(on-enter sym-a.s (animation (move glow-a (to 1) (duration 0.2)))
+  doc@'Highlights the point A in the figure.')
+(on-leave sym-a.s (animation (move glow-a (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-a.s (animation (move glow-a (to 1) (duration 0.25)) (wait 1) (move glow-a (to 0) (duration 0.25)))
+  doc@'Highlights the point A for a moment.')
+
+(formula sym-ainv tex'\term{s}{A^{\prime}}'
+  (term s (fill ink)))
+(display ainv-inline sym-ainv (kind 'inline'))
+(on-enter sym-ainv.s (animation (move glow-ainv (to 1) (duration 0.2)))
+  doc@'Highlights the point A′ in the figure.')
+(on-leave sym-ainv.s (animation (move glow-ainv (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-ainv.s (animation (move glow-ainv (to 1) (duration 0.25)) (wait 1) (move glow-ainv (to 0) (duration 0.25)))
+  doc@'Highlights the point A′ for a moment.')
+
+(formula sym-p tex'\term{s}{P}'
+  (term s (fill terracotta)))
+(display p-inline sym-p (kind 'inline'))
+(on-enter sym-p.s (animation (move glow-p (to 1) (duration 0.2)))
+  doc@'Highlights the point P in the figure.')
+(on-leave sym-p.s (animation (move glow-p (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-p.s (animation (move glow-p (to 1) (duration 0.25)) (wait 1) (move glow-p (to 0) (duration 0.25)))
+  doc@'Highlights the point P for a moment.')
+
+(formula sym-q tex'\term{s}{Q}'
+  (term s (fill terracotta)))
+(display q-inline sym-q (kind 'inline'))
+(on-enter sym-q.s (animation (move glow-q (to 1) (duration 0.2)))
+  doc@'Highlights the point Q in the figure.')
+(on-leave sym-q.s (animation (move glow-q (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-q.s (animation (move glow-q (to 1) (duration 0.25)) (wait 1) (move glow-q (to 0) (duration 0.25)))
+  doc@'Highlights the point Q for a moment.')
+
+(formula sym-opa tex'\term{s}{OPA}'
+  (term s (fill indigo)))
+(display opa-inline sym-opa (kind 'inline'))
+(on-enter sym-opa.s (animation (move glow-t1 (to 1) (duration 0.2)))
+  doc@'Highlights the triangle OPA in the figure.')
+(on-leave sym-opa.s (animation (move glow-t1 (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-opa.s (animation (move glow-t1 (to 1) (duration 0.25)) (wait 1) (move glow-t1 (to 0) (duration 0.25)))
+  doc@'Highlights the triangle OPA for a moment.')
+
+(formula sym-oaq tex'\term{s}{OA^{\prime}Q}'
+  (term s (fill indigo)))
+(display oaq-inline sym-oaq (kind 'inline'))
+(on-enter sym-oaq.s (animation (move glow-t2 (to 1) (duration 0.2)))
+  doc@'Highlights the triangle OA′Q in the figure.')
+(on-leave sym-oaq.s (animation (move glow-t2 (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-oaq.s (animation (move glow-t2 (to 1) (duration 0.25)) (wait 1) (move glow-t2 (to 0) (duration 0.25)))
+  doc@'Highlights the triangle OA′Q for a moment.')
+
+; The proof's name for the line C′, before it is shown to be the image of C.
+(formula sym-l tex'\term{s}{L}'
+  (term s (fill teal)))
+(display l-inline sym-l (kind 'inline'))
+(on-enter sym-l.s (animation (move glow-cimg (to 1) (duration 0.2)))
+  doc@'Highlights the line L, which is C′, in the figure.')
+(on-leave sym-l.s (animation (move glow-cimg (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-l.s (animation (move glow-cimg (to 1) (duration 0.25)) (wait 1) (move glow-cimg (to 0) (duration 0.25)))
+  doc@'Highlights the line L for a moment.')

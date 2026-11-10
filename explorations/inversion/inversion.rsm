@@ -9,26 +9,25 @@
 }
 ::
 
-Fix a circle of radius 1 with center $O$. Inversion in this circle maps each point $P$ other than $O$ to the point $Q$ on the ray from $O$ through $P$ at distance $1/|P|$ from $O$. Points on the circle are fixed, points inside the circle are mapped outside it and points outside are mapped inside, and points close to $O$ are mapped far away from it. Since $1/(1/|P|) = |P|$, inverting $Q$ gives back $P$, and so inversion is its own inverse.
+Fix a circle of radius 1 with center :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::. Inversion in this circle maps each point :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> :: other than :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: to the point :rawhtml:{:alt: $Q$} <mtp-display model="inv" name="q-inline"></mtp-display> :: on the ray from :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: through :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> :: at distance $1/|P|$ from :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::. Points on the circle are fixed, points inside the circle are mapped outside it and points outside are mapped inside, and points close to :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: are mapped far away from it. Since $1/(1/|P|) = |P|$, inverting :rawhtml:{:alt: $Q$} <mtp-display model="inv" name="q-inline"></mtp-display> :: gives back :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> ::, and so inversion is its own inverse.
 
 :html: {
   :label: fig-inversion
+  :blockname: Figure
   :path: figs/inversion.html
   :static: figs/inversion-static.png
   :dark: figs/inversion-static-dark.png
 }
-:caption: Inversion in the circle of radius 1 with center $O$. The point $Q$ lies on the ray from
-$O$ through $P$, at distance $1/|P|$, so $|P|\,|Q| = 1$. Each circle is drawn in the same color as its
-image, and the image is dashed.
+:caption: Inversion in the circle of radius 1 with center :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::. The point :rawhtml:{:alt: $Q$} <mtp-display model="inv" name="q-inline"></mtp-display> :: lies on the ray from
+:rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: through :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> ::, at distance $1/|P|$, so :rawhtml:{:alt: $|P|\,|Q| = 1$} <mtp-display model="inv" name="pq-inline"></mtp-display> ::. The image of each circle is dashed, and its
+name carries a prime.
 ::
 
-In :ref:fig-inversion::, the point $P$ can be dragged, and $Q$ is redrawn at its inverse. The two points coincide exactly when they lie on the circle.
-
-The product $|P|\,|Q|$ shown under :ref:fig-inversion:: is always equal to 1, as the definition requires. As $P$ approaches $O$, however, $Q$ moves off to infinity, and $O$ itself has no inverse. The standard remedy is to add a single point at infinity to the plane and to define it as the inverse of $O$. With this point added, inversion is a one-to-one map of the extended plane, known as :aside:sphere,the Riemann sphere::.
+The product $|P|\,|Q|$ shown under :ref:fig-inversion:: is always equal to 1, as the definition requires, and :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> :: and :rawhtml:{:alt: $Q$} <mtp-display model="inv" name="q-inline"></mtp-display> :: coincide exactly when they lie on the circle. As :rawhtml:{:alt: $P$} <mtp-display model="inv" name="p-inline"></mtp-display> :: approaches :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::, however, :rawhtml:{:alt: $Q$} <mtp-display model="inv" name="q-inline"></mtp-display> :: moves off to infinity, and :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: itself has no inverse. The standard remedy is to add a single point at infinity to the plane and to define it as the inverse of :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::. With this point added, inversion is a one-to-one map of the extended plane, known as :aside:sphere,the Riemann sphere::.
 
 :aside: {:label: sphere} In complex coordinates with $O$ at $0$, inversion is the map $z \mapsto 1/\bar z$, and its composition with the reflection $z \mapsto \bar z$ is the map $z \mapsto 1/z$. ::
 
-The other two toggles under :ref:fig-inversion:: add two circles, each drawn together with its image: a circle $C$ through $O$, and a circle $D$ not passing through $O$. The image $C'$ of $C$ is always a line. This is plausible, since the points of $C$ close to $O$ are mapped far away, and $C'$ must therefore be unbounded. The image $D'$ of $D$, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of $D$ is not the center of $D'$.
+In :ref:fig-inversion::, two more circles are drawn, each together with its image: a circle :rawhtml:{:alt: $C$} <mtp-display model="inv" name="c-inline"></mtp-display> :: through :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::, and a circle :rawhtml:{:alt: $D$} <mtp-display model="inv" name="d-inline"></mtp-display> :: not passing through :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> ::. The image :rawhtml:{:alt: $C'$} <mtp-display model="inv" name="cimg-inline"></mtp-display> :: of :rawhtml:{:alt: $C$} <mtp-display model="inv" name="c-inline"></mtp-display> :: is always a line. This is plausible, since the points of :rawhtml:{:alt: $C$} <mtp-display model="inv" name="c-inline"></mtp-display> :: close to :rawhtml:{:alt: $O$} <mtp-display model="inv" name="o-inline"></mtp-display> :: are mapped far away, and :rawhtml:{:alt: $C'$} <mtp-display model="inv" name="cimg-inline"></mtp-display> :: must therefore be unbounded. The image :rawhtml:{:alt: $D'$} <mtp-display model="inv" name="dimg-inline"></mtp-display> :: of :rawhtml:{:alt: $D$} <mtp-display model="inv" name="d-inline"></mtp-display> ::, on the other hand, is again a circle. Inversion therefore maps circles and lines to circles and lines, though it does not map centers to centers: the inverse of the center of :rawhtml:{:alt: $D$} <mtp-display model="inv" name="d-inline"></mtp-display> :: is not the center of :rawhtml:{:alt: $D'$} <mtp-display model="inv" name="dimg-inline"></mtp-display> ::.
 
 An unbounded image is not necessarily a line, however, so this claim requires proof. The proof of :ref:thm-line, the theorem below::, uses only similar triangles.
 
@@ -38,48 +37,59 @@ An unbounded image is not necessarily a line, however, so this claim requires pr
   :title: Circles through the center
 }
 
-  Inversion sends a circle through $O$, with $O$ left out, onto a line that misses $O$.
+  Inversion sends a circle through :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, with :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> :: left out, onto a line that misses :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::.
 
 ::
 
 :html: {
   :label: fig-line
+  :blockname: Figure
   :path: figs/through-line.html
   :static: figs/through-line-static.png
   :dark: figs/through-line-static-dark.png
 }
-:caption: A circle $C$ through $O$, with $A$ the point opposite $O$ and $A'$ the inverse of $A$. As $P$ is
-dragged around $C$, its inverse $Q$ remains on the dashed line $C'$ through $A'$. The triangles $OPA$
-and $OA'Q$ are similar, with right angles at $P$ and at $A'$.
+:caption: A circle :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: through :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, with :rawhtml:{:alt: $A$} <mtp-display model="line" name="a-inline"></mtp-display> :: the point opposite :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> :: and :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> :: the inverse of :rawhtml:{:alt: $A$} <mtp-display model="line" name="a-inline"></mtp-display> ::.
+As :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: moves around :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> ::, its inverse :rawhtml:{:alt: $Q$} <mtp-display model="line" name="q-inline"></mtp-display> :: remains on the dashed line :rawhtml:{:alt: $C'$} <mtp-display model="line" name="cimg-inline"></mtp-display> :: through :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> ::. The
+triangles :rawhtml:{:alt: $OPA$} <mtp-display model="line" name="opa-inline"></mtp-display> :: and :rawhtml:{:alt: $OA'Q$} <mtp-display model="line" name="oaq-inline"></mtp-display> :: are similar, with right angles at :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: and at :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> ::.
 ::
 
 :proof:
 
   :step: {:label: stp-line-setup}
 
-    :let: $C$ be a circle through $O$, $A$ the point of $C$ opposite $O$, and $A'$ the inverse
-    of $A$. Let $L$ be the line through $A'$ at right angles to $OA$ ::.
+    :let: :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: be a circle through :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, :rawhtml:{:alt: $A$} <mtp-display model="line" name="a-inline"></mtp-display> :: the point of :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: opposite :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, and :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> :: the inverse
+    of :rawhtml:{:alt: $A$} <mtp-display model="line" name="a-inline"></mtp-display> :: ::. :let: :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> :: be the line through :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> :: at right angles to $OA$ ::.
 
   ::
 
   :step: {:label: stp-line-on}
 
-    :claim: For every point $P$ of $C$ other than $O$, its inverse $Q$ lies on $L$. ::
+    :let: :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: be a point of :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: other than :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, and :rawhtml:{:alt: $Q$} <mtp-display model="line" name="q-inline"></mtp-display> :: the inverse of :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: ::. :prove: that :rawhtml:{:alt: $Q$} <mtp-display model="line" name="q-inline"></mtp-display> ::
+    lies on :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> :: ::.
 
     :p:
 
-      :step: {:label: stp-line-a} If $P = A$, then $Q = A'$, which lies on $L$. From now on
-      $P$ is neither $O$ nor $A$. ::
+      :step: :assume: $P = A$ ::. Then $Q = A'$, which lies on :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> ::. ::
 
-      :step: {:label: stp-line-thales} The angle $OPA$ is a right angle, since $OA$ is a
-      diameter of $C$. ::
+      :step: :assume: $P \neq A$ ::, so that :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: is neither :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> :: nor :rawhtml:{:alt: $A$} <mtp-display model="line" name="a-inline"></mtp-display> ::.
+      Then :rawhtml:{:alt: $Q$} <mtp-display model="line" name="q-inline"></mtp-display> :: lies on :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> ::.
 
-      :step: {:label: stp-line-similar} The triangles $OPA$ and $OA'Q$ are similar. They share
-      the angle at $O$, and $|OP|\,|OQ| = 1 = |OA|\,|OA'|$ gives $|OP| / |OA'| = |OA| / |OQ|$. ::
+        :p:
 
-      :step: By :ref:stp-line-similar::, the angle $OA'Q$ equals the angle $OPA$, a right angle
-      by :ref:stp-line-thales::. So $Q$ lies on the line through $A'$ at right angles to $OA$,
-      which is $L$. ::
+          :step: {:label: stp-line-thales} The angle :rawhtml:{:alt: $OPA$} <mtp-display model="line" name="opa-inline"></mtp-display> :: is a right angle, since $OA$ is a
+          diameter of :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> ::. ::
+
+          :step: {:label: stp-line-similar} The triangles :rawhtml:{:alt: $OPA$} <mtp-display model="line" name="opa-inline"></mtp-display> :: and :rawhtml:{:alt: $OA'Q$} <mtp-display model="line" name="oaq-inline"></mtp-display> :: are similar. They
+          share the angle at :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::, and $|OP|\,|OQ| = 1 = |OA|\,|OA'|$ gives
+          $|OP| / |OA'| = |OA| / |OQ|$. ::
+
+          :step: By :ref:stp-line-similar::, the angle :rawhtml:{:alt: $OA'Q$} <mtp-display model="line" name="oaq-inline"></mtp-display> :: equals the angle :rawhtml:{:alt: $OPA$} <mtp-display model="line" name="opa-inline"></mtp-display> ::, a right
+          angle by :ref:stp-line-thales::. So :rawhtml:{:alt: $Q$} <mtp-display model="line" name="q-inline"></mtp-display> :: lies on the line through :rawhtml:{:alt: $A'$} <mtp-display model="line" name="ainv-inline"></mtp-display> :: at right angles
+          to $OA$, which is :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> ::. ::
+
+        ::
+
+      ::
 
     ::
 
@@ -87,15 +97,15 @@ and $OA'Q$ are similar, with right angles at $P$ and at $A'$.
 
   :step: {:label: stp-line-onto}
 
-    :claim: Every point $X$ of $L$ is the inverse of a point of $C$. ::
+    :let: $X$ be a point of :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> ::, and :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: the inverse of $X$ ::. :prove: that :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: lies on :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: ::.
 
-    :p: $X$ lies on the same side as $A$ of the line through $O$ at right angles to $OA$, so the
-    ray from $O$ through $X$ meets $C$ at a point $P$ other than $O$. By :ref:stp-line-on::, the inverse $Q$ of $P$
-    lies on $L$, and it lies on the same ray. The ray meets $L$ only at $X$, so $Q = X$. ::
+    :p: If $X = A'$, then :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: $= A$. Otherwise, :ref:stp-line-on:: read backward shows that the
+    angle :rawhtml:{:alt: $OPA$} <mtp-display model="line" name="opa-inline"></mtp-display> :: is a right angle, so :rawhtml:{:alt: $P$} <mtp-display model="line" name="p-inline"></mtp-display> :: lies on :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> ::. :: ::
 
-  ::
+  :step: :qed:
 
-  :step: $L$ misses $O$, since $|OA'| = 1 / |OA| > 0$. ::
+    :p: By :ref:stp-line-on:: and :ref:stp-line-onto::, the image of :rawhtml:{:alt: $C$} <mtp-display model="line" name="c-inline"></mtp-display> :: is :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> ::, which misses :rawhtml:{:alt: $O$} <mtp-display model="line" name="o-inline"></mtp-display> ::,
+    since $|OA'| = 1 / |OA| > 0$. In :ref:fig-line::, :rawhtml:{:alt: $L$} <mtp-display model="line" name="l-inline"></mtp-display> :: is the dashed line, labeled :rawhtml:{:alt: $C'$} <mtp-display model="line" name="cimg-inline"></mtp-display> ::. :: ::
 
 ::
 
@@ -104,23 +114,25 @@ and $OA'Q$ are similar, with right angles at $P$ and at $A'$.
   :nonum:
 }
 
-Inversion is a useful tool in classical geometry for this reason. An inversion centered at the point where two circles are tangent maps them to two parallel lines, and a question about circles packed between the two tangent circles becomes a question about circles packed between two parallel lines, which is often much easier. Many classical results about chains of tangent circles are proved in this way, and several examples can be found in chapter 6 of :cite:coxeter:: and in chapter 5 of :cite:coxetergreitzer::. Inversion is also covered, using complex numbers, in chapter 3 of :cite:needham::.
+Inversion is a useful tool in classical geometry. An inversion centered at the point where two circles are tangent maps them to two parallel lines, as in :ref:fig-tangent::, and a question about circles packed between the two tangent circles becomes a question about circles packed between two parallel lines, which is often much easier. Many classical results about chains of tangent circles are proved in this way, and several examples can be found in chapter 6 of :cite:coxeter:: and in chapter 5 of :cite:coxetergreitzer::. Inversion is also covered, using complex numbers, in chapter 3 of :cite:needham::.
 
 :html: {
   :label: fig-tangent
+  :blockname: Figure
   :path: figs/tangent.html
   :static: figs/tangent-static.png
   :dark: figs/tangent-static-dark.png
 }
-:caption: Inversion centered at $T$, the point where the circles $D_1$ and $D_2$ are tangent. Their
-images are the two dashed parallel lines $D_1'$ and $D_2'$, and the circle $C$ packed between $D_1$ and
-$D_2$ is mapped to the dashed circle $C'$ packed between the lines.
+:caption: Inversion centered at :rawhtml:{:alt: $T$} <mtp-display model="tangent" name="t-inline"></mtp-display> ::, the point where the circles :rawhtml:{:alt: $D_1$} <mtp-display model="tangent" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="tangent" name="d2-inline"></mtp-display> :: are tangent. Their
+images are the two dashed parallel lines :rawhtml:{:alt: $D_1'$} <mtp-display model="tangent" name="d1img-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2'$} <mtp-display model="tangent" name="d2img-inline"></mtp-display> ::, and the circle :rawhtml:{:alt: $C$} <mtp-display model="tangent" name="c-inline"></mtp-display> :: packed between :rawhtml:{:alt: $D_1$} <mtp-display model="tangent" name="d1-inline"></mtp-display> :: and
+:rawhtml:{:alt: $D_2$} <mtp-display model="tangent" name="d2-inline"></mtp-display> :: is mapped to the dashed circle :rawhtml:{:alt: $C'$} <mtp-display model="tangent" name="cimg-inline"></mtp-display> :: packed between the lines.
 ::
 
 Inversion also :aside:liouville,preserves angles::. Two curves crossing at a given angle are mapped to two curves crossing at the same angle, with the orientation reversed. In :ref:fig-angles::, a small square grid near the circle is mapped to a curved grid, and wherever two lines of the grid cross at a right angle, their images cross at a right angle too. Closer to $O$, the image grows and bends more, while the crossings stay right angles.
 
 :html: {
   :label: fig-angles
+  :blockname: Figure
   :path: figs/angles.html
   :static: figs/angles-static.png
   :dark: figs/angles-static-dark.png
@@ -136,42 +148,79 @@ image are arcs, and they cross at right angles, as the lines of the grid do.
   :nonum:
 }
 
-The tangent circles of :ref:fig-tangent:: lead to a classical theorem of Pappus. A proof by inversion
-is sketched after :ref:fig-pappus::, with the justification of each step left open.
-
-:theorem: {
-  :label: thm-pappus
-  :nonum:
-  :title: Pappus chain
-}
-
-  Let :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: be two circles tangent at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> ::, one inside the other, and consider a chain
-  of circles :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, each simultaneously tangent to :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> ::, :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: and to the next circle
-  in the chain. The center of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: lies on the line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: through the centers of :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> ::.
-  Write :rawhtml:{:alt: $d_n$} <mtp-display model="pappus" name="dn-inline"></mtp-display> :: for the diameter of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: and :rawhtml:{:alt: $h_n$} <mtp-display model="pappus" name="hn-inline"></mtp-display> :: for the distance from the center of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: to :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::.
-  See :ref:fig-pappus::. Then, :rawhtml:{:alt: $h_n / d_n = n$} <mtp-display model="pappus" name="ratio-inline"></mtp-display> ::.
-
-::
+:paragraph: {:label: pappus-setup} The tangent circles of :ref:fig-tangent:: lead to a classical problem.
+Let :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: be two circles tangent at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> ::, one inside the other, and consider a chain
+of circles :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, each simultaneously tangent to :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> ::, :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: and to the next circle
+in the chain. The center of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: lies on the line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: through the centers of :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> ::.
+Write :rawhtml:{:alt: $d_n$} <mtp-display model="pappus" name="dn-inline"></mtp-display> :: for the diameter of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: and :rawhtml:{:alt: $h_n$} <mtp-display model="pappus" name="hn-inline"></mtp-display> :: for the distance from the center of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: to :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::.
+See :ref:fig-pappus::.
 
 :html: {
   :label: fig-pappus
+  :blockname: Figure
   :path: figs/pappus.html
   :static: figs/pappus-static.png
   :dark: figs/pappus-static-dark.png
 }
-:caption: A Pappus chain between two circles tangent at $T$, and its image under inversion at $T$,
-a stack of congruent circles between two parallel lines. The center of the highlighted circle $C_n$
-lies at height $n$ times its diameter.
+:caption: A chain of circles between two circles tangent at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> ::.
 ::
 
-In the proof, inversion is taken in the circle centered at $T$ and meeting $C_n$ at right angles, so that $C_n$
-is mapped to itself. The circles $D_1$ and $D_2$ are mapped to two parallel lines, at right angles to
-$L$, and every circle of the chain is mapped to a circle tangent to both
-lines. All the images therefore have the same diameter, the distance between the lines, and each is
-tangent to the next. The line $L$ is mapped to itself, and the image of $C_0$ has
-its center on it, so the images of $C_0, C_1, \ldots, C_n$ are stacked along the gap and the center
-of the image of $C_n$ lies $n$ diameters from $L$. Since that image is $C_n$ itself, its
-center lies at distance $n\,d_n$ from $L$.
+:problem: {
+  :nonum:
+}
+
+  What is :rawhtml:{:alt: $h_n$} <mtp-display model="pappus" name="hn-inline"></mtp-display> :: $/$ :rawhtml:{:alt: $d_n$} <mtp-display model="pappus" name="dn-inline"></mtp-display> :: for each circle of the chain? Does it depend on :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> ::? If so, how? If not,
+  why?
+
+::
+
+:remark: {
+  :blockname: Hints
+  :nonum:
+  :collapsed:
+}
+
+  :html: {
+    :label: fig-pappus-hints
+    :as-paragraph:
+    :path: figs/pappus-hints.html
+    :static: figs/pappus-hints-static.png
+    :dark: figs/pappus-hints-static-dark.png
+  }
+  ::
+
+::
+
+:remark: {
+  :blockname: Solution
+  :nonum:
+  :collapsed:
+}
+
+  :theorem: {
+    :label: thm-pappus
+    :nonum:
+    :title: Pappus chain
+  }
+
+    For every chain as in :ref:pappus-setup,the setup of the problem::, :rawhtml:{:alt: $h_n / d_n = n$} <mtp-display model="pappus" name="ratio-inline"></mtp-display> ::.
+
+  ::
+
+  :sketch:
+
+  Inversion is taken in the circle centered at :rawhtml:{:alt: $T$} <mtp-display model="pappus" name="t-inline"></mtp-display> :: and meeting :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: at right angles, so that :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> ::
+  is mapped to itself. The circles :rawhtml:{:alt: $D_1$} <mtp-display model="pappus" name="d1-inline"></mtp-display> :: and :rawhtml:{:alt: $D_2$} <mtp-display model="pappus" name="d2-inline"></mtp-display> :: are mapped to two parallel lines, at right angles to
+  :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::, and every circle of the chain is mapped to a circle tangent to both
+  lines. All the images therefore have the same diameter, the distance between the lines, and each is
+  tangent to the next. The line :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> :: is mapped to itself, and the image of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> :: has
+  its center on it, so the images of :rawhtml:{:alt: $C_0$} <mtp-display model="pappus" name="c0-inline"></mtp-display> ::, :rawhtml:{:alt: $C_1$} <mtp-display model="pappus" name="c1-inline"></mtp-display> ::, $\ldots$, :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: are stacked along the gap and the center
+  of the image of :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: lies $n$ diameters from :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::. Since that image is :rawhtml:{:alt: $C_n$} <mtp-display model="pappus" name="cn-inline"></mtp-display> :: itself, its
+  center lies at distance $n\,d_n$ from :rawhtml:{:alt: $L$} <mtp-display model="pappus" name="l-inline"></mtp-display> ::.
+
+  ::
+
+::
 
 :references:
 

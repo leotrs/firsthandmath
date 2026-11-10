@@ -34,6 +34,10 @@ page: a mathematician writing for a curious reader, in full, connected sentences
 - **Nothing that is not a person acts as one.** A figure, a readout, a proof or a page does not
   say, show, want, cost or know anything. Write "the product shown under the figure", not "the
   readout says".
+- **Never tell the reader how to use a figure** (the author, 2026-11-09). No sentence says what
+  can be dragged, clicked, toggled or chosen ("the point $P$ can be dragged", "the toggles add").
+  The figure itself makes plain what can be acted on. Text and captions describe the mathematics
+  ("as $P$ moves around $C$").
 - **Shapes by their names, never by their colors** (the author, 2026-11-09). Page copy refers to a
   shape in a figure by its label ("the circle $C$"), never by its color ("the green circle").
   Where a color must be named, as for a page's own accents, it is called by its plain name, green

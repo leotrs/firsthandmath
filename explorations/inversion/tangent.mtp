@@ -28,10 +28,27 @@
 (real chain-r (abs (or? (/ image-r power) 0.5)))
 
 
+; How strongly each shape named in the caption is highlighted, from 0 to 1, while its name is
+; hovered or after it is tapped.
+(real glow-t 0 (>= 0) (<= 1))
+(real glow-d1 0 (>= 0) (<= 1))
+(real glow-d2 0 (>= 0) (<= 1))
+(real glow-d1img 0 (>= 0) (<= 1))
+(real glow-d2img 0 (>= 0) (<= 1))
+(real glow-c 0 (>= 0) (<= 1))
+(real glow-cimg 0 (>= 0) (<= 1))
+
 (scene plane
   (circle_ (r 1) (fill none) (stroke soft) (stroke-width 1) (dash [2 4]) (pointer-events false))
   (group drawing (clip (rect_ (pos [0.9 0]) (width 2.6) (height 2.8))) (pointer-events false)
     (defaults (stroke-width 1.75) (fill none))
+    ; The bands, under what they highlight.
+    (circle_ (pos [1 0]) (r 1) (stroke teal) (stroke-width 12) (stroke-opacity (* 0.22 glow-d1)))
+    (circle_ (pos [0.5 0]) (r 0.5) (stroke indigo) (stroke-width 12) (stroke-opacity (* 0.22 glow-d2)))
+    (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (stroke-width 12) (stroke-opacity (* 0.22 glow-d1img)))
+    (line_ (from [1 -5]) (to [1 5]) (stroke indigo) (stroke-width 12) (stroke-opacity (* 0.22 glow-d2img)))
+    (circle_ (pos chain-c) (r chain-r) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-c)))
+    (circle_ (pos image-c) (r image-r) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-cimg)))
     (circle_ (pos [1 0]) (r 1) (stroke teal))
     (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
     (circle_ (pos [0.5 0]) (r 0.5) (stroke indigo))
@@ -60,6 +77,7 @@
     (group c-name (translate (+ chain-c (* [0.707 0.707] chain-r))) (fixed-size true) (text_ 'C' (pos [10 10]) (fill terracotta)))
     (group c-image-name (translate (+ image-c [0 -0.25])) (fixed-size true) (text_ 'C′' (pos [0 -14]) (fill terracotta))))
   (group t-dot (fixed-size true) (pointer-events false)
+    (circle_ (r 11) (fill ink) (stroke none) (opacity (* 0.18 glow-t)))
     (circle_ (r 4) (fill ink) (stroke none))
     (text_ 'T' (pos [-14 0]) (font variable) (fill ink) (halign 'middle') (valign 'middle'))))
 
@@ -77,3 +95,76 @@
   (move h (to 0.1) (duration 0.9) (ease cubic-in-out))
   (move h (to 0.45) (duration 0.6) (ease cubic-in-out)))
   doc@'Nudges the packed circle once, to show that it moves.')
+
+; The symbols of the caption, each set inline in its sentence in its shape's color. Hovering one
+; highlights what it names in the figure; tapping one (on a phone) highlights it for a moment.
+
+(formula sym-t tex'\term{s}{T}'
+  (term s (fill ink)))
+(display t-inline sym-t (kind 'inline'))
+(on-enter sym-t.s (animation (move glow-t (to 1) (duration 0.2)))
+  doc@'Highlights the point T in the figure.')
+(on-leave sym-t.s (animation (move glow-t (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-t.s (animation (move glow-t (to 1) (duration 0.25)) (wait 1) (move glow-t (to 0) (duration 0.25)))
+  doc@'Highlights the point T for a moment.')
+
+(formula sym-d1 tex'\term{s}{D_1}'
+  (term s (fill teal)))
+(display d1-inline sym-d1 (kind 'inline'))
+(on-enter sym-d1.s (animation (move glow-d1 (to 1) (duration 0.2)))
+  doc@'Highlights the circle D_1 in the figure.')
+(on-leave sym-d1.s (animation (move glow-d1 (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-d1.s (animation (move glow-d1 (to 1) (duration 0.25)) (wait 1) (move glow-d1 (to 0) (duration 0.25)))
+  doc@'Highlights the circle D_1 for a moment.')
+
+(formula sym-d2 tex'\term{s}{D_2}'
+  (term s (fill indigo)))
+(display d2-inline sym-d2 (kind 'inline'))
+(on-enter sym-d2.s (animation (move glow-d2 (to 1) (duration 0.2)))
+  doc@'Highlights the circle D_2 in the figure.')
+(on-leave sym-d2.s (animation (move glow-d2 (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-d2.s (animation (move glow-d2 (to 1) (duration 0.25)) (wait 1) (move glow-d2 (to 0) (duration 0.25)))
+  doc@'Highlights the circle D_2 for a moment.')
+
+(formula sym-d1img tex'\term{s}{D_1^{\prime}}'
+  (term s (fill teal)))
+(display d1img-inline sym-d1img (kind 'inline'))
+(on-enter sym-d1img.s (animation (move glow-d1img (to 1) (duration 0.2)))
+  doc@'Highlights the line D_1′ in the figure.')
+(on-leave sym-d1img.s (animation (move glow-d1img (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-d1img.s (animation (move glow-d1img (to 1) (duration 0.25)) (wait 1) (move glow-d1img (to 0) (duration 0.25)))
+  doc@'Highlights the line D_1′ for a moment.')
+
+(formula sym-d2img tex'\term{s}{D_2^{\prime}}'
+  (term s (fill indigo)))
+(display d2img-inline sym-d2img (kind 'inline'))
+(on-enter sym-d2img.s (animation (move glow-d2img (to 1) (duration 0.2)))
+  doc@'Highlights the line D_2′ in the figure.')
+(on-leave sym-d2img.s (animation (move glow-d2img (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-d2img.s (animation (move glow-d2img (to 1) (duration 0.25)) (wait 1) (move glow-d2img (to 0) (duration 0.25)))
+  doc@'Highlights the line D_2′ for a moment.')
+
+(formula sym-c tex'\term{s}{C}'
+  (term s (fill terracotta)))
+(display c-inline sym-c (kind 'inline'))
+(on-enter sym-c.s (animation (move glow-c (to 1) (duration 0.2)))
+  doc@'Highlights the circle C in the figure.')
+(on-leave sym-c.s (animation (move glow-c (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-c.s (animation (move glow-c (to 1) (duration 0.25)) (wait 1) (move glow-c (to 0) (duration 0.25)))
+  doc@'Highlights the circle C for a moment.')
+
+(formula sym-cimg tex'\term{s}{C^{\prime}}'
+  (term s (fill terracotta)))
+(display cimg-inline sym-cimg (kind 'inline'))
+(on-enter sym-cimg.s (animation (move glow-cimg (to 1) (duration 0.2)))
+  doc@'Highlights the circle C′ in the figure.')
+(on-leave sym-cimg.s (animation (move glow-cimg (to 0) (duration 0.3)))
+  doc@'Takes the highlight away.')
+(on-click sym-cimg.s (animation (move glow-cimg (to 1) (duration 0.25)) (wait 1) (move glow-cimg (to 0) (duration 0.25)))
+  doc@'Highlights the circle C′ for a moment.')

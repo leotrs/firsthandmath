@@ -39,8 +39,24 @@
 (point cn (chain-center n))
 (real dn (* 2 (chain-radius n)))
 (bool d-inside (>= (chain-radius n) 0.2))
+; The images are drawn for the inversion that leaves C_n in place, as in the proof: the circle
+; centered at T with radius rho, rho^2 being the power of T with respect to C_n, which meets C_n
+; at right angles. Inversion in it is inversion in the unit circle scaled by rho^2.
+(real rho2 (or? (max 0.01 (- (* (norm cn) (norm cn)) (* (chain-radius n) (chain-radius n)))) 1))
 ; Whether the images under inversion are shown, by their toggle; off at first.
 (bool show-images false)
+; The tour (the play under the figure): which step it is at, 0 before it starts, and what each step
+; has shown so far. The images are drawn for inversion in the circle centered at T of radius
+; sqrt(inv-k), which is the unit circle at first and is dragged, or moved, to the one that leaves
+; C_n in place.
+(int stage 0 (>= 0) (<= 6))
+(real inv-k 1 (>= 0.05) (<= 9))
+(real lines-a 0 (>= 0) (<= 1))
+(real stack-n 0 (>= 0) (<= 6))
+(real count-n -1 (>= -1) (<= 5))
+; Only a still picture of the figure hides the handle (figs/pappus.states.json), since a picture
+; cannot be dragged.
+(bool show-grip true)
 ; How strongly each shape named in the theorem is highlighted, from 0 to 1, while its name in the
 ; statement is hovered or after it is tapped: a pale band of the shape's color under the shape.
 (real glow-d1 0 (>= 0) (<= 1))
@@ -82,34 +98,44 @@
     (group chain (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
       (foreach k 6
         (circle #'chain-{k}' (pos (chain-center k)) (r (chain-radius k)) (stroke (if (= k n) terracotta ink))
-            (fill terracotta) (fill-opacity (if (= k n) 0.15 0)) (stroke-width (if (= k n) 2 1.25))))))
+            (fill terracotta) (fill-opacity 0) (stroke-width (if (= k n) 2 1.25))))))
 
   ; The images under inversion, which the toggle shows and hides: the images of the two circles, the
   ; height and the diameter of the image of C_n in gray, and the stack, the image of the chain.
-  (group images
-    (group image-lines (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4))) (pointer-events false)
-        (defaults (stroke-width 1.5) (fill none))
+  (group images (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
+   (circle_ (r (or? (sqrt inv-k) 1)) (fill none) (stroke soft) (stroke-width 1.5) (dash [0.1 4]) (line-cap 'round') (pointer-events false))
+   ; Each image's number, quietly, matching the control below the figure. Outside the scaled group,
+   ; so that the numbers keep their size.
+   (foreach k 6
+     (group #'number-{k}' (translate (* (image-center k) inv-k)) (fixed-size true) (pointer-events false) (defaults (opacity (if (<= k count-n) 1 0)))
+       (text_ $'{k}' (pos [-16 0]) (font number) (fill (if (= k n) terracotta soft)) (halign 'middle') (valign 'middle'))))
+   (group scaled (transform (scale inv-k))
+    (group image-lines (pointer-events false)
+        (defaults (stroke-width 1.5) (fill none) (opacity lines-a))
       (line_ (from [0.5 -5]) (to [0.5 5]) (stroke teal) (dash [6 4]))
       (line_ (from (+ (* right far) [0 -5])) (to (+ (* right far) [0 5])) (stroke indigo) (dash [6 4]))
-      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar'))
+      (line_ (from foot) (to (image-center n)) (stroke soft) (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 6) 1 0)))
       ; A notch at every multiple of the image's diameter, as on the height of C_n.
       (foreach j 5
         (line_ (from (+ foot [-0.03 0] (* up (* (+ j 1) gap)))) (to (+ foot [0.03 0] (* up (* (+ j 1) gap))))
-          (stroke soft) (opacity (if (< (+ j 1) n) 1 0))))
+          (stroke soft) (opacity (if (and (>= stage 6) (< (+ j 1) n)) 1 0))))
       (line_ (from (- (image-center n) [image-r 0])) (to (+ (image-center n) [image-r 0])) (stroke soft)
-          (dash [3 3]) (head-start 'bar') (head-end 'bar')))
-    (group stack (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
+          (dash [3 3]) (head-start 'bar') (head-end 'bar') (opacity (if (>= stage 6) 1 0))))
+    (group stack
       (foreach k 6
         (circle #'stack-{k}' (pos (image-center k)) (r image-r) (stroke (if (= k n) terracotta soft)) (dash [5 4])
-            (fill terracotta) (fill-opacity 0) (stroke-width (if (= k n) 2 1.25)))
-        ; The circle's number, quietly, matching the segment of the control below the figure.
-        (group #'number-{k}' (translate (image-center k)) (fixed-size true) (pointer-events false)
-          (text_ $'{k}' (pos [-16 0]) (font number) (fill (if (= k n) terracotta soft)) (halign 'middle') (valign 'middle'))))))
+            (fill terracotta) (fill-opacity 0) (stroke-width (if (= k n) 2 1.25)) (opacity (if (< k stack-n) 1 0)))
+))))
 
   (group marks
+    ; In step 3 of the tour, the disk on the circle of inversion, by which its radius is set; the page
+    ; draws the arrows in the empty circle of radius 10.5.
+    (group inv-grip (translate (* [-0.5 -0.866] (or? (sqrt inv-k) 1))) (fixed-size true) (defaults (opacity (if (= stage 4) 1 0)))
+      (circle_ (r 11) (fill soft) (stroke paper) (stroke-width 2))
+      (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The disk at five o'clock on the inner circle, by which its radius is set; the page draws a hand
     ; in the empty circle of radius 10.5.
-    (group grip (translate (* [1.5 -0.866] s)) (fixed-size true)
+    (group grip (translate (* [1.5 -0.866] s)) (fixed-size true) (defaults (opacity (if show-grip 1 0)))
       (circle_ (r 11) (fill indigo) (stroke paper) (stroke-width 2))
       (circle_ (r 10.5) (fill none) (stroke none) (pointer-events false)))
     ; The names of the height and the diameter of the selected circle, beside their bars.
@@ -163,10 +189,26 @@
   (term d (tex $'{dn:.3f}') (fill terracotta))
   (term r (tex $'{(or? (/ cn.y dn) 0):.2f}')))
 (display pappus-display pappus)
+(display pappus-inline pappus (kind 'inline'))
 
-(toggle show-images-toggle show-images (label 'images under inversion')
-    (animation (move view.height (to (if show-images 3.4 2.2)) (duration 0.35) (ease cubic-in-out)))
-  doc@'Shows the images of the circles under inversion at T, and makes room for them.')
+; The hints: one question per step, moved through by the reader. Each step first shows the answer
+; to the step before.
+(stepper hints (label 'hints')
+  (animation
+    ; The values of h_n / d_n, which the first question shows.
+    (move stage (to 1) (duration 0))
+    (in-order (move stage (to 2) (duration 0)) (move inv-k (to 1) (duration 0)) (move show-images (to true) (duration 0))
+      (at-once (move glow-d1 (to 1) (duration 0.4)) (move glow-d2 (to 1) (duration 0.4))))
+    (in-order (move stage (to 3) (duration 0))
+      (at-once (move glow-d1 (to 0) (duration 0.4)) (move glow-d2 (to 0) (duration 0.4)) (move lines-a (to 1) (duration 0.8))))
+    (in-order (move stage (to 4) (duration 0)) (move view.height (to 3.4) (duration 0.5) (ease cubic-in-out))
+      (move stack-n (to 6) (duration 1.5)))
+    (in-order (move stage (to 5) (duration 0)) (move inv-k (to rho2) (duration 1.2) (ease cubic-in-out)))
+    (in-order (move stage (to 6) (duration 0)) (move count-n (to n) (duration 1.5))))
+  doc@'Asks one question per step about why the ratio is n; each step first shows the answer to the one before.')
+
+(on-drag inv-grip (move inv-k (to (or? (* (norm pointer) (norm pointer)) 1))) (active (= stage 4))
+  doc@'Sets the radius of the circle of inversion; the images grow and shrink with it.')
 
 ; The control under the figure: one button for each circle of the chain, the selected one filled.
 (foreach k 6
@@ -178,7 +220,8 @@
 ; what it names in the figure; tapping one (on a phone, where nothing hovers) highlights it for a
 ; moment, and tapping C_0 or C_1 also selects that circle.
 
-(formula sym-d1 tex'\term{s}{D_1}')
+(formula sym-d1 tex'\term{s}{D_1}'
+  (term s (fill teal)))
 (display d1-inline sym-d1 (kind 'inline'))
 (on-enter sym-d1.s (animation (move glow-d1 (to 1) (duration 0.2)))
   doc@'Highlights the circle D_1 in the figure.')
@@ -187,7 +230,8 @@
 (on-click sym-d1.s (animation (move glow-d1 (to 1) (duration 0.25)) (wait 1) (move glow-d1 (to 0) (duration 0.25)))
   doc@'Highlights the circle D_1 for a moment.')
 
-(formula sym-d2 tex'\term{s}{D_2}')
+(formula sym-d2 tex'\term{s}{D_2}'
+  (term s (fill indigo)))
 (display d2-inline sym-d2 (kind 'inline'))
 (on-enter sym-d2.s (animation (move glow-d2 (to 1) (duration 0.2)))
   doc@'Highlights the circle D_2 in the figure.')
@@ -196,7 +240,8 @@
 (on-click sym-d2.s (animation (move glow-d2 (to 1) (duration 0.25)) (wait 1) (move glow-d2 (to 0) (duration 0.25)))
   doc@'Highlights the circle D_2 for a moment.')
 
-(formula sym-t tex'\term{s}{T}')
+(formula sym-t tex'\term{s}{T}'
+  (term s (fill ink)))
 (display t-inline sym-t (kind 'inline'))
 (on-enter sym-t.s (animation (move glow-t (to 1) (duration 0.2)))
   doc@'Highlights the point T in the figure.')
@@ -205,7 +250,8 @@
 (on-click sym-t.s (animation (move glow-t (to 1) (duration 0.25)) (wait 1) (move glow-t (to 0) (duration 0.25)))
   doc@'Highlights the point T for a moment.')
 
-(formula sym-l tex'\term{s}{L}')
+(formula sym-l tex'\term{s}{L}'
+  (term s (fill soft)))
 (display l-inline sym-l (kind 'inline'))
 (on-enter sym-l.s (animation (move glow-l (to 1) (duration 0.2)))
   doc@'Highlights the line L in the figure.')
@@ -214,7 +260,8 @@
 (on-click sym-l.s (animation (move glow-l (to 1) (duration 0.25)) (wait 1) (move glow-l (to 0) (duration 0.25)))
   doc@'Highlights the line L for a moment.')
 
-(formula sym-c0 tex'\term{s}{C_0}')
+(formula sym-c0 tex'\term{s}{C_0}'
+  (term s (fill (if (= n 0) terracotta ink))))
 (display c0-inline sym-c0 (kind 'inline'))
 (on-enter sym-c0.s (animation (move glow-c0 (to 1) (duration 0.2)))
   doc@'Highlights the circle C_0 in the figure.')
@@ -223,7 +270,8 @@
 (on-click sym-c0.s (animation (move n (to 0) (duration 0)) (move glow-c0 (to 1) (duration 0.25)) (wait 1) (move glow-c0 (to 0) (duration 0.25)))
   doc@'Highlights the circle C_0 for a moment, and selects it.')
 
-(formula sym-c1 tex'\term{s}{C_1}')
+(formula sym-c1 tex'\term{s}{C_1}'
+  (term s (fill (if (= n 1) terracotta ink))))
 (display c1-inline sym-c1 (kind 'inline'))
 (on-enter sym-c1.s (animation (move glow-c1 (to 1) (duration 0.2)))
   doc@'Highlights the circle C_1 in the figure.')
@@ -232,7 +280,8 @@
 (on-click sym-c1.s (animation (move n (to 1) (duration 0)) (move glow-c1 (to 1) (duration 0.25)) (wait 1) (move glow-c1 (to 0) (duration 0.25)))
   doc@'Highlights the circle C_1 for a moment, and selects it.')
 
-(formula sym-cn tex'\term{s}{C_n}')
+(formula sym-cn tex'\term{s}{C_n}'
+  (term s (fill terracotta)))
 (display cn-inline sym-cn (kind 'inline'))
 (on-enter sym-cn.s (animation (move glow-cn (to 1) (duration 0.2)))
   doc@'Highlights the selected circle C_n in the figure.')
@@ -241,7 +290,8 @@
 (on-click sym-cn.s (animation (move glow-cn (to 1) (duration 0.25)) (wait 1) (move glow-cn (to 0) (duration 0.25)))
   doc@'Highlights the selected circle C_n for a moment.')
 
-(formula sym-dn tex'\term{s}{d_n}')
+(formula sym-dn tex'\term{s}{d_n}'
+  (term s (fill terracotta)))
 (display dn-inline sym-dn (kind 'inline'))
 (on-enter sym-dn.s (animation (move glow-d (to 1) (duration 0.2)))
   doc@'Highlights the diameter of C_n in the figure.')
@@ -250,7 +300,8 @@
 (on-click sym-dn.s (animation (move glow-d (to 1) (duration 0.25)) (wait 1) (move glow-d (to 0) (duration 0.25)))
   doc@'Highlights the diameter of C_n for a moment.')
 
-(formula sym-hn tex'\term{s}{h_n}')
+(formula sym-hn tex'\term{s}{h_n}'
+  (term s (fill terracotta)))
 (display hn-inline sym-hn (kind 'inline'))
 (on-enter sym-hn.s (animation (move glow-h (to 1) (duration 0.2)))
   doc@'Highlights the height of the center of C_n in the figure.')
@@ -259,7 +310,8 @@
 (on-click sym-hn.s (animation (move glow-h (to 1) (duration 0.25)) (wait 1) (move glow-h (to 0) (duration 0.25)))
   doc@'Highlights the height of the center of C_n for a moment.')
 
-(formula sym-ratio tex'\term{s}{h_n / d_n = n}')
+(formula sym-ratio tex'\term{s}{h_n / d_n = n}'
+  (term s (fill terracotta)))
 (display ratio-inline sym-ratio (kind 'inline'))
 (on-enter sym-ratio.s (animation (at-once (move glow-h (to 1) (duration 0.2)) (move glow-d (to 1) (duration 0.2))))
   doc@'Highlights the height and the diameter of C_n in the figure.')

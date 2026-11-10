@@ -124,17 +124,23 @@ body[data-accent] { --text-keyword: var(--primary-600); }
   .fm-fig-row + .fm-fig-row { margin-top: var(--chunk-twelfth); }
 }
 
-/* A segmented control: buttons that pick one of a few values, joined into one bar, the selected
-   one filled in the accent of the figure. These are our own markup (.fm-seg around mtp-buttons). */
-.fm-seg { display: inline-flex; }
-/* A button's touch area reaches 6px past it, which would make the figure's box scroll by a few
-   pixels; the figure leaves room for it. */
-.fm-fig:has(.fm-seg) { padding-bottom: var(--chunk-sixth); }
-.fm-seg mtp-button button { border-radius: 0; margin-left: calc(-1 * var(--border-extrathin)); color: var(--fm-ink); }
-.fm-seg mtp-button:first-child button { border-radius: var(--radius-lg) 0 0 var(--radius-lg); margin-left: 0; }
-.fm-seg mtp-button:last-child button { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+/* A choice of one value, as tabs: a quiet label, then plain buttons, the chosen one in ink and
+   underlined in terracotta. Centered under its figure. Our own markup (.fm-seg around mtp-buttons,
+   with .fm-seg-label). */
+.fm-fig-row:has(.fm-seg) { display: flex; justify-content: center; }
+.fm-fig-row-head:has(.fm-seg) { width: auto; }
+.fm-seg { display: inline-flex; align-items: center; gap: var(--chunk-twelfth); }
+.fm-seg-label { font-family: var(--fm-sans); font-weight: 500; font-size: 0.875rem; color: var(--fm-quiet); margin-right: var(--chunk-sixth); }
+/* A button's touch area reaches 6px past it, as do a stepper's buttons and dots, which would make
+   the figure's box scroll by a few pixels; the figure leaves room for them. */
+.fm-fig:has(.fm-seg), .fm-fig:has(mtp-stepper) { padding-bottom: var(--chunk-sixth); }
+.fm-seg mtp-button button, .fm-seg mtp-button button:hover {
+  border: none; border-radius: 0; background: none; color: var(--fm-quiet);
+  border-bottom: var(--border-thin) solid transparent;
+}
+.fm-seg mtp-button button:hover { color: var(--fm-ink); }
 .fm-seg mtp-button button[aria-pressed="true"], .fm-seg mtp-button button[aria-pressed="true"]:hover {
-  background: var(--fm-terracotta); border-color: var(--fm-terracotta); color: var(--fm-paper); position: relative; z-index: 1;
+  color: var(--fm-ink); background: none; box-shadow: none; border-bottom-color: var(--fm-terracotta);
 }
 
 /* A toggle that shows a pair of shapes is a chip led by a short stroke in that pair's color, given
@@ -173,6 +179,17 @@ body[data-accent] { --text-keyword: var(--primary-600); }
   background: radial-gradient(circle at calc(100% - var(--chunk-sixth)) 50%, var(--fm-paper) calc(var(--chunk-sixth) * 0.7), transparent calc(var(--chunk-sixth) * 0.75)),
     var(--fm-ink);
 }
+
+/* A figure's hints: its stepper, then one question per step, of which only the current one shows.
+   Our own markup (.fm-tour, .fm-tour-q with data-step), read against the stepper's data-step. */
+.fm-tour { display: flex; flex-direction: column; gap: var(--chunk-sixth); }
+.fm-tour-q { display: none; margin: 0; }
+.fm-fig:has(mtp-stepper[data-step="1"]) .fm-tour-q[data-step="1"] { display: block; }
+.fm-fig:has(mtp-stepper[data-step="2"]) .fm-tour-q[data-step="2"] { display: block; }
+.fm-fig:has(mtp-stepper[data-step="3"]) .fm-tour-q[data-step="3"] { display: block; }
+.fm-fig:has(mtp-stepper[data-step="4"]) .fm-tour-q[data-step="4"] { display: block; }
+.fm-fig:has(mtp-stepper[data-step="5"]) .fm-tour-q[data-step="5"] { display: block; }
+.fm-fig:has(mtp-stepper[data-step="6"]) .fm-tour-q[data-step="6"] { display: block; }
 
 /* A figure's live caption: a readout under its controls. */
 .fm-fig > mtp-readout { display: block; margin-top: var(--chunk-sixth); text-align: center; color: var(--fm-quiet); }
