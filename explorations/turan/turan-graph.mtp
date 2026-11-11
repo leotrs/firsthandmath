@@ -76,10 +76,6 @@
         (alpha free@(if (< k 3) 1 0))
         (pos free@(part-center k 3))))))
 
-(canvas view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
-  doc@'The graph, its parts drawn as bags.'
-  bags edges verts)
-
 (func[int] part-of ((int i)) (or? verts[i].part 0))
 ; Where vertex i belongs now: in its part's bag, stacked in the order of the vertices.
 (func[point] place ((int i))
@@ -113,11 +109,14 @@
   (at-once (foreach v verts (move v.part (to (even-part (or? v.idx 0) n r)) (duration 0))))
   settle)
 
-(foreach v verts
-  (on-drag v v.pos doc@'Moves the vertex; it joins the part nearest where it is dropped.')
-  (on-dragend v
-    (animation (move v.part (to (nearest-part v.pos)) (duration 0)) settle)
-    doc@'Puts the vertex in the part nearest where it was dropped, and everything in place.'))
+(canvas view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
+  doc@'The graph, its parts drawn as bags.'
+  bags edges verts
+  (foreach v verts
+    (on-drag v v.pos doc@'Moves the vertex; it joins the part nearest where it is dropped.')
+    (on-dragend v
+      (animation (move v.part (to (nearest-part v.pos)) (duration 0)) settle)
+      doc@'Puts the vertex in the part nearest where it was dropped, and everything in place.')))
 
 (button fewer-parts (animation (move r (to (- r 1)) (duration 0)) even-out) (active (> r 2)) (label '−'))
 (button more-parts (animation (move r (to (+ r 1)) (duration 0)) even-out) (active (< r 5)) (label '+'))

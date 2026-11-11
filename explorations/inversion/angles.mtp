@@ -48,13 +48,13 @@
 
 (canvas view (x -1.3) (y -1.3) (width 3.8) (height 2.8) (pan false) (zoom false)
   doc@'A square grid near the circle and its image, a curved grid whose crossings are right angles.'
-  plane)
+  plane
+  (on-drag grip (move g (to (- pointer corner)))
+    doc@'Moves the grid; its image bends more closer to O, and its crossings stay right angles.')
+  ; Once, when the figure first comes into view, the grid moves toward O and back.
+  (on-view (animation (wait 0.6)
+    (move g (to [0.55 0.08]) (duration 0.7) (ease cubic-in-out))
+    (move g (to [0.8 0.08]) (duration 0.8) (ease cubic-in-out))
+    (move g (to [0.72 0.08]) (duration 0.5) (ease cubic-in-out)))
+    doc@'Moves the grid toward O and back once, to show that it moves.'))
 
-(on-drag grip (move g (to (- pointer corner)))
-  doc@'Moves the grid; its image bends more closer to O, and its crossings stay right angles.')
-; Once, when the figure first comes into view, the grid moves toward O and back.
-(on-view view (animation (wait 0.6)
-  (move g (to [0.55 0.08]) (duration 0.7) (ease cubic-in-out))
-  (move g (to [0.8 0.08]) (duration 0.8) (ease cubic-in-out))
-  (move g (to [0.72 0.08]) (duration 0.5) (ease cubic-in-out)))
-  doc@'Moves the grid toward O and back once, to show that it moves.')

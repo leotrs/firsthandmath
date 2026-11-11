@@ -99,10 +99,6 @@
         (font number) (fill terracotta) (halign 'end') (valign 'middle'))
       (exists-when lambda-label (> avg-y 0.001)))))
 
-(canvas graph-view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
-  doc@'The graph: click two vertices to join them, click an edge to remove it.'
-  edges verts)
-
 ; Whether a and b are joined, in either order.
 (func[bool] joined ((int a) (int b))
   (any edges (fn e (and (or? e.on false)
@@ -164,21 +160,24 @@
     (move avg-y (to (average)))
     (move ceil-y (to (ceiling)))))
 
-; A vertex click picks the vertex, or joins the picked vertex to it, or drops the pick.
-(foreach v verts
-  (on-click v
-    (animation
-      (foreach e edges
-        (move e.on (to (if (and (>= sel 0) (!= sel (or? v.idx 0))
-                                (or (and (= (or? e.a 0) sel) (= (or? e.b 0) (or? v.idx 0)))
-                                    (and (= (or? e.b 0) sel) (= (or? e.a 0) (or? v.idx 0)))))
-                           true (or? e.on false)))
-          (duration 0)))
-      (move sel (to (cond ((= sel -1) (or? v.idx 0)) (else -1))) (duration 0))
-      refresh)
-    doc@'Picks the vertex, or joins the picked vertex to it.'))
-(foreach e edges
-  (on-click e (animation (move e.on (to false) (duration 0)) refresh) doc@'Removes the edge.'))
+(canvas graph-view (x -150) (y -150) (width 300) (height 300) (pan false) (zoom false)
+  doc@'The graph: click two vertices to join them, click an edge to remove it.'
+  edges verts
+  ; A vertex click picks the vertex, or joins the picked vertex to it, or drops the pick.
+  (foreach v verts
+    (on-click v
+      (animation
+        (foreach e edges
+          (move e.on (to (if (and (>= sel 0) (!= sel (or? v.idx 0))
+                                  (or (and (= (or? e.a 0) sel) (= (or? e.b 0) (or? v.idx 0)))
+                                      (and (= (or? e.b 0) sel) (= (or? e.a 0) (or? v.idx 0)))))
+                             true (or? e.on false)))
+            (duration 0)))
+        (move sel (to (cond ((= sel -1) (or? v.idx 0)) (else -1))) (duration 0))
+        refresh)
+      doc@'Picks the vertex, or joins the picked vertex to it.'))
+  (foreach e edges
+    (on-click e (animation (move e.on (to false) (duration 0)) refresh) doc@'Removes the edge.')))
 
 (foreach k 4
   (button #'preset-{k}'
