@@ -4,9 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Short: inversion (dev)</title>
-<!-- Dev only: the vertical frame of the inversion short and its script side by side, for writing
-     and recording. The arrow keys move the short's tour one phrase at a time. Copied to _site/dev/
-     by `just site` and removed before a deploy. -->
+<!-- Dev only: the vertical frame of the inversion short and its script side by side. The arrow keys
+     move the short's tour one phrase at a time. Record saves the narration and the time of every
+     step to Downloads; site/render-short.mjs turns the two into the video, opening this page with
+     ?render, which shows the frame alone with captions. Copied to _site/dev/ by `just site` and
+     removed before a deploy. -->
 <link rel="stylesheet" href="/base.css">
 <script type="module" src="/mathterpiece.js"></script>
 <style>
@@ -17,11 +19,17 @@
   .dev > section { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
   .dev h2 { font: 600 12px/1 var(--fm-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fm-quiet); margin: 0 0 8px; }
   /* The short's frame: 1080 by 1920, drawn at the height of the window, the stepper under it. */
-  .frame { height: calc(100vh - 110px); aspect-ratio: 9 / 16; border: 1px solid var(--fm-rule); border-radius: 8px;
+  .frame { position: relative; height: calc(100vh - 110px); aspect-ratio: 9 / 16; border: 1px solid var(--fm-rule); border-radius: 8px;
     background: var(--fm-paper); display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
   .frame mtp-canvas { display: block; width: 100%; }
+  .caption { display: none; }
   .controls { display: flex; justify-content: center; padding-top: 12px; }
   .script { overflow-y: auto; padding-right: 8px; max-width: 46em; }
+  .record { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; font: 500 14px/1.4 var(--fm-sans); }
+  .record button { font: 600 14px/1 var(--fm-sans); padding: 10px 18px; border-radius: 999px; border: none; cursor: pointer;
+    background: var(--fm-terracotta); color: var(--fm-paper); }
+  .record.on button { background: var(--fm-ink); }
+  .record .status { color: var(--fm-quiet); }
   .beat { border-top: 1px solid var(--fm-rule); padding: 12px 0; }
   .beat header { display: flex; justify-content: space-between; font: 500 13px/1.4 var(--fm-sans); color: var(--fm-quiet); margin-bottom: 6px; }
   .beat p { margin: 0; font-size: 20px; line-height: 1.6; }
@@ -31,6 +39,16 @@
   .script [data-step] { border-radius: 4px; transition: background .2s; }
   .script [data-step].now { background: color-mix(in srgb, var(--fm-terracotta) 22%, var(--fm-paper)); }
   .script [data-step].next { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--fm-terracotta) 60%, var(--fm-paper)); }
+
+  /* ?render: the frame alone, filling the window, with the figure at the top and the caption
+     under it, kept above the band at the bottom where YouTube draws its own buttons and title. */
+  .render .dev { display: block; padding: 0; height: 100vh; }
+  .render .dev > section:not(:first-child), .render .dev h2, .render .controls { display: none; }
+  .render .frame { height: 100vh; width: 100vw; border: none; border-radius: 0; justify-content: flex-start; padding-top: 4vh; box-sizing: border-box; }
+  .render .frame mtp-canvas { width: 84%; margin: 0 auto; }
+  .render .caption { display: block; position: absolute; left: 7%; right: 14%; top: 80%; transform: translateY(-100%);
+    font: 600 17px/1.35 var(--fm-sans); color: var(--fm-ink); text-align: center; text-wrap: balance; }
+  .render .caption.end { font-size: 20px; }
 </style>
 </head>
 <body>
@@ -40,11 +58,13 @@
     <div class="frame">
       <mtp-model id="short" src="/inversion/assets/figs/pappus.mtpc"></mtp-model>
       <mtp-canvas model="short" name="short-view"></mtp-canvas>
+      <div class="caption" aria-hidden="true"></div>
     </div>
     <div class="controls"><mtp-stepper model="short" name="short"></mtp-stepper></div>
   </section>
   <section class="script">
     <h2>Script, draft 1</h2>
+    <div class="record"><button type="button">Record</button><span class="status">Records the narration and every → press. Stop saves both to Downloads.</span></div>
     <p class="note">→ plays the next phrase's step, ← goes back one. The highlighted phrase goes with the
       step just played; the underlined one is next. Times are estimated at 150 words a minute.</p>
     <div class="beat"><header><span>1. Setup</span><span class="t"></span></header>
@@ -63,11 +83,14 @@
         <span data-step="11">When the circle of inversion crosses Cₙ at right angles, Cₙ is its own image,</span>
         <span data-step="12">so Cₙ itself lies n of its own diameters above L.</span></p></div>
     <div class="beat"><header><span>5. End</span><span class="t"></span></header>
-      <p>The figure is at firsthandmath.com/inversion.</p></div>
+      <p><span data-step="13">The figure is at firsthandmath.com/inversion.</span></p></div>
     <div class="total"></div>
   </section>
 </main>
 <script>
+  const render = new URLSearchParams(location.search).has("render");
+  document.documentElement.classList.toggle("render", render);
+
   // Word counts and spoken times, so the script's length is seen while it is edited.
   const WPM = 150;
   let words = 0;
@@ -80,17 +103,78 @@
 
   // The phrases follow the stepper's step, which it reports in its data-step attribute.
   const stepper = document.querySelector("mtp-stepper");
+  const stepNow = () => Number(stepper.getAttribute("data-step") ?? 0);
   const mark = () => {
-    const at = Number(stepper.getAttribute("data-step") ?? 0);
+    const at = stepNow();
     for (const phrase of document.querySelectorAll(".script [data-step]")) {
       const k = Number(phrase.dataset.step);
       phrase.classList.toggle("now", k === at);
       phrase.classList.toggle("next", k === at + 1);
     }
-    document.querySelector(".script .now")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (!render) document.querySelector(".script .now")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
   new MutationObserver(mark).observe(stepper, { attributes: true, attributeFilter: ["data-step"] });
   mark();
+
+  // For the renderer: each phrase's text, and a way to set the caption.
+  window.__phrases = Object.fromEntries([...document.querySelectorAll(".script [data-step]")].map((s) => [s.dataset.step, s.textContent.replace(/\s+/g, " ").trim()]));
+  window.__caption = (text, end) => {
+    const c = document.querySelector(".caption");
+    c.textContent = text;
+    c.classList.toggle("end", Boolean(end));
+  };
+
+  // Recording: the microphone, and the time of every change of step, from the moment Record is
+  // pressed. Stop saves the sound and the times as two files with the same name.
+  const panel = document.querySelector(".record");
+  const button = panel.querySelector("button");
+  const status = panel.querySelector(".status");
+  let recorder = null, chunks = [], steps = [], start = 0, timer = 0;
+  const stamp = () => new Date().toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-");
+  const save = (blob, name) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  };
+  new MutationObserver(() => {
+    if (recorder) steps.push({ t: Math.round(performance.now() - start), step: stepNow() });
+  }).observe(stepper, { attributes: true, attributeFilter: ["data-step"] });
+  button.addEventListener("click", async () => {
+    if (recorder) {
+      recorder.stop();
+      return;
+    }
+    // Every take starts before the first step.
+    while (stepNow() > 0) stepper.querySelector(".mtp-prev").click();
+    const mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: false } });
+    recorder = new MediaRecorder(mic, { mimeType: "audio/webm;codecs=opus", audioBitsPerSecond: 192000 });
+    chunks = [];
+    steps = [];
+    recorder.ondataavailable = (e) => chunks.push(e.data);
+    recorder.onstop = () => {
+      const duration = Math.round(performance.now() - start);
+      mic.getTracks().forEach((t) => t.stop());
+      const name = `short-inversion-${stamp()}`;
+      save(new Blob(chunks, { type: "audio/webm" }), `${name}.webm`);
+      save(new Blob([JSON.stringify({ duration, steps }, null, 2)], { type: "application/json" }), `${name}.json`);
+      recorder = null;
+      clearInterval(timer);
+      panel.classList.remove("on");
+      button.textContent = "Record";
+      status.textContent = `Saved ${name}.webm and .json to Downloads.`;
+    };
+    recorder.start();
+    start = performance.now();
+    panel.classList.add("on");
+    button.textContent = "Stop";
+    timer = setInterval(() => {
+      const s = Math.floor((performance.now() - start) / 1000);
+      status.textContent = `Recording ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} · step ${stepNow()} of 13`;
+    }, 250);
+    button.blur();
+  });
 </script>
 </body>
 </html>

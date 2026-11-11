@@ -12,7 +12,7 @@
 
 (import house paper ink soft terracotta teal indigo variable number)
 (import math norm)
-(import ease cubic-in-out)
+(import ease cubic-in-out cubic-out)
 
 (func[point] inverse ((point x)) (or? (* x (/ 1 (* (norm x) (norm x)))) [0 0]))
 (point up [0 1] (const))
@@ -76,7 +76,14 @@
 (real a-d2 1 (>= 0) (<= 1))
 (real a-t 1 (>= 0) (<= 1))
 (real a-l 1 (>= 0) (<= 1))
-(real chain-a 6 (>= 0) (<= 6))
+(real chain-a 7.5 (>= 0) (<= 7.5))
+; Where circle k of the chain is while it comes in from T, given as its place in the chain's family
+; of circles, all tangent to D_1 and D_2, so that it stays tangent to both on the way. A circle's
+; distance from T goes roughly as 1 / (k + 1), so it is that number which cubic-out moves, from 0
+; at T to its value at k, as chain-a goes from k to k + 2.5; each circle is still slowing to a stop
+; while the next sets out.
+(func[real] coming ((real k))
+  (or? (- (/ 1 (max 0.01 (* (cubic-out (min 1 (max 0 (/ (- chain-a k) 2.5)))) (or? (/ 1 (+ k 1)) 1)))) 1) k))
 (bool picks (if in-short false (or (not in-hints) (= stage 3) (= stage 5))))
 ; In the hints, C_n, its height and its diameter are marked from hint 4 on: hint 3 asks about its
 ; image.
@@ -110,7 +117,7 @@
       (circle_ (pos (* right s)) (r s) (stroke indigo) (stroke-width 12) (stroke-opacity (* 0.22 glow-d2)))
       (line_ (from [-1 0]) (to [3 0]) (stroke soft) (stroke-width 12) (stroke-opacity (* 0.22 glow-l)))
       (foreach k 6
-        (circle_ (pos (chain-center k)) (r (chain-radius k)) (stroke (if (or (= k n) (and (= k pair-k) (> pair-a 0))) terracotta ink)) (stroke-width 12)
+        (circle_ (pos (chain-center (coming k))) (r (chain-radius (coming k))) (stroke (if (or (= k n) (and (= k pair-k) (> pair-a 0))) terracotta ink)) (stroke-width 12)
             (stroke-opacity (* 0.22 (max (if (= k 0) glow-c0 0) (if (= k 1) glow-c1 0) (if (= k n) glow-cn 0) (if (= k pair-k) pair-a 0))))))
       (line_ (from [cn.x 0]) (to cn) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-h)))
       (line_ (from (- cn [(chain-radius n) 0])) (to (+ cn [(chain-radius n) 0])) (stroke terracotta) (stroke-width 12) (stroke-opacity (* 0.22 glow-d)))
@@ -129,7 +136,7 @@
     ; transparent fill, so a click inside it counts.
     (group chain (clip (rect_ (pos [0.925 0.65]) (width 2.35) (height 3.4)))
       (foreach k 6
-        (circle #'chain-{k}' (pos (chain-center k)) (r (chain-radius k)) (stroke (if (and mark-cn (= k n)) terracotta ink))
+        (circle #'chain-{k}' (pos (chain-center (coming k))) (r (chain-radius (coming k))) (stroke (if (and mark-cn (= k n)) terracotta ink))
             (fill terracotta) (fill-opacity 0) (stroke-width (if (and mark-cn (= k n)) 2 1.25)) (opacity (min 1 (max 0 (- chain-a k))))))))
 
   ; The images under inversion, which the toggle shows and hides: the images of the two circles, the
@@ -203,7 +210,7 @@
 (canvas hints-view (x -0.25) (y -1.05) (width 2.35) (height 2.2) (pan false) (zoom false)
   doc@'The same figure, in the hints.'
   base (when show-images images) marks)
-(canvas short-view (x -0.25) (y -1.05) (width 2.35) (height 2.2) (pan false) (zoom false)
+(canvas short-view (x -0.25) (y -1.05) (width 2.35) (height 3.4) (pan false) (zoom false)
     (toggle-duration 0.6) (toggle-ease cubic-in-out)
   doc@'The same figure, as recorded for the short.'
   base (when show-images images) marks)
@@ -273,13 +280,13 @@
     (in-order (move a-t (to 1) (duration 0.4)) (move glow-t (to 1) (duration 0.3)))
     ; "Between them lies a chain of circles, C_0, C_1, C_2 and so on,"
     (in-order (move glow-t (to 0) (duration 0.3)) (move pair-a (to 1) (duration 0))
-      (move pair-k (to 0) (duration 0)) (move chain-a (to 1) (duration 0.45))
-      (move pair-k (to 1) (duration 0)) (move chain-a (to 2) (duration 0.45))
-      (move pair-k (to 2) (duration 0)) (move chain-a (to 3) (duration 0.45))
-      (move pair-k (to 3) (duration 0)) (move chain-a (to 4) (duration 0.45))
-      (move pair-k (to 4) (duration 0)) (move chain-a (to 5) (duration 0.45))
-      (move pair-k (to 5) (duration 0)) (move chain-a (to 6) (duration 0.45))
-      (move pair-a (to 0) (duration 0.3)))
+      (move pair-k (to 0) (duration 0)) (move chain-a (to 1) (duration 0.75))
+      (move pair-k (to 1) (duration 0)) (move chain-a (to 2) (duration 0.75))
+      (move pair-k (to 2) (duration 0)) (move chain-a (to 3) (duration 0.75))
+      (move pair-k (to 3) (duration 0)) (move chain-a (to 4) (duration 0.75))
+      (move pair-k (to 4) (duration 0)) (move chain-a (to 5) (duration 0.75))
+      (move pair-k (to 5) (duration 0)) (move chain-a (to 6) (duration 0.75))
+      (move chain-a (to 7.5) (duration 1.15)) (move pair-a (to 0) (duration 0.3)))
     ; "each tangent to both and to the next, with C_0 centered on the line L through T and the two centers."
     (in-order (move a-l (to 1) (duration 0.6)) (move glow-c0 (to 1) (duration 0.4)))
     ; "Pappus of Alexandria proved, some 1,700 years ago, that the center of C_n lies exactly n of its
@@ -295,7 +302,7 @@
     ; "Since D_1 and D_2 pass through T, they become two parallel lines,"
     (move lines-a (to 1) (duration 0.8))
     ; "and the chain becomes a stack of equal circles between them, each touching the next."
-    (in-order (move short-view.height (to 3.4) (duration 0.5) (ease cubic-in-out)) (move pair-a (to 1) (duration 0))
+    (in-order (move pair-a (to 1) (duration 0))
       (move pair-k (to 0) (duration 0)) (move stack-n (to 1) (duration 0.5))
       (move pair-k (to 1) (duration 0)) (move stack-n (to 2) (duration 0.5))
       (move pair-k (to 2) (duration 0)) (move stack-n (to 3) (duration 0.5))
@@ -308,7 +315,9 @@
     ; "When the circle of inversion crosses C_n at right angles, C_n is its own image,"
     (move lock (to 1) (duration 1.2) (ease cubic-in-out))
     ; "so C_n itself lies n of its own diameters above L."
-    (move cn-a (to 1) (duration 0.5)))
+    (move cn-a (to 1) (duration 0.5))
+    ; "The figure is at firsthandmath.com/inversion." The figure stays as it is, under the address.
+    (wait 0.3))
   doc@'Steps through the short, one phrase of its script at a time.')
 
 ; It snaps to the circle that leaves C_n in place once within a small distance of it.
