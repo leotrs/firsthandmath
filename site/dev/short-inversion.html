@@ -21,13 +21,48 @@
   .dev { display: grid; grid-template-columns: auto minmax(320px, 1fr); gap: 24px; height: 100vh; padding: 16px; box-sizing: border-box; }
   .dev > section { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
   .dev h2 { font: 600 12px/1 var(--fm-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fm-quiet); margin: 0 0 8px; }
-  /* The short's frame: 1080 by 1920, drawn at the height of the window, the stepper under it. */
-  .frame { position: relative; height: calc(100vh - 110px); aspect-ratio: 9 / 16; border: 1px solid var(--fm-rule); border-radius: 8px;
-    background: var(--fm-paper); display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-  .frame mtp-canvas { display: block; width: 100%; }
-  .caption { display: none; }
-  .controls { display: flex; justify-content: center; padding-top: 12px; }
-  .script { overflow-y: auto; padding-right: 8px; max-width: 46em; }
+  /* The short's frame, exactly as the video shows it: the page the renderer films is this frame at
+     405 by 720 points (1080 by 1920 pixels), in dark mode, with the figure at the top and the
+     caption under it, above the band at the bottom where YouTube draws its own buttons and title.
+     Here it is scaled down to fit the window, the stepper under it. */
+  .stage { flex: 1; min-height: 0; position: relative; }
+  .frame { position: absolute; top: 0; left: 0; width: 405px; height: 720px; transform-origin: 0 0; transform: scale(var(--s, 1));
+    color-scheme: dark; background: var(--fm-paper); color: var(--fm-ink); overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-start; padding-top: 29px; box-sizing: border-box;
+    outline: 1px solid var(--fm-rule); }
+  /* The figure lines up with the caption on the left and ends before the column of buttons that
+     YouTube draws on the right (see .yt). */
+  .frame mtp-canvas { display: block; width: 78%; margin: 0 0 0 7%; }
+  .caption { position: absolute; left: 7%; right: 14%; top: 80%; transform: translateY(-100%);
+    font: 600 17px/1.35 var(--fm-sans); color: var(--fm-ink); text-align: center; text-wrap: balance; }
+  .caption.end { font-size: 20px; }
+  /* YouTube's own controls over a Short, drawn at the sizes that published safe-zone guides
+     measure in the app (a 1080 by 1920 frame: about 120 px at the top, a 120 px column of buttons
+     on the right, about 380 px at the bottom), here in points (1 point = 8/3 pixels). Only on
+     this page, behind its switch: never in ?render, so never in the video. */
+  .yt { position: absolute; inset: 0; pointer-events: none; color: #fff; font: 500 12px/1.3 Roboto, "Source Sans 3", sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .5); display: none; }
+  .show-yt .yt { display: block; }
+  .render .yt { display: none !important; }
+  .yt svg { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5)); }
+  .yt .band { position: absolute; left: 0; right: 0; outline: 1px dashed rgba(255, 255, 255, .25); }
+  .yt .top { top: 0; height: 45px; display: flex; justify-content: flex-end; align-items: center; gap: 14px; padding-right: 12px; }
+  .yt .bottom { bottom: 0; height: 142px; background: linear-gradient(transparent, rgba(0, 0, 0, .45)); }
+  .yt .side { position: absolute; right: 0; width: 45px; bottom: 150px; display: grid; justify-items: center; gap: 14px; }
+  .yt .side span { display: grid; justify-items: center; gap: 2px; font-size: 11px; }
+  .yt .who { position: absolute; left: 12px; bottom: 82px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .yt .who i { width: 26px; height: 26px; border-radius: 50%; background: #e76f51; }
+  .yt .who b { background: #fff; color: #0f0f0f; text-shadow: none; border-radius: 999px; padding: 5px 10px; font-weight: 600; }
+  .yt .title { position: absolute; left: 12px; right: 60px; bottom: 44px; font-size: 13px; }
+  .yt .sound { position: absolute; left: 12px; bottom: 18px; display: flex; align-items: center; gap: 5px; font-size: 11px; }
+  .yt .disc { position: absolute; right: 9px; bottom: 14px; width: 28px; height: 28px; border-radius: 6px; background: #e76f51; outline: 2px solid #fff; }
+  .yt .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(255, 255, 255, .35); }
+  .yt .bar::before { content: ""; position: absolute; inset: 0 60% 0 0; background: #f00; }
+  .ytswitch { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font: 500 14px/1.4 var(--fm-sans);
+    color: var(--fm-quiet); cursor: pointer; white-space: nowrap; }
+  .controls { display: flex; justify-content: center; padding-top: 12px; flex: none; }
+  .dev > section > h2 { flex: none; }
+  .script { overflow-y: auto; padding-right: 8px; }
   .record { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; font: 500 14px/1.4 var(--fm-sans); }
   .record button { font: 600 14px/1 var(--fm-sans); padding: 10px 18px; border-radius: 999px; border: none; cursor: pointer;
     background: var(--fm-terracotta); color: var(--fm-paper); }
@@ -43,33 +78,40 @@
   .script [data-step].now { background: color-mix(in srgb, var(--fm-terracotta) 22%, var(--fm-paper)); }
   .script [data-step].next { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--fm-terracotta) 60%, var(--fm-paper)); }
 
-  /* ?render: the frame alone, filling the window, with the figure at the top and the caption
-     under it, kept above the band at the bottom where YouTube draws its own buttons and title. */
+  /* ?render: the frame alone, unscaled, in a window of 405 by 720 points. */
   .render .dev { display: block; padding: 0; height: 100vh; }
   .render .dev > section:not(:first-child), .render .dev h2, .render .controls { display: none; }
-  .render .frame { height: 100vh; width: 100vw; border: none; border-radius: 0; justify-content: flex-start; padding-top: 4vh; box-sizing: border-box; }
-  .render .frame mtp-canvas { width: 84%; margin: 0 auto; }
-  .render .caption { display: block; position: absolute; left: 7%; right: 14%; top: 80%; transform: translateY(-100%);
-    font: 600 17px/1.35 var(--fm-sans); color: var(--fm-ink); text-align: center; text-wrap: balance; }
-  .render .caption.end { font-size: 20px; }
+  .render .frame { outline: none; }
 </style>
 </head>
 <body>
 <main class="dev">
   <section>
     <h2>The short, 9 × 16</h2>
-    <div class="frame">
+    <div class="stage"><div class="frame">
       <mtp-model id="short" src="/inversion/assets/figs/pappus.mtpc"></mtp-model>
       <mtp-canvas model="short" name="short-view"></mtp-canvas>
       <div class="caption" aria-hidden="true"></div>
-    </div>
+      <div class="yt" aria-hidden="true">
+        <div class="band top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M11 19a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M11 5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/></svg></div>
+        <div class="band bottom"></div>
+        <div class="side"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg>12K</span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3"/></svg>Dislike</span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z"/></svg>345</span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"/></svg>Share</span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"/><path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"/></svg>Remix</span></div>
+        <div class="who"><i></i>@FirsthandMath<b>Subscribe</b></div>
+        <div class="title">Why the circles of Pappus's chain sit n diameters up</div>
+        <div class="sound"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/></svg>Original audio</div>
+        <div class="disc"></div>
+        <div class="bar"></div>
+      </div>
+    </div></div>
     <div class="controls"><mtp-stepper model="short" name="short"></mtp-stepper></div>
   </section>
   <section class="script">
     <h2>Script, draft 1</h2>
-    <div class="record"><button type="button">Record</button><span class="status">Records the narration and every → press. Stop saves both to Downloads.</span></div>
-    <p class="note">→ plays the next phrase's step, ← plays the current one again. The highlighted phrase goes
-      with the step just played; the underlined one is next. Times are estimated at 150 words a minute.</p>
+    <div class="record"><button type="button">Record</button><span class="status">Records the narration and every → press. Stop saves both to Downloads.</span><label class="ytswitch"><input type="checkbox"> Show YouTube's controls</label></div>
+    <p class="note">→ plays the next phrase's step. ← plays the current one again, and a second ← within 300 ms
+      goes back one step. The highlighted phrase goes with the step just played; the underlined one is next.
+      Times, and the captions in the frame while you speak, are estimated at 150 words a minute. The video
+      times each caption by your own pace.</p>
     <div class="beat"><header><span>1. Setup</span><span class="t"></span></header>
       <p><span data-step="1">Two circles, D₁ and D₂,</span> <span data-step="2">touch at a point T, one inside the other.</span>
         <span data-step="3">Between them lies a chain of circles, C₀, C₁, C₂ and so on,</span>
@@ -119,12 +161,26 @@
   new MutationObserver(mark).observe(stepper, { attributes: true, attributeFilter: ["data-mtp-step"] });
   mark();
 
-  // For the renderer: each phrase's text, and a way to set the caption.
-  window.__phrases = Object.fromEntries([...document.querySelectorAll(".script [data-step]")].map((s) => [s.dataset.step, s.textContent.replace(/\s+/g, " ").trim()]));
-  window.__caption = (text, end) => {
-    const c = document.querySelector(".caption");
-    c.textContent = text;
-    c.classList.toggle("end", Boolean(end));
+  // YouTube's controls over the frame, a switch remembered between visits. ?render never shows them.
+  const ytSwitch = document.querySelector(".ytswitch input");
+  try { ytSwitch.checked = localStorage.getItem("short-dev-yt") === "1"; } catch {}
+  const showYt = () => document.documentElement.classList.toggle("show-yt", ytSwitch.checked && !render);
+  ytSwitch.addEventListener("change", () => {
+    try { localStorage.setItem("short-dev-yt", ytSwitch.checked ? "1" : "0"); } catch {}
+    showYt();
+    ytSwitch.blur();
+  });
+  showYt();
+
+  // The frame takes the height its column has, scaled from 405 by 720 points; the column is as
+  // wide as the scaled frame.
+  const stage = document.querySelector(".stage");
+  const frame = document.querySelector(".frame");
+  const fit = () => {
+    if (render) return;
+    const s = stage.clientHeight / 720;
+    frame.style.setProperty("--s", String(s));
+    stage.style.width = `${405 * s}px`;
   };
 
   // Recording: the microphone, and the time of every change of step, from the moment Record is
@@ -133,6 +189,59 @@
   const button = panel.querySelector("button");
   const status = panel.querySelector(".status");
   let recorder = null, chunks = [], steps = [], start = 0, timer = 0;
+  // Watched on the stage itself, since the stepper under it takes its height only once drawn.
+  new ResizeObserver(fit).observe(stage);
+  fit();
+
+  // Captions: each step's phrase cut into pieces of at most CHUNK words, at punctuation where it
+  // can be, each shown for a share of the step's time in proportion to its words. The video and
+  // this page both use captionAt, so the frame here shows the captions the video shows. A step's
+  // time runs to the next change of step; for the last one so far, to the end of the take, or,
+  // while you speak, to its estimated length at WPM words a minute.
+  const CHUNK = 7;
+  const phrases = Object.fromEntries([...document.querySelectorAll(".script [data-step]")].map((s) => [s.dataset.step, s.textContent.replace(/\s+/g, " ").trim()]));
+  const last = Math.max(...Object.keys(phrases).map(Number));
+  const count = (text) => text.split(" ").length;
+  const pieces = (text) => {
+    const out = [];
+    let piece = [];
+    for (const w of text.split(" ")) {
+      piece.push(w);
+      if (piece.length >= CHUNK || (piece.length >= 4 && /[,.:]$/.test(w))) {
+        out.push(piece.join(" "));
+        piece = [];
+      }
+    }
+    if (piece.length) out.push(piece.join(" "));
+    return out;
+  };
+  const captionAt = (steps, duration, t) => {
+    const i = steps.findLastIndex((s) => s.t <= t);
+    const span = steps[i];
+    if (!span || span.step === 0) return ["", false];
+    const text = phrases[span.step];
+    if (span.step === last) return [text, true];
+    const end = steps[i + 1]?.t ?? duration ?? span.t + (count(text) / WPM) * 60000;
+    const into = (t - span.t) / Math.max(end - span.t, 1);
+    let seen = 0;
+    for (const part of pieces(text)) {
+      seen += count(part);
+      if (into < seen / count(text)) return [part, false];
+    }
+    return [pieces(text).at(-1), false];
+  };
+  const caption = document.querySelector(".caption");
+  const show = ([text, end]) => {
+    if (caption.textContent !== text) caption.textContent = text;
+    caption.classList.toggle("end", end);
+  };
+  // For the renderer, which sets the time itself.
+  window.__showCaption = (take, t) => show(captionAt(take.steps, take.duration, t));
+
+  // While you speak: every change of step, timed from page load, and the caption it gives now.
+  const live = [];
+  new MutationObserver(() => live.push({ t: performance.now(), step: stepNow() })).observe(stepper, { attributes: true, attributeFilter: ["data-mtp-step"] });
+  if (!render) setInterval(() => show(captionAt(live, undefined, performance.now())), 50);
   const stamp = () => new Date().toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-");
   const save = (blob, name) => {
     const a = document.createElement("a");
