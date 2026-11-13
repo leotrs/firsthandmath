@@ -46,8 +46,62 @@ body { margin: 0; color: var(--fm-ink); }
 }
 .fm-site nav a:hover { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 7%, transparent); }
 .fm-site nav a:active { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 14%, transparent); transform: translateY(1px); }
+/* The arrow after Videos says the link leaves the site, for YouTube. */
+.fm-site nav .fm-ext { width: 12px; height: 12px; margin-left: 3px; vertical-align: -1px; }
 .fm-site nav a[aria-current="page"] { color: var(--fm-ink); box-shadow: inset 0 -2px 0 var(--fm-terracotta); border-radius: 8px 8px 0 0; }
 a:not(.manuscriptwrapper a):focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
+/* The light/dark toggle (public/theme.js), at the end of the links: a moon in light mode and a
+   sun in dark mode. */
+.fm-site nav { align-items: center; }
+.fm-theme {
+  display: grid; place-items: center; margin-left: 4px; padding: 8px; border: 0; border-radius: 8px;
+  background: none; color: var(--fm-quiet); cursor: pointer; transition: background-color .12s, color .12s;
+}
+.fm-theme:hover { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 7%, transparent); }
+.fm-theme:focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
+.fm-theme svg { width: 18px; height: 18px; display: block; }
+/* The moon shows in light mode and the sun in dark mode, in the toggle and in the phone menu. */
+:is(.fm-theme, .fm-mode) .sun, :root.dark-theme :is(.fm-theme, .fm-mode) .moon { display: none; }
+:root.dark-theme :is(.fm-theme, .fm-mode) .sun { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-theme) :is(.fm-theme, .fm-mode) .moon { display: none; }
+  :root:not(.light-theme) :is(.fm-theme, .fm-mode) .sun { display: block; }
+}
+
+/* A picture drawn in each mode: the one for the mode in force shows, whether the system or the
+   toggle set it. <picture> with a media query sees only the system's setting. !important,
+   because the pages set these images to display: block. */
+.fm-for-dark, :root.dark-theme .fm-for-light { display: none !important; }
+:root.dark-theme .fm-for-dark { display: block !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-theme) .fm-for-light { display: none !important; }
+  :root:not(.light-theme) .fm-for-dark { display: block !important; }
+}
+
+/* On phones, About and the toggle move into a menu behind a ⋯ button (public/theme.js opens it). */
+.fm-site { position: relative; }
+.fm-more, .fm-menu { display: none; }
+.fm-more {
+  place-items: center; padding: 7px 6px; border: 0; border-radius: 8px; background: none;
+  color: var(--fm-quiet); cursor: pointer;
+}
+.fm-more[aria-expanded="true"] { color: var(--fm-ink); background: color-mix(in srgb, var(--fm-ink) 9%, transparent); }
+.fm-more:focus-visible { outline: 2px solid var(--fm-ink); outline-offset: 2px; }
+.fm-more svg { width: 18px; height: 18px; display: block; }
+.fm-menu {
+  position: absolute; right: 10px; top: calc(100% + 4px); z-index: 20; min-width: 10.5rem; padding: 4px;
+  background: var(--fm-paper); border: 1px solid var(--fm-rule); border-radius: 10px;
+  box-shadow: 0 8px 24px color-mix(in srgb, #000 14%, transparent);
+}
+.fm-menu a, .fm-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; border-radius: 7px;
+  background: none; font: 500 14px/1 var(--fm-sans); color: var(--fm-ink); text-decoration: none; text-align: left; cursor: pointer;
+}
+.fm-menu a:hover, .fm-menu button:hover { background: color-mix(in srgb, var(--fm-ink) 7%, transparent); }
+.fm-menu svg { width: 16px; height: 16px; display: block; color: var(--fm-quiet); }
+.fm-menu a[aria-current="page"] { font-weight: 600; }
+.fm-menu .fm-ext { width: 13px; height: 13px; margin-left: -4px; }
+.fm-menu hr { border: 0; border-top: 1px solid var(--fm-rule); margin: 4px 6px; }
 
 /* The kind of an exploration, and its byline */
 .fm-kind { font: 600 12px var(--fm-sans); letter-spacing: .08em; text-transform: uppercase; }
@@ -62,4 +116,13 @@ a:not(.manuscriptwrapper a):focus-visible { outline: 2px solid var(--fm-ink); ou
   .fm-mark { width: 26px; height: 26px; }
   .fm-site nav { gap: 0; }
   .fm-site nav a { font-size: 13px; padding: 9px 6px; }
+  .fm-site nav a[href="/about/"], .fm-theme { display: none; }
+  .fm-more { display: grid; }
+  .fm-menu:not([hidden]) { display: grid; }
+}
+.fm-menu .fm-narrow { display: none; }
+/* Below 400 px every link moves into the menu, and the row keeps the mark, the name and ⋯. */
+@media (max-width: 399px) {
+  .fm-site nav a { display: none; }
+  .fm-menu .fm-narrow { display: flex; }
 }
