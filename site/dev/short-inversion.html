@@ -68,8 +68,8 @@
   <section class="script">
     <h2>Script, draft 1</h2>
     <div class="record"><button type="button">Record</button><span class="status">Records the narration and every → press. Stop saves both to Downloads.</span></div>
-    <p class="note">→ plays the next phrase's step, ← goes back one. The highlighted phrase goes with the
-      step just played; the underlined one is next. Times are estimated at 150 words a minute.</p>
+    <p class="note">→ plays the next phrase's step, ← plays the current one again. The highlighted phrase goes
+      with the step just played; the underlined one is next. Times are estimated at 150 words a minute.</p>
     <div class="beat"><header><span>1. Setup</span><span class="t"></span></header>
       <p><span data-step="1">Two circles, D₁ and D₂,</span> <span data-step="2">touch at a point T, one inside the other.</span>
         <span data-step="3">Between them lies a chain of circles, C₀, C₁, C₂ and so on,</span>
@@ -104,9 +104,9 @@
   }
   document.querySelector(".total").textContent = `Total: ${words} words · about ${Math.round((words / WPM) * 60)} s`;
 
-  // The phrases follow the stepper's step, which it reports in its data-step attribute.
+  // The phrases follow the stepper's step, which it reports in its data-mtp-step attribute.
   const stepper = document.querySelector("mtp-stepper");
-  const stepNow = () => Number(stepper.getAttribute("data-step") ?? 0);
+  const stepNow = () => Number(stepper.getAttribute("data-mtp-step") ?? 0);
   const mark = () => {
     const at = stepNow();
     for (const phrase of document.querySelectorAll(".script [data-step]")) {
@@ -116,7 +116,7 @@
     }
     if (!render) document.querySelector(".script .now")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
-  new MutationObserver(mark).observe(stepper, { attributes: true, attributeFilter: ["data-step"] });
+  new MutationObserver(mark).observe(stepper, { attributes: true, attributeFilter: ["data-mtp-step"] });
   mark();
 
   // For the renderer: each phrase's text, and a way to set the caption.
@@ -143,14 +143,12 @@
   };
   new MutationObserver(() => {
     if (recorder) steps.push({ t: Math.round(performance.now() - start), step: stepNow() });
-  }).observe(stepper, { attributes: true, attributeFilter: ["data-step"] });
-  button.addEventListener("click", async () => {
-    if (recorder) {
-      recorder.stop();
-      return;
-    }
-    // Every take starts before the first step.
-    while (stepNow() > 0) stepper.querySelector(".mtp-prev").click();
+  }).observe(stepper, { attributes: true, attributeFilter: ["data-mtp-step"] });
+  // Every take starts from a fresh page, before the first step: no input of the stepper leads back
+  // there, so a press of Record after a step has played reloads the page, which then starts
+  // recording by itself.
+  const fresh = new URLSearchParams(location.search).has("take");
+  const take = async () => {
     const mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: false } });
     recorder = new MediaRecorder(mic, { mimeType: "audio/webm;codecs=opus", audioBitsPerSecond: 192000 });
     chunks = [];
@@ -177,7 +175,19 @@
       status.textContent = `Recording ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} · step ${stepNow()} of 13`;
     }, 250);
     button.blur();
+  };
+  button.addEventListener("click", () => {
+    if (recorder) {
+      recorder.stop();
+      return;
+    }
+    if (stepNow() > 0) location.search = "?take";
+    else take();
   });
+  if (fresh) {
+    history.replaceState(null, "", location.pathname);
+    take();
+  }
 </script>
 </body>
 </html>

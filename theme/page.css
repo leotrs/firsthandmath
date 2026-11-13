@@ -185,7 +185,8 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 
 /* A figure's hints: its stepper above the figure, and one paragraph per question, so the hints read
    as they pile up. Our own markup (.fm-tour, .fm-tour-qs, .fm-tour-q and .fm-tour-a with data-step),
-   read against the stepper's data-step. */
+   read against the figure's data-fm-step, which a script in site/content-page.html sets to the
+   last step the stepper reached, so the hints stay as they were in explore mode (step 0). */
 .fm-tour { display: flex; justify-content: center; margin-bottom: var(--chunk-sixth); }
 .fm-tour-qs { display: flex; flex-direction: column; gap: var(--chunk-sixth); margin-top: var(--chunk-sixth); text-align: left; }
 /* The hints sit to the right of the figure when the figure's own box is wide enough, and under it
@@ -200,44 +201,44 @@ body[data-accent] { --text-keyword: var(--primary-600); }
 /* Keeps a symbol with the punctuation after it, which would otherwise wrap alone onto a new line. */
 .fm-keep { white-space: nowrap; }
 /* The first question is shown from the start. The question and the answer marked with step k are
-   shown from step k on, the answer at the end of the paragraph of the question it answers. Each waits until its step's animation has played (the stepper's data-playing), then
+   shown from step k on, the answer at the end of the paragraph of the question it answers. Each waits until its step's animation has played (the stepper's data-mtp-playing), then
    fades in, so the figure is looked at first. */
-.fm-fig:has(mtp-stepper[data-step="1"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="2"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="2"]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="3"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="3"]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="3"]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="4"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="4"]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="4"]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="4"]) :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
-.fm-fig:has(mtp-stepper[data-step="5"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="5"]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="5"]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="5"]) :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
-.fm-fig:has(mtp-stepper[data-step="5"]) :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
-.fm-fig:has(mtp-stepper[data-step="6"]) :is(.fm-tour-q, .fm-tour-a)[data-step="6"] { display: revert; }
-.fm-fig:has(mtp-stepper[data-step="1"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="2"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="3"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="4"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
-.fm-fig:has(mtp-stepper[data-step="5"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
-.fm-fig:has(mtp-stepper[data-step="6"][data-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="6"] { display: none; }
+.fm-fig[data-fm-step="1"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="2"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="2"] :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="3"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="3"] :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="3"] :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
+.fm-fig[data-fm-step="4"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="4"] :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="4"] :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
+.fm-fig[data-fm-step="4"] :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
+.fm-fig[data-fm-step="5"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="5"] :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="5"] :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
+.fm-fig[data-fm-step="5"] :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
+.fm-fig[data-fm-step="5"] :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
+.fm-fig[data-fm-step="6"] :is(.fm-tour-q, .fm-tour-a)[data-step="6"] { display: revert; }
+.fm-fig[data-fm-step="1"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="1"],
+.fm-fig[data-fm-step="2"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="2"],
+.fm-fig[data-fm-step="3"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="3"],
+.fm-fig[data-fm-step="4"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="4"],
+.fm-fig[data-fm-step="5"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="5"],
+.fm-fig[data-fm-step="6"]:has(mtp-stepper[data-mtp-playing]) :is(.fm-tour-q, .fm-tour-a)[data-step="6"] { display: none; }
 :is(.fm-tour-q, .fm-tour-a) { animation: fm-hint-in 0.4s ease-out; }
 @keyframes fm-hint-in { from { opacity: 0; } }
 /* The answer the latest step revealed is in bold, and only that one. */
-.fm-fig:has(mtp-stepper[data-step="1"]) .fm-tour-a[data-step="1"],
-.fm-fig:has(mtp-stepper[data-step="2"]) .fm-tour-a[data-step="2"],
-.fm-fig:has(mtp-stepper[data-step="3"]) .fm-tour-a[data-step="3"],
-.fm-fig:has(mtp-stepper[data-step="4"]) .fm-tour-a[data-step="4"],
-.fm-fig:has(mtp-stepper[data-step="5"]) .fm-tour-a[data-step="5"],
-.fm-fig:has(mtp-stepper[data-step="6"]) .fm-tour-a[data-step="6"] { font-weight: var(--weight-bold); }
+.fm-fig[data-fm-step="1"] .fm-tour-a[data-step="1"],
+.fm-fig[data-fm-step="2"] .fm-tour-a[data-step="2"],
+.fm-fig[data-fm-step="3"] .fm-tour-a[data-step="3"],
+.fm-fig[data-fm-step="4"] .fm-tour-a[data-step="4"],
+.fm-fig[data-fm-step="5"] .fm-tour-a[data-step="5"],
+.fm-fig[data-fm-step="6"] .fm-tour-a[data-step="6"] { font-weight: var(--weight-bold); }
 @media (prefers-reduced-motion: reduce) { :is(.fm-tour-q, .fm-tour-a) { animation: none; } }
 
 /* A figure's live caption: a readout under its controls. */

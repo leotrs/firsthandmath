@@ -1,17 +1,15 @@
-// Captures each widget of an exploration at its starting position, in light and in dark, for RSM's
+// Captures each widget of an exploration once it is ready, in light and in dark, for RSM's
 // :static: and :dark: images (the picture in a reference's tooltip, and the figure without
 // JavaScript).
 //
 //   node site/statics.mjs NAME URL
 //
 // URL serves the built site (_site/), with NAME built. For each figs/X.html of the exploration it
-// writes figs/X-static.png and figs/X-static-dark.png, of the first canvas X.html places. A figure
-// may also list other states in figs/X.states.json, as {"state": {"name": value, "canvas.attr":
-// value}}: each is written as figs/X-state.png and figs/X-state-dark.png, of the figure with those
-// values written into its model, for a still picture of a state the page itself does not show. A picture
-// cannot be dragged, so the page's hands are left out; and "comes into view" never fires during the
-// capture, so no figure's first nudge moves it from its starting position.
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+// writes figs/X-static.png and figs/X-static-dark.png, of the first canvas X.html places. A picture
+// cannot be dragged, so the page's hands are left out. A canvas is ready once its on-view has played
+// (mathterpiece docs/canvas-lifecycle.md), so each is brought into view and captured when its
+// element has data-mtp-ready.
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 
@@ -24,9 +22,7 @@ const figures = readdirSync(dir).filter((f) => f.endsWith(".html")).map((f) => {
   const html = readFileSync(join(dir, f), "utf8");
   const model = html.match(/<mtp-model id="([^"]+)" src="([^"]+)"/);
   const canvas = html.match(/<mtp-canvas model="([^"]+)" name="([^"]+)"/);
-  const statesFile = join(dir, `${f.slice(0, -5)}.states.json`);
-  const states = existsSync(statesFile) ? JSON.parse(readFileSync(statesFile, "utf8")) : {};
-  return { stem: f.slice(0, -5), id: model[1], src: model[2], canvas: canvas[2], states };
+  return { stem: f.slice(0, -5), id: model[1], src: model[2], canvas: canvas[2] };
 });
 
 const browser = await chromium.launch();
@@ -58,31 +54,16 @@ writeFileSync(join("_site", name, "statics-capture.html"), page);
 // Three times the screen's resolution, so that the picture stays sharp on any screen.
 for (const scheme of ["light", "dark"]) {
   const p = await browser.newPage({ viewport: { width: 960, height: 1200 }, deviceScaleFactor: 3, colorScheme: scheme });
-  await p.addInitScript(() => {
-    window.IntersectionObserver = class { observe() {} disconnect() {} unobserve() {} };
-  });
   await p.goto(`${url}/${name}/statics-capture.html`);
   await p.waitForFunction(() => [...document.querySelectorAll("mtp-canvas")].every((c) => c.querySelector("svg")), null, { timeout: 20000 });
   await p.waitForTimeout(500);
   for (const f of figures) {
     const out = join(dir, `${f.stem}-static${scheme === "dark" ? "-dark" : ""}.png`);
-    await p.locator(`mtp-canvas[model="${f.id}"]`).screenshot({ path: out, omitBackground: true });
+    const canvas = p.locator(`mtp-canvas[model="${f.id}"]`);
+    await canvas.scrollIntoViewIfNeeded();
+    await p.waitForFunction((id) => document.querySelector(`mtp-canvas[model="${id}"]`)?.hasAttribute("data-mtp-ready"), f.id, { timeout: 20000 });
+    await canvas.screenshot({ path: out, omitBackground: true });
     console.log(out);
-  }
-  for (const f of figures) {
-    for (const [state, values] of Object.entries(f.states)) {
-      await p.evaluate(([id, values]) => {
-        const rt = document.getElementById(id).runtime;
-        for (const [name, value] of Object.entries(values)) {
-          const [obj, attr] = name.split(".");
-          rt.write(rt.id(obj), attr ?? null, value);
-        }
-      }, [f.id, values]);
-      await p.waitForTimeout(800);
-      const out = join(dir, `${f.stem}-${state}${scheme === "dark" ? "-dark" : ""}.png`);
-      await p.locator(`mtp-canvas[model="${f.id}"]`).screenshot({ path: out, omitBackground: true });
-      console.log(out);
-    }
   }
   await p.close();
 }

@@ -90,6 +90,17 @@
 })();
 </script>
 <script>
+// A stepper in explore mode is at step 0, and the hints would all go away. The figure keeps the
+// last step the stepper reached in data-fm-step instead, and theme/page.css reads that.
+document.addEventListener("mtp-state", (e) => {
+  const stepper = e.target;
+  if (stepper.localName !== "mtp-stepper") return;
+  const step = Number(stepper.dataset.mtpStep);
+  const fig = stepper.closest(".fm-fig");
+  if (fig && step > 0) fig.dataset.fmStep = String(step);
+});
+</script>
+<script>
 // Shown once MathJax has typeset every formula and the fonts it pulls in are ready, after a short
 // pause for RSM's layout. RSM creates the formulas only after the page has loaded, so an empty
 // list means not yet. Shown after 5 seconds in any case, so a slow or failed load never hides the

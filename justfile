@@ -5,7 +5,7 @@
 #   just all           the site and every exploration
 #   just deploy        build everything and publish _site/ to Netlify
 #   just preview       build everything and publish _site/ to a draft address on Netlify
-#   just statics NAME  capture NAME's widgets at their starting position, for RSM's tooltips
+#   just statics NAME  capture NAME's widgets once each is ready, for RSM's tooltips
 # Every tool runs through uv from the local development checkouts of mathterpiece and RSM.
 # Each exploration is a folder holding NAME.rsm, its figures' .mtp files, figs/*.html placing
 # them, and page.json with its colophon.
@@ -72,7 +72,7 @@ preview: check-statics all
     rm -r _site/content-page _site/dev
     npx -y netlify-cli@27.16.2 deploy --dir _site --json | uv run --no-project python -c "import json, sys; print(json.load(sys.stdin)['deploy_url'])"
 
-# Capture each widget of NAME at its starting position, light and dark, into its figs/ folder: the
+# Capture each widget of NAME once it is ready, light and dark, into its figs/ folder: the
 # pictures RSM shows in a reference's tooltip and in place of the figure without JavaScript.
 statics name:
     #!/usr/bin/env bash

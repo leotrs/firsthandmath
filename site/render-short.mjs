@@ -53,7 +53,7 @@ await page.addInitScript(() => {
   };
 });
 await page.goto(`${url}/dev/short-inversion/?render`);
-await page.waitForFunction(() => document.getElementById("short")?.runtime && document.querySelector("mtp-stepper .mtp-next"), null, { timeout: 20000 });
+await page.waitForFunction(() => document.getElementById("short")?.runtime && document.querySelector('mtp-stepper [data-mtp-input="next"]'), null, { timeout: 20000 });
 // The figure empties itself when it first comes into view; that takes a few frames.
 await page.waitForTimeout(1000);
 for (let i = 0; i < 10; i++) await page.evaluate(() => window.__advance(1000 / 30));
@@ -112,10 +112,11 @@ for (let f = 0; f < frames; f++) {
     const target = take.steps[done].step;
     await page.evaluate((target) => {
       const stepper = document.querySelector("mtp-stepper");
-      const at = Number(stepper.getAttribute("data-step") ?? 0);
-      if (target === at + 1) stepper.querySelector(".mtp-next").click();
-      else if (target === 0) while (Number(stepper.getAttribute("data-step") ?? 0) > 0) stepper.querySelector(".mtp-prev").click();
-      else stepper.querySelectorAll(".mtp-dot")[target - 1].click();
+      const at = Number(stepper.getAttribute("data-mtp-step") ?? 0);
+      // A take starts at step 0, and no input of the stepper leads back there, so a 0 is skipped.
+      if (target === 0 || target === at) return;
+      if (target === at + 1) stepper.querySelector('[data-mtp-input="next"]').click();
+      else stepper.querySelector(`[data-mtp-input="dot-${target}"]`).click();
     }, target);
     done++;
   }
