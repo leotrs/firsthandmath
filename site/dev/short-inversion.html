@@ -113,22 +113,29 @@
       Times, and the captions in the frame while you speak, are estimated at 150 words a minute. The video
       times each caption by your own pace.</p>
     <div class="beat"><header><span>1. Setup</span><span class="t"></span></header>
-      <p><span data-step="1">Two circles, D₁ and D₂,</span> <span data-step="2">touch at a point T, one inside the other.</span>
-        <span data-step="3">Between them lies a chain of circles, C₀, C₁, C₂ and so on,</span>
-        <span data-step="4">each tangent to both and to the next, with C₀ centered on the line L through T and the two centers.</span></p></div>
+      <p><span data-step="1">Consider two circles, one inside the other,</span> <span data-step="2">tangent at a point T.</span>
+        <span data-step="3">Between them lies a chain of circles,</span> <span data-step="4">C₀,</span> <span data-step="5">C₁,</span>
+        <span data-step="6">C₂, and so on,</span>
+        <span data-step="7">each tangent to the two original circles and the next circle in the chain.</span>
+        <span data-step="8">Write hₙ for the distance from the center of the n'th circle</span>
+        <span data-step="9">to the line through T and the centers of the two original circles.</span></p></div>
     <div class="beat"><header><span>2. The fact</span><span class="t"></span></header>
-      <p><span data-step="5">Pappus of Alexandria proved, some 1,700 years ago, that the center of Cₙ lies exactly n of its own diameters above L,</span>
-        <span data-step="6">whatever the sizes of D₁ and D₂.</span></p></div>
+      <p><span data-step="10">Pappus of Alexandria proved, some 1,700 years ago, that hₙ is exactly n times</span>
+        <span data-step="11">the diameter of Cₙ,</span>
+        <span data-step="12">regardless of the relative sizes of the two original circles.</span></p></div>
     <div class="beat"><header><span>3. Inversion</span><span class="t"></span></header>
-      <p><span data-step="7">The reason is inversion. Inversion in a circle centered at T sends each point P to the point on the ray from T through P whose distance from T is r² divided by the distance from T to P, where r is the radius of that circle. It turns circles through T into straight lines, and it keeps tangent circles tangent.</span></p></div>
+      <p><span data-step="13">To see this, we need a construction called inversion.</span>
+        <span data-step="14">Inversion through a circle of unit radius sends a point P to the point on the ray from the center through P whose distance from the center is one over the distance from P to the center.</span>
+        <span data-step="15">Inversion turns circles through the center into straight lines,</span>
+        <span data-step="16">and it keeps tangent circles tangent.</span></p></div>
     <div class="beat"><header><span>4. The reason</span><span class="t"></span></header>
-      <p><span data-step="8">Since D₁ and D₂ pass through T, they become two parallel lines,</span>
-        <span data-step="9">and the chain becomes a stack of equal circles between them, each touching the next.</span>
-        <span data-step="10">The image of Cₙ therefore lies n diameters above L.</span>
-        <span data-step="11">When the circle of inversion crosses Cₙ at right angles, Cₙ is its own image,</span>
-        <span data-step="12">so Cₙ itself lies n of its own diameters above L.</span></p></div>
+      <p><span data-step="17">Since D₁ and D₂ pass through T, they become two parallel lines,</span>
+        <span data-step="18">and the chain becomes a stack of equal circles between them, each touching the next.</span>
+        <span data-step="19">The image of Cₙ therefore lies n diameters above L.</span>
+        <span data-step="20">When the circle of inversion crosses Cₙ at right angles, Cₙ is its own image,</span>
+        <span data-step="21">so Cₙ itself lies n of its own diameters above L.</span></p></div>
     <div class="beat"><header><span>5. End</span><span class="t"></span></header>
-      <p><span data-step="13">The figure is at firsthandmath.com/inversion.</span></p></div>
+      <p><span data-step="22">The figure is at firsthandmath.com/inversion.</span></p></div>
     <div class="total"></div>
   </section>
 </main>
@@ -182,13 +189,6 @@
     frame.style.setProperty("--s", String(s));
     stage.style.width = `${405 * s}px`;
   };
-
-  // Recording: the microphone, and the time of every change of step, from the moment Record is
-  // pressed. Stop saves the sound and the times as two files with the same name.
-  const panel = document.querySelector(".record");
-  const button = panel.querySelector("button");
-  const status = panel.querySelector(".status");
-  let recorder = null, chunks = [], steps = [], start = 0, timer = 0;
   // Watched on the stage itself, since the stepper under it takes its height only once drawn.
   new ResizeObserver(fit).observe(stage);
   fit();
@@ -242,6 +242,13 @@
   const live = [];
   new MutationObserver(() => live.push({ t: performance.now(), step: stepNow() })).observe(stepper, { attributes: true, attributeFilter: ["data-mtp-step"] });
   if (!render) setInterval(() => show(captionAt(live, undefined, performance.now())), 50);
+
+  // Recording: the microphone, and the time of every change of step, from the moment Record is
+  // pressed. Stop saves the sound and the times as two files with the same name.
+  const panel = document.querySelector(".record");
+  const button = panel.querySelector("button");
+  const status = panel.querySelector(".status");
+  let recorder = null, chunks = [], steps = [], start = 0, timer = 0;
   const stamp = () => new Date().toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-");
   const save = (blob, name) => {
     const a = document.createElement("a");
@@ -281,7 +288,7 @@
     button.textContent = "Stop";
     timer = setInterval(() => {
       const s = Math.floor((performance.now() - start) / 1000);
-      status.textContent = `Recording ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} · step ${stepNow()} of 13`;
+      status.textContent = `Recording ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} · step ${stepNow()} of 22`;
     }, 250);
     button.blur();
   };
