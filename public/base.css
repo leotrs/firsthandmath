@@ -21,6 +21,9 @@
 :root.dark-theme { color-scheme: dark; }
 :root.light-theme { color-scheme: light; }
 html, body { background: var(--fm-paper); }
+/* iOS Safari enlarges text on its own, for example when the phone turns; this keeps the sizes
+   that the page sets. It does not stop pinch zoom. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { margin: 0; color: var(--fm-ink); }
 
 /* Header */
