@@ -75,7 +75,7 @@
       (foreach t 11
         (line|none #'tick-{t}' (from [-4 (y-of (- t 5))]) (to [4 (y-of (- t 5))]))
         (exists-when #'tick-{t}' (<= (abs (- t 5)) (floor span)))
-        (text|none #'tick-label-{t}' $'{(- t 5)}' (pos [-9 (y-of (- t 5))]) (font number) (fill soft)
+        (text|none #'tick-label-{t}' f'{(- t 5)}' (pos [-9 (y-of (- t 5))]) (font number) (fill soft)
           (halign 'end') (valign 'middle') (stroke none))
         (exists-when #'tick-label-{t}' (<= (abs (- t 5)) (floor span))))
       (text axis-title 'eigenvalues' (pos [0 (+ (y-of span) 10)]) (font number) (fill soft)
@@ -83,19 +83,19 @@
     (group bounds (defaults (stroke-width 2) (dash [5 3]))
       (line|none floor-mark (from [0 (y-of avg-y)]) (to [28 (y-of avg-y)]) (stroke teal))
       (exists-when floor-mark (> avg-y 0.001))
-      (text|none floor-label $'2m/n = {avg-y:.2f}' (pos [32 (floor-label-y)]) (font number) (fill teal)
+      (text|none floor-label f'2m/n = {avg-y:.2f}' (pos [32 (floor-label-y)]) (font number) (fill teal)
         (stroke none) (halign 'start') (valign 'middle'))
       (exists-when floor-label (> avg-y 0.001))
       (line|none ceil-mark (from [0 (y-of ceil-y)]) (to [28 (y-of ceil-y)]) (stroke ink))
       (exists-when ceil-mark (> avg-y 0.001))
-      (text|none ceil-label $'ceiling = {ceil-y:.2f}' (pos [32 (ceil-label-y)]) (font number)
+      (text|none ceil-label f'ceiling = {ceil-y:.2f}' (pos [32 (ceil-label-y)]) (font number)
         (fill ink) (stroke none) (halign 'start') (valign 'middle'))
       (exists-when ceil-label (> avg-y 0.001)))
     (group eigs
       (foreach i 6
         (circle_ (pos [(+ 11 (* 12 (repeats i))) (y-of (or? eig-y[i] 0))]) (r 5)
           (fill (if (= i 5) terracotta soft)) (stroke none)))
-      (text|none lambda-label $'λ₁ = {(or? eig-y[5] 0):.2f}' (pos [-22 (y-of (or? eig-y[5] 0))])
+      (text|none lambda-label f'λ₁ = {(or? eig-y[5] 0):.2f}' (pos [-22 (y-of (or? eig-y[5] 0))])
         (font number) (fill terracotta) (halign 'end') (valign 'middle'))
       (exists-when lambda-label (> avg-y 0.001)))))
 
@@ -191,14 +191,14 @@
 (button fewer (animation (move r (to (- r 1)) (duration 0)) refresh) (active (> r 2)) (label '−'))
 (button more (animation (move r (to (+ r 1)) (duration 0)) refresh) (active (< r 5)) (label '+'))
 (readout graph-label 'Graph' doc@'Names the row of preset graphs.')
-(readout forbid-label $'Forbid K{(sub (+ r 1))}' doc@'The forbidden clique.')
+(readout forbid-label f'Forbid K{(sub (+ r 1))}' doc@'The forbidden clique.')
 
 (readout caption
-  (let ((kq $'K{(sub (+ r 1))}') (l (lambda1)) (c (ceiling)))
+  (let ((kq f'K{(sub (+ r 1))}') (l (lambda1)) (c (ceiling)))
     (cond ((= (m) 0) 'This graph has no edges, so its spectral radius is 0.')
           ((> (clique-number) r)
            (if (> l (+ c 0.000001))
-               $'This graph contains a {kq}, so the Nikiforov bound no longer applies, and its spectral radius λ₁ = {l:.2f} has climbed past the {kq}-free ceiling.'
-               $'This graph contains a {kq}, so the Nikiforov bound no longer applies.'))
-          (else $'This graph is {kq}-free, so its spectral radius λ₁ = {l:.2f} sits at or below the Nikiforov ceiling {c:.2f}.')))
+               f'This graph contains a {kq}, so the Nikiforov bound no longer applies, and its spectral radius λ₁ = {l:.2f} has climbed past the {kq}-free ceiling.'
+               f'This graph contains a {kq}, so the Nikiforov bound no longer applies.'))
+          (else f'This graph is {kq}-free, so its spectral radius λ₁ = {l:.2f} sits at or below the Nikiforov ceiling {c:.2f}.')))
   doc@'Says how the spectral radius compares with the ceiling.')

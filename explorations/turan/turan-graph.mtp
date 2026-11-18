@@ -124,22 +124,22 @@
 (button more-vertices (animation (move n (to (+ n 1)) (duration 0)) even-out) (active (< n 12)) (label '+'))
 (button rebalance (animation even-out) (label 'Rebalance'))
 
-(readout parts-count $'Parts {r}' doc@'The number of parts.')
-(readout vertices-count $'Vertices {n}' doc@'The number of vertices.')
+(readout parts-count f'Parts {r}' doc@'The number of parts.')
+(readout vertices-count f'Vertices {n}' doc@'The number of vertices.')
 
 ; The caption: the part sizes, and the edges against the most a K_{r+1}-free graph can have.
 (readout caption
   (let ((sizes (sort (map r part-size) (fn s (- s))))
         (empties (count sizes (fn s (= s 0))))
         (listed (reduce sizes ''
-                  (fn ((string acc) (int s)) (cond ((= s 0) acc) ((= acc '') $'{s}') (else $'{acc}, {s}')))))
+                  (fn ((string acc) (int s)) (cond ((= s 0) acc) ((= acc '') f'{s}') (else f'{acc}, {s}')))))
         (e (edges-of (map r part-size) n))
         (most (edges-of (map r (fn k (count (range n) (fn i (= (even-part i n r) k))))) n))
-        (t $'T{(or? subscripts[r] '')}({n})')
-        (kq $'K{(or? subscripts[(+ r 1)] '')}')
-        (ed (if (= e 1) '1 edge' $'{e} edges'))
-        (empty-note (if (> empties 0) $', {empties} empty' '')))
+        (t f'T{(or? subscripts[r] '')}({n})')
+        (kq f'K{(or? subscripts[(+ r 1)] '')}')
+        (ed (if (= e 1) '1 edge' f'{e} edges'))
+        (empty-note (if (> empties 0) f', {empties} empty' '')))
     (if (= e most)
-        $'{t} splits these {n} vertices into parts of sizes {listed}, the {ed} being the most any {kq}-free graph on {n} vertices can have.'
-        $'These parts (sizes {listed}{empty-note}) span {ed}, {(- most e)} short of the {most} in the balanced {t}.'))
+        f'{t} splits these {n} vertices into parts of sizes {listed}, the {ed} being the most any {kq}-free graph on {n} vertices can have.'
+        f'These parts (sizes {listed}{empty-note}) span {ed}, {(- most e)} short of the {most} in the balanced {t}.'))
   doc@'Says how the parts compare with the Turán graph.')

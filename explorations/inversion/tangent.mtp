@@ -99,7 +99,7 @@
 ; The symbols of the caption, each set inline in its sentence in its shape's color. Hovering one
 ; highlights what it names in the figure; tapping one (on a phone) highlights it for a moment.
 
-(formula sym-t tex'\term{s}{T}'
+(formula sym-t $'\term{s}{T}'
   (term s (fill ink)))
 (display t-inline sym-t (kind 'inline')
   (on-enter sym-t.s (animation (move glow-t (to 1) (duration 0.2)))
@@ -109,7 +109,7 @@
   (on-click sym-t.s (animation (move glow-t (to 1) (duration 0.25)) (wait 1) (move glow-t (to 0) (duration 0.25)))
     doc@'Highlights the point T for a moment.'))
 
-(formula sym-d1 tex'\term{s}{D_1}'
+(formula sym-d1 $'\term{s}{D_1}'
   (term s (fill teal)))
 (display d1-inline sym-d1 (kind 'inline')
   (on-enter sym-d1.s (animation (move glow-d1 (to 1) (duration 0.2)))
@@ -119,7 +119,7 @@
   (on-click sym-d1.s (animation (move glow-d1 (to 1) (duration 0.25)) (wait 1) (move glow-d1 (to 0) (duration 0.25)))
     doc@'Highlights the circle D_1 for a moment.'))
 
-(formula sym-d2 tex'\term{s}{D_2}'
+(formula sym-d2 $'\term{s}{D_2}'
   (term s (fill indigo)))
 (display d2-inline sym-d2 (kind 'inline')
   (on-enter sym-d2.s (animation (move glow-d2 (to 1) (duration 0.2)))
@@ -129,7 +129,7 @@
   (on-click sym-d2.s (animation (move glow-d2 (to 1) (duration 0.25)) (wait 1) (move glow-d2 (to 0) (duration 0.25)))
     doc@'Highlights the circle D_2 for a moment.'))
 
-(formula sym-d1img tex'\term{s}{D_1^{\prime}}'
+(formula sym-d1img $'\term{s}{D_1^{\prime}}'
   (term s (fill teal)))
 (display d1img-inline sym-d1img (kind 'inline')
   (on-enter sym-d1img.s (animation (move glow-d1img (to 1) (duration 0.2)))
@@ -139,7 +139,7 @@
   (on-click sym-d1img.s (animation (move glow-d1img (to 1) (duration 0.25)) (wait 1) (move glow-d1img (to 0) (duration 0.25)))
     doc@'Highlights the line D_1′ for a moment.'))
 
-(formula sym-d2img tex'\term{s}{D_2^{\prime}}'
+(formula sym-d2img $'\term{s}{D_2^{\prime}}'
   (term s (fill indigo)))
 (display d2img-inline sym-d2img (kind 'inline')
   (on-enter sym-d2img.s (animation (move glow-d2img (to 1) (duration 0.2)))
@@ -149,7 +149,7 @@
   (on-click sym-d2img.s (animation (move glow-d2img (to 1) (duration 0.25)) (wait 1) (move glow-d2img (to 0) (duration 0.25)))
     doc@'Highlights the line D_2′ for a moment.'))
 
-(formula sym-c tex'\term{s}{C}'
+(formula sym-c $'\term{s}{C}'
   (term s (fill terracotta)))
 (display c-inline sym-c (kind 'inline')
   (on-enter sym-c.s (animation (move glow-c (to 1) (duration 0.2)))
@@ -159,7 +159,7 @@
   (on-click sym-c.s (animation (move glow-c (to 1) (duration 0.25)) (wait 1) (move glow-c (to 0) (duration 0.25)))
     doc@'Highlights the circle C for a moment.'))
 
-(formula sym-cimg tex'\term{s}{C^{\prime}}'
+(formula sym-cimg $'\term{s}{C^{\prime}}'
   (term s (fill terracotta)))
 (display cimg-inline sym-cimg (kind 'inline')
   (on-enter sym-cimg.s (animation (move glow-cimg (to 1) (duration 0.2)))
