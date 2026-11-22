@@ -139,7 +139,7 @@ Decided by the author, 2026-11-08.
 - **Built by RSM.** Each page is an RSM document with Firsthand's theme CSS. Figures are mtp
   figures compiled to `.mtpc` and placed with `:html:` blocks of `<mtp-model>` and `<mtp-canvas>`
   tags. One `:html:` block with `:class: hide` loads mathterpiece's runtime once per page.
-- **Layout:** not chosen yet (mockups made 2026-11-08).
+- **Layout** (2026-11-22): the layout that RSM gives the page: one text column, each figure in the column with its number and caption in the right margin, side notes in the right margin, and RSM's tool strip on the left.
 - **Every page ends with a colophon** of three labelled rows: how to cite; source (the page's
   folder on GitHub, and that the page is written in RSM and the figures in mathterpiece); licence.
 - **Licence:** text and figures CC BY-NC 4.0; build scripts and theme MIT.
