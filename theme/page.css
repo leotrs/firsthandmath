@@ -144,6 +144,56 @@ body[data-accent] { --text-keyword: var(--primary-600); }
   color: var(--fm-ink); background: none; box-shadow: none; border-bottom-color: var(--fm-terracotta);
 }
 
+/* The controls' look (the author, 2026-11-23, BRAND.md): thick round tracks, pill thumbs, buttons
+   outlined in soft with round corners, and the step dots as short bars. Ink marks a control in use,
+   and soft and a light track mark it at rest. These rules only override the runtime's own styles. */
+:root { --fm-track: light-dark(#e4e2dc, #2c2e34); }
+.fm-fig mtp-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: linear-gradient(to right,
+    var(--fm-ink) calc(12px + var(--u) * (100% - 24px)),
+    var(--fm-track) calc(12px + var(--u) * (100% - 24px)));
+}
+.fm-fig mtp-slider input[type="range"]::-webkit-slider-thumb {
+  width: 24px; height: 14px; margin-top: -4px; border-radius: 999px;
+  background: var(--fm-paper); border: 1.5px solid var(--fm-ink); box-shadow: none;
+}
+.fm-fig mtp-slider input[type="range"]::-moz-range-track { height: 6px; background: var(--fm-track); }
+.fm-fig mtp-slider input[type="range"]::-moz-range-progress { height: 6px; background: var(--fm-ink); }
+.fm-fig mtp-slider input[type="range"]::-moz-range-thumb {
+  width: 24px; height: 14px; border-radius: 999px;
+  background: var(--fm-paper); border: 1.5px solid var(--fm-ink); box-shadow: none;
+}
+/* The ticks stand where the thumb's center stands, half a thumb in from each end. */
+.fm-fig mtp-slider .mtp-ticks [data-value] { left: calc(12px + var(--u) * (100% - 24px)); }
+.fm-fig mtp-slider label { color: var(--fm-ink); }
+
+.fm-fig mtp-button:not(.fm-seg *) button {
+  color: var(--fm-ink); background: transparent;
+  border: 1.5px solid var(--fm-soft); border-radius: 10px;
+}
+.fm-fig mtp-button:not(.fm-seg *) button:hover { background: transparent; border-color: var(--fm-ink); }
+.fm-fig mtp-button:not(.fm-seg *) button:active,
+.fm-fig mtp-button:not(.fm-seg *) button[aria-pressed="true"] { background: var(--fm-ink); border-color: var(--fm-ink); color: var(--fm-paper); }
+
+.fm-fig mtp-play { --mtp-bar-track: var(--fm-track); }
+.fm-fig mtp-play .mtp-bar { height: 6px; }
+.fm-fig mtp-play .mtp-knob {
+  width: 22px; height: 14px; border-radius: 999px;
+  background: var(--fm-paper); border: 1.5px solid var(--mtp-bar-fill); box-shadow: none;
+}
+
+/* The stepper's arrows are round buttons outlined in soft, and its dots are short bars: a passed
+   step in ink, the current step a longer bar, and a step still to come in the track's color. */
+.fm-fig mtp-stepper .mtp-step-button {
+  background: transparent; color: var(--fm-ink); border: 1.5px solid var(--fm-soft);
+}
+.fm-fig mtp-stepper .mtp-step-button:hover:not(:disabled) { background: transparent; border-color: var(--fm-ink); }
+.fm-fig mtp-stepper .mtp-dots { gap: 6px; }
+.fm-fig mtp-stepper .mtp-dot { width: 16px; height: 9px; border-radius: 999px; background: var(--fm-track); }
+.fm-fig mtp-stepper .mtp-dot.mtp-passed { background: var(--fm-ink); }
+.fm-fig mtp-stepper .mtp-dot[aria-current="step"] { width: 28px; background: var(--fm-ink); box-shadow: none; }
+
 /* A toggle is a checkbox (the author, 2026-11-23): an empty box with a soft outline when off, and a
    box filled with ink with a check mark when on. A chip was dropped because its colors left unclear
    which state was on. The real checkbox stays in the page, hidden, so the keyboard and screen
