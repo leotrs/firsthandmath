@@ -124,6 +124,11 @@ with manim's defaults. The palette below began as mathterpiece's examples' house
   house token so it follows light and dark mode (bead mtp-m34w.1).
 - The page keeps its small accents (teal and plum labels for Digestions and Morsels).
 - Figure controls are gray at rest and ink while in use, never BRAIID's blue (bead mtp-kwy2.1).
+- Controls (the author, 2026-11-23): the "Far from BRAIID" shapes (round thick tracks, pill
+  thumbs, outlined buttons with round corners, bar step dots, numbers on a small chip) in
+  Firsthand's colors and Source Sans 3. A control in use is ink, never terracotta, so it does
+  not compete with what matters most in the figure. The toggle is a checkbox, not a chip: a
+  chip leaves unclear which color means on.
 
 ## The home page
 
